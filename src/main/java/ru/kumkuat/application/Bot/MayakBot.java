@@ -17,7 +17,6 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.kumkuat.application.Geolocation.GeoLocationUtils;
 import ru.kumkuat.application.Geolocation.Geolocation;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
@@ -34,6 +33,9 @@ public class MayakBot extends TelegramLongPollingBot {
     private String botToken;
 
     @Autowired
+    private ru.kumkuat.application.Config.BotController botController;
+
+    @Autowired
     private GeoLocationUtils geoLocationUtils;
 
 
@@ -44,6 +46,9 @@ public class MayakBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
+
+//        String message = update.getMessage().getText();
+//        botController.chooser(message);
         String message = update.getMessage().getText();
         Long chatId = update.getMessage().getChatId();
         Integer messageId = update.getMessage().getMessageId();
@@ -54,13 +59,26 @@ public class MayakBot extends TelegramLongPollingBot {
             sendLocation(userLocation, chatId.toString(), messageId);
 
         } else {
+            StringBuilder dd =new StringBuilder();
             sendMsg(chatId.toString(), message, messageId);
         }
     }
 
 
+
+    public synchronized void sendMsg(String chatId, String s) {
+        SendMessage sendMessage = SendMessage.builder().chatId(chatId).text("Я достаю из широких штанин!!!").build();
+        sendMessage.enableMarkdown(true);
+        System.out.println(chatId);
+        try {
+            execute(sendMessage);
+        } catch (TelegramApiException e) {
+            e.getStackTrace();
+        }
+    }
+
     public synchronized void sendMsg(String chatId, String s, Integer id) {
-        SendMessage sendMessage = SendMessage.builder().chatId(chatId).replyToMessageId(id).text("Я достаю из широких штанин!!!").build();
+        SendMessage sendMessage = SendMessage.builder().chatId(chatId).text("Я достаю из широких штанин!!!").build();
         sendMessage.enableMarkdown(true);
         try {
             execute(sendMessage);

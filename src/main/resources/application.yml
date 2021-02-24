@@ -10,6 +10,9 @@
 
 bot.name: VlVlMayakovskiyBot
 bot.token: 1671057934:AAEKDoi4zT-MSAb6oYS-lYjn4mdsgbTU8_E
+
+ku.name: KuKuLearnBot
+ku.token: 1695833891:AAHNSBWLvBMAnlvok87_ojqjW0m5rpBSCIM
 spring:
   datasource:
     username: root
