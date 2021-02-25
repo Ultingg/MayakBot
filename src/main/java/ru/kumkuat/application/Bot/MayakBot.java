@@ -55,7 +55,6 @@ public class MayakBot extends TelegramLongPollingBot {
 
         if (update.getMessage().hasLocation()) {
             Location userLocation = update.getMessage().getLocation();
-            //Geolocation neasrestLocation =  getNearestLocation(userLocation);
             sendLocation(userLocation, chatId.toString(), messageId);
 
         } else {
@@ -109,56 +108,5 @@ public class MayakBot extends TelegramLongPollingBot {
         }
     }
 
-//    public synchronized void sendLocation(Update update) {
-//        Double petroLatitude = 59.950157;
-//        Double petroLongitude = 30.315352;
-//        Double userLatitude = update.getMessage().getLocation().getLatitude();
-//        Double userLongitude = update.getMessage().getLocation().getLongitude();
-//        Double distance = GeoLocationUtils.distanceToCurrentLocation(userLatitude, userLongitude, petroLatitude, petroLongitude);
-//        String message = String.format("От тебя до Петропавловской крепости: %d метров", distance.intValue());
-//
-//        sendMsg(update.getMessage().getChatId().toString(), message, update.getMessage().getMessageId());
-//    }
-
-
-
-//    public synchronized void sendLocation(Geolocation geolocation, String chatId, Integer id) {
-//        SendLocation sendLocation = SendLocation.builder()
-//                .longitude(geolocation.getLongitude())
-//                .latitude(geolocation.getLatitude())
-//                .chatId(chatId)
-//                .build();
-//        String message = String.format("Ближайшая к вам локация: %s, до нее %.2f метров"
-//                , geolocation.getFullName(), geolocation.getDistance());
-//
-//        SendMessage sendMessage = SendMessage.builder()
-//                .chatId(chatId).replyToMessageId(id).text(message).build();
-//        try {
-//            execute(sendLocation);
-//            execute(sendMessage);
-//        } catch (TelegramApiException e) {
-//        }
-//    }
-
-//    public synchronized Geolocation getNearestLocation(Location userLocation) {
-//
-//        Map<String, Location> locationMap = new HashMap<>();
-//        Location petroKrepost = new Location();
-//        petroKrepost.setLatitude(59.950157);
-//        petroKrepost.setLongitude(30.315352);
-//        Location zimniy = new Location();
-//        zimniy.setLatitude(59.939916);
-//        zimniy.setLongitude(30.314699);
-//        Location moscowRailwaySt = new Location();
-//        moscowRailwaySt.setLatitude(59.930102);
-//        moscowRailwaySt.setLongitude(30.362520);
-//        locationMap.put("PetroKrepost", petroKrepost);
-//        locationMap.put("Zimniy", zimniy);
-//        locationMap.put("MoscowRailwaySt", moscowRailwaySt);
-//
-//        return GeoLocationUtils.nearestLocation(locationMap, userLocation);
-//
-//
-//    }
 
 }
