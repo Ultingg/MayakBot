@@ -11,14 +11,32 @@ import ru.kumkuat.application.GameModule.Geolocation.Geolocation;
 @Builder
 @Component
 @NoArgsConstructor
-
 @AllArgsConstructor
 public class Reply {
 
-    private int id;
+    private Long id;
     private Geolocation geolocation;
-    private int audioId;
+    private Long audioId;
     private String textMessage;
-    private int pictureId;
+    private Long pictureId;
+    private int timing;
+    private String botName;
+
+
+    public boolean hasPicture() {
+        return pictureId != null;
+    }
+
+    public boolean hasGelocation() {
+        return geolocation != null;
+    }
+
+    public boolean hasAudio() {
+        return audioId != null;
+    }
+
+    public boolean hasText() {
+        return textMessage != null;
+    }
 
 }

@@ -21,16 +21,16 @@ public class ReplyCollection {
 
     private List<Reply> replyList;
 
-    public Reply getReply(int id) {
-        return replyList.get(id);
+    public Reply getReply(Long id) {
+        return replyList.get(id.intValue());
     }
 
     public boolean setReplay(Reply replay) {
         return replyList.add(replay);
     }
 
-    public void deleteReplay(int id) {
-        replyList.remove(id);
+    public void deleteReplay(Long id) {
+        replyList.remove(id.intValue());
     }
 
     public int size() {
@@ -45,8 +45,8 @@ public class ReplyCollection {
     public void collectionInit() {
         replyList = new ArrayList<>();
 
-        Reply reply = Reply.builder().id(1).textMessage("Здравствуй, как здорово что ты наконец-то в Петербурге!").build();
-        Reply reply1 = Reply.builder().id(2).textMessage("Перейди дорогу через светофор").build();
+        Reply reply = Reply.builder().id(1L).textMessage("Здравствуй, как здорово что ты наконец-то в Петербурге!").build();
+        Reply reply1 = Reply.builder().id(2L).textMessage("Перейди дорогу через светофор").build();
 
 
         replyList = Arrays.asList(reply, reply1);
