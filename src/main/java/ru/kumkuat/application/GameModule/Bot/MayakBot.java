@@ -67,7 +67,7 @@ public class MayakBot extends TelegramLongPollingBot {
 
 
     public synchronized void sendMsg(String chatId, String s) {
-        SendMessage sendMessage = SendMessage.builder().chatId(chatId).text("Я достаю из широких штанин!!!").build();
+        SendMessage sendMessage = SendMessage.builder().chatId(chatId).text(s).build();
         sendMessage.enableMarkdown(true);
         try {
             execute(sendMessage);
