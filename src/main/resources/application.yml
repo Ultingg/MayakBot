@@ -1,18 +1,3 @@
-#server.port=44386
-#localeTag=ru-RU
-#logging.level.root=info
-#logging.pattern.console=%d{dd-MM-yyyy HH:mm:ss.SSS} %magenta([%thread]) %highlight(%-5level) %logger.%M - %msg%n
-#
-#subscriptions.processPeriod=1800000
-#pingtask.url=https://www.google.com
-#pingtask.period=1200000
-
-
-bot.name: VlVlMayakovskiyBot
-bot.token: 1671057934:AAEKDoi4zT-MSAb6oYS-lYjn4mdsgbTU8_E
-
-ku.name: KuKuLearnBot
-ku.token: 1695833891:AAHNSBWLvBMAnlvok87_ojqjW0m5rpBSCIM
 spring:
   datasource:
     username: root

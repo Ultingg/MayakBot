@@ -1,8 +1,9 @@
-package ru.kumkuat.application.Config;
+package ru.kumkuat.application.GameModule.Controller;
 
 import org.springframework.stereotype.Component;
-import ru.kumkuat.application.Bot.KuBot;
-import ru.kumkuat.application.Bot.MayakBot;
+import org.telegram.telegrambots.meta.api.objects.Update;
+import ru.kumkuat.application.GameModule.Bot.KuBot;
+import ru.kumkuat.application.GameModule.Bot.MayakBot;
 
 @Component
 public class BotController {
@@ -10,34 +11,35 @@ public class BotController {
 
     private final KuBot kuBot;
     private final MayakBot mayakBot;
-    Long chatId = 396005041l;
+//    Long chatId = 396005041l;
 
     public BotController(KuBot kuBot, MayakBot mayakBot) {
         this.kuBot = kuBot;
         this.mayakBot = mayakBot;
 
-        mayakBot.sendMsg(chatId.toString(), "Privet");
+//        mayakBot.sendMsg(chatId.toString(), "Privet");
     }
 
-    public void chooser(String s) {
+    public void chooser(String s, Update update) {
+        String chatId = update.getMessage().getChatId().toString();
         switch (s) {
             case ("маяк"):
-                mayakSend();
+                mayakSend(chatId);
                 break;
             case ("ку"):
-                KuSend();
+                KuSend(chatId);
                 break;
         }
 
     }
 
 
-    public void mayakSend() {
+    public void mayakSend(String chatId) {
         mayakBot.sendMsg(chatId.toString(), "Privet");
 
     }
 
-    public void KuSend() {
+    public void KuSend(String chatId) {
         kuBot.sendMsg(chatId.toString(), "Ты не пройдешь!");
     }
 }

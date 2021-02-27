@@ -1,8 +1,8 @@
-package ru.kumkuat.application.Repository;
+package ru.kumkuat.application.GameModule.Repository;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
-import ru.kumkuat.application.Geolocation.Geolocation;
+import ru.kumkuat.application.GameModule.Geolocation.Geolocation;
 @Repository
 public interface GeolocationRepository extends CrudRepository<Geolocation,Long> {
 

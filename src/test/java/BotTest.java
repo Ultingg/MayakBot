@@ -1,5 +1,5 @@
 import org.junit.jupiter.api.Test;
-import ru.kumkuat.application.Bot.MayakBot;
+import ru.kumkuat.application.GameModule.Bot.MayakBot;
 
 public class BotTest {
 
@@ -7,9 +7,9 @@ public class BotTest {
 
     @Test
     public void op () {
-//        MayakBot te = new MayakBot();
-//        System.out.println(te.getBotUsername());
-//        System.out.println(te.getBotToken());
+        MayakBot te = new MayakBot();
+        System.out.println(te.getBotUsername());
+        System.out.println(te.getBotToken());
     }
 
 

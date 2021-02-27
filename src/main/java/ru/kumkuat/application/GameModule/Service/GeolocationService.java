@@ -1,8 +1,8 @@
-package ru.kumkuat.application.Service;
+package ru.kumkuat.application.GameModule.Service;
 
 import org.springframework.stereotype.Service;
-import ru.kumkuat.application.Geolocation.Geolocation;
-import ru.kumkuat.application.Repository.GeolocationRepository;
+import ru.kumkuat.application.GameModule.Geolocation.Geolocation;
+import ru.kumkuat.application.GameModule.Repository.GeolocationRepository;
 
 import java.util.ArrayList;
 import java.util.List;

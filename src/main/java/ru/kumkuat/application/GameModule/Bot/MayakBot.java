@@ -1,4 +1,4 @@
-package ru.kumkuat.application.Bot;
+package ru.kumkuat.application.GameModule.Bot;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,6 +7,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendLocation;
@@ -14,8 +15,8 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Location;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import ru.kumkuat.application.Geolocation.GeoLocationUtils;
-import ru.kumkuat.application.Geolocation.Geolocation;
+import ru.kumkuat.application.GameModule.Geolocation.GeoLocationUtils;
+import ru.kumkuat.application.GameModule.Geolocation.Geolocation;
 
 import java.util.Map;
 
@@ -25,7 +26,7 @@ import java.util.Map;
 @Component
 @NoArgsConstructor
 @AllArgsConstructor
-
+@PropertySource(name = "secret.yml", value = "secret.yml" )
 public class MayakBot extends TelegramLongPollingBot {
     @Value("${bot.name}")
     private String botUsername;
@@ -33,7 +34,7 @@ public class MayakBot extends TelegramLongPollingBot {
     private String botToken;
 
     @Autowired
-    private ru.kumkuat.application.Config.BotController botController;
+    private ru.kumkuat.application.GameModule.Controller.BotController botController;
 
     @Autowired
     private GeoLocationUtils geoLocationUtils;
@@ -47,20 +48,20 @@ public class MayakBot extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
 
-//        String message = update.getMessage().getText();
-//        botController.chooser(message);
         String message = update.getMessage().getText();
-        Long chatId = update.getMessage().getChatId();
-        Integer messageId = update.getMessage().getMessageId();
-
-        if (update.getMessage().hasLocation()) {
-            Location userLocation = update.getMessage().getLocation();
-            sendLocation(userLocation, chatId.toString(), messageId);
-
-        } else {
-            StringBuilder dd =new StringBuilder();
-            sendMsg(chatId.toString(), message, messageId);
-        }
+        botController.chooser(message, update);
+//        String message = update.getMessage().getText();
+//        Long chatId = update.getMessage().getChatId();
+//        Integer messageId = update.getMessage().getMessageId();
+//
+//        if (update.getMessage().hasLocation()) {
+//            Location userLocation = update.getMessage().getLocation();
+//            sendLocation(userLocation, chatId.toString(), messageId);
+//
+//        } else {
+//            StringBuilder dd =new StringBuilder();
+//            sendMsg(chatId.toString(), message, messageId);
+//        }
     }
 
 
@@ -68,7 +69,6 @@ public class MayakBot extends TelegramLongPollingBot {
     public synchronized void sendMsg(String chatId, String s) {
         SendMessage sendMessage = SendMessage.builder().chatId(chatId).text("Я достаю из широких штанин!!!").build();
         sendMessage.enableMarkdown(true);
-        System.out.println(chatId);
         try {
             execute(sendMessage);
         } catch (TelegramApiException e) {

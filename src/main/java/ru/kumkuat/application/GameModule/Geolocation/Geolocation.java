@@ -1,4 +1,4 @@
-package ru.kumkuat.application.Geolocation;
+package ru.kumkuat.application.GameModule.Geolocation;
 
 import lombok.Data;
 

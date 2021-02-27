@@ -1,10 +1,4 @@
 import org.junit.jupiter.api.Test;
-import org.telegram.telegrambots.meta.api.objects.Location;
-import ru.kumkuat.application.Bot.MayakBot;
-import ru.kumkuat.application.Geolocation.Geolocation;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

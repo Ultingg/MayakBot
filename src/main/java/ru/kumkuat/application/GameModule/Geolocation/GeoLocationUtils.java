@@ -1,8 +1,8 @@
-package ru.kumkuat.application.Geolocation;
+package ru.kumkuat.application.GameModule.Geolocation;
 
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Location;
-import ru.kumkuat.application.Service.GeolocationService;
+import ru.kumkuat.application.GameModule.Service.GeolocationService;
 
 import java.util.HashMap;
 import java.util.List;
