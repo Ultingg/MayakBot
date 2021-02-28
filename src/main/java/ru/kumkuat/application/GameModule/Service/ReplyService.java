@@ -28,6 +28,7 @@ public class ReplyService {
             location.setLongitude(reply.getGeolocation().getLongitude());
             location.setLatitude(reply.getGeolocation().getLatitude());
             resultMessage.setLocation(location);
+
         }
         if (reply.hasText()) resultMessage.setText(reply.getTextMessage());
 //        if (reply.hasPicture()) resultMessage.setPhoto();

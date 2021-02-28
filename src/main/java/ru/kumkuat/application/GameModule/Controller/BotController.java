@@ -27,10 +27,10 @@ public class BotController {
         String chatId = update.getMessage().getChatId().toString();
         switch (s) {
             case ("маяк"):
-                mayakSend(chatId, replyCollection.getReply(1).getTextMessage());
+                mayakSend(chatId, replyCollection.getReply(1L).getTextMessage());
                 break;
             case ("ку"):
-                KuSend(chatId, replyCollection.getReply(0).getTextMessage());
+                KuSend(chatId, replyCollection.getReply(0L).getTextMessage());
                 break;
             case ("Я - писатель"):
                 mayakSend(chatId, "А по моему ты говно!");

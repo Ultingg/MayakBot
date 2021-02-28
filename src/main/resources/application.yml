@@ -5,3 +5,5 @@ spring:
     url: jdbc:mysql://localhost:3306/promenad?serverTimezone=UTC
     driver-class-name: com.mysql.cj.jdbc.Driver
     initialization-mode: always
+
+text.path: src\\main\\resources\\voice\\
