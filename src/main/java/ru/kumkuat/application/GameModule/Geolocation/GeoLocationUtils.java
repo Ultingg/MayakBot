@@ -20,7 +20,7 @@ public class GeoLocationUtils {
         this.geolocationService = geolocationService;
     }
 
-    public  double distanceToCurrentLocation(Double userLati, Double userLong, Double aimLati, Double aimLong) {
+    public static double distanceToCurrentLocation(Double userLati, Double userLong, Double aimLati, Double aimLong) {
         double EARTH_RADIUS = 6372795.0;
 
         //переводим координаты в радианы

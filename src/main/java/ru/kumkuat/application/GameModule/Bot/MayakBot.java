@@ -1,6 +1,8 @@
 package ru.kumkuat.application.GameModule.Bot;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,6 +19,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.kumkuat.application.GameModule.Geolocation.GeoLocationUtils;
 import ru.kumkuat.application.GameModule.Geolocation.Geolocation;
+import ru.kumkuat.application.GameModule.Service.AudioService;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -26,7 +29,7 @@ import java.util.Map;
 @Setter
 @Getter
 @Component
-@NoArgsConstructor
+//@NoArgsConstructor
 @PropertySource(name = "secret.yml", value = "secret.yml" )
 @PropertySource(name = "application.yml", value = "application.yml")
 public class MayakBot extends TelegramLongPollingBot {
@@ -44,8 +47,11 @@ public class MayakBot extends TelegramLongPollingBot {
     private GeoLocationUtils geoLocationUtils;
 
 
-    public MayakBot(GeoLocationUtils geoLocationUtils) {
+    private final AudioService audioService;
+
+    public MayakBot(GeoLocationUtils geoLocationUtils, AudioService audioService) {
         this.geoLocationUtils = geoLocationUtils;
+        this.audioService = audioService;
     }
 
 
@@ -55,6 +61,7 @@ public class MayakBot extends TelegramLongPollingBot {
 
 //        String message = update.getMessage().getText();
 //        botController.chooser(message, update);
+        System.out.println(update.getMessage().getPhoto());
         Thread sender = new Thread();
         sender.start();
         String message = update.getMessage().getText();
@@ -68,21 +75,23 @@ public class MayakBot extends TelegramLongPollingBot {
         } else {
 
             sendVoice(chatId.toString());
-            sender.sleep(40000);
+//            sender.sleep(40000);
             sendPicture(chatId.toString());
-            sender.sleep(30000);
+//            sender.sleep(30000);
             sendMsg(chatId.toString(), message, messageId);
         }
     }
 
     public synchronized void sendVoice(String chatId) {
         InputFile voiceFile = new InputFile();
-        File file = new File(path.toFile() + "\\aloe.mp3");
+        String path = audioService.getPathToAudio(2L);
+        File file = new File(path);
 
         voiceFile.setMedia(file);
         SendVoice sendVoice = new SendVoice();
         sendVoice.setChatId(chatId);
         sendVoice.setVoice(voiceFile);
+        sendVoice.setDuration(150);
 
         try{
             execute(sendVoice);

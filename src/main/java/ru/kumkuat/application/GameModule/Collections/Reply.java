@@ -13,7 +13,6 @@ import ru.kumkuat.application.GameModule.Geolocation.Geolocation;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Reply {
-
     private Long id;
     private Geolocation geolocation;
     private Long audioId;
