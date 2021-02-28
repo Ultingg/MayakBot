@@ -27,7 +27,6 @@ import java.util.Map;
 @Getter
 @Component
 @NoArgsConstructor
-@AllArgsConstructor
 @PropertySource(name = "secret.yml", value = "secret.yml" )
 @PropertySource(name = "application.yml", value = "application.yml")
 public class MayakBot extends TelegramLongPollingBot {

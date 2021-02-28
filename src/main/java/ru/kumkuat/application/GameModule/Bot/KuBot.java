@@ -1,6 +1,5 @@
 package ru.kumkuat.application.GameModule.Bot;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,7 +17,6 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 @Getter
 @Component
 @NoArgsConstructor
-@AllArgsConstructor
 @PropertySource(name = "secret.yml", value = "secret.yml" )
 public class KuBot extends TelegramLongPollingBot {
 
