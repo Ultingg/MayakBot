@@ -6,6 +6,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.kumkuat.application.GameModule.Bot.KuBot;
 import ru.kumkuat.application.GameModule.Bot.MayakBot;
 import ru.kumkuat.application.GameModule.Collections.ReplyCollection;
+import ru.kumkuat.application.GameModule.Collections.ResponseContainer;
 
 @Component
 public class BotController {
@@ -40,6 +41,11 @@ public class BotController {
                 break;
         }
 
+    }
+
+    public void responseResolver(ResponseContainer responseContainer) {
+        //обработать кто говори
+        //обработать паузу
     }
 
 
