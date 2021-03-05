@@ -1,4 +1,4 @@
 package ru.kumkuat.application.LoadModule;
 
-public class gadost {
+public class XMLService {
 }

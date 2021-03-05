@@ -1,0 +1,39 @@
+<scene number="1">
+	<triggerupdate>
+		<update>
+			<message>Я выполнил квест!</message>
+		</update>
+	</triggerupdate>
+	<replies>
+		<reply botname="Mayakovsky">
+			<message  pause="0">Я дастаю из широких штанин ...</message>
+		</reply>
+		<reply botname="Akhmatova">
+			<message pause="15">Ну и полож его обратно... </message>
+			<message pause="15">Ну и полож его обратно... </message>
+			<message pause="15">Ну и полож его обратно... </message>
+		</reply>
+	</replies>
+</scene>
+<scene number="2">
+	<triggerupdate>
+		<update>
+			<location>
+				<longitude>55.450787</longitude>
+				<latitude>37.369387</latitude>			
+			</location>
+		</update>
+	</triggerupdate>
+	<replies>
+		<reply botname="Mayakovsky">
+			<message  pause="0">Ну наконец ты пришел</message>
+		</reply>
+		<reply botname="Akhmatova">
+			<image pause="15" url="http://risovach.ru/upload/2015/10/mem/putin_96401420_orig_.jpg"/>			
+		</reply>
+		<reply botname="Gumilev">
+			<message pause="15">Послушай и иди дальше ... </message>
+			<audio pause="0" url="https://zaycev.net/pages/23774/2377447.shtml"/>
+		</reply>
+	</replies>
+</scene>
