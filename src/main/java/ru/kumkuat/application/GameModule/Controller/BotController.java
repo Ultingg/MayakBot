@@ -6,6 +6,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.kumkuat.application.GameModule.Bot.KuBot;
 import ru.kumkuat.application.GameModule.Bot.MayakBot;
 import ru.kumkuat.application.GameModule.Collections.ReplyCollection;
+import ru.kumkuat.application.GameModule.Collections.ResponseContainer;
 
 @Component
 public class BotController {
@@ -27,10 +28,10 @@ public class BotController {
         String chatId = update.getMessage().getChatId().toString();
         switch (s) {
             case ("маяк"):
-                mayakSend(chatId, replyCollection.getReply(1).getTextMessage());
+                mayakSend(chatId, replyCollection.getReply(1L).getTextMessage());
                 break;
             case ("ку"):
-                KuSend(chatId, replyCollection.getReply(0).getTextMessage());
+                KuSend(chatId, replyCollection.getReply(0L).getTextMessage());
                 break;
             case ("Я - писатель"):
                 mayakSend(chatId, "А по моему ты говно!");
@@ -40,6 +41,11 @@ public class BotController {
                 break;
         }
 
+    }
+
+    public void responseResolver(ResponseContainer responseContainer) {
+        //обработать кто говори
+        //обработать паузу
     }
 
 

@@ -5,6 +5,8 @@ import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Slf4j
 @Setter
 @Getter
@@ -13,7 +15,12 @@ import org.springframework.stereotype.Component;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Scene {
-    private int id;
-    private int replyCollectionId;
-    private String trigger;
+
+    private Long id;
+    private List<Reply> replyCollection;
+    private Trigger trigger;
+
+
+
+
 }
