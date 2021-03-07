@@ -29,10 +29,9 @@ import java.util.Map;
 @Setter
 @Getter
 @Component
-//@NoArgsConstructor
 @PropertySource(name = "secret.yml", value = "secret.yml" )
 @PropertySource(name = "application.yml", value = "application.yml")
-public class MayakBot extends TelegramLongPollingBot {
+public class MayakBot extends TelegramLongPollingBot implements BotsSender{
     @Value("${bot.name}")
     private String botUsername;
     @Value("${bot.token}")
@@ -159,5 +158,34 @@ public class MayakBot extends TelegramLongPollingBot {
         }
     }
 
+    public void sendLocation2(SendLocation sendLocation) {
 
+        try {
+            executeAsync(sendLocation);
+        } catch (TelegramApiException e) {
+            e.getStackTrace();
+        }
+    }
+    public void sendVoice(SendVoice sendVoice) {
+        try {
+            execute(sendVoice);
+        } catch (TelegramApiException e) {
+            e.getStackTrace();
+        }
+    }
+    public void sendPicture(SendPhoto sendPhoto) {
+        try {
+            execute(sendPhoto);
+        } catch (TelegramApiException e) {
+            e.getStackTrace();
+        }
+    }
+
+    public void sendMessage (SendMessage sendMessage) {
+        try {
+            execute(sendMessage);
+        } catch (TelegramApiException e) {
+            e.getStackTrace();
+        }
+    }
 }

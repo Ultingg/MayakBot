@@ -22,4 +22,20 @@ public class ResponseContainer {
     private SendPhoto sendPhoto;
     private SendVoice sendVoice;
     private String botName;
+
+    public boolean hasPicture() {
+        return sendPhoto != null;
+    }
+
+    public boolean hasGeolocation() {
+        return sendLocation != null;
+    }
+
+    public boolean hasAudio() {
+        return sendVoice != null;
+    }
+
+    public boolean hasText() {
+        return sendMessage != null;
+    }
 }

@@ -13,8 +13,8 @@ import ru.kumkuat.application.GameModule.Collections.ResponseContainer;
 import ru.kumkuat.application.GameModule.Collections.Scene;
 import ru.kumkuat.application.GameModule.Collections.Trigger;
 import ru.kumkuat.application.GameModule.Controller.BotController;
-import ru.kumkuat.application.GameModule.Geolocation.GeoLocationUtils;
 import ru.kumkuat.application.GameModule.Geolocation.Geolocation;
+import ru.kumkuat.application.TemporaryCollections.SceneCollection;
 
 import java.io.File;
 import java.util.List;
@@ -22,15 +22,15 @@ import java.util.List;
 @Service
 public class ResponseService {
 
-    List<Scene> sceneList;
-    private final GeoLocationUtils geoLocationUtils;
+    private final SceneCollection sceneCollection;
     private final PictureService pictureService;
     private final AudioService audioService;
     private final BotController botController;
     private final GeolocationService geolocationService;
 
-    public ResponseService(GeoLocationUtils geoLocationUtils, PictureService pictureService, AudioService audioService, BotController botController, GeolocationService geolocationService) {
-        this.geoLocationUtils = geoLocationUtils;
+    public ResponseService(SceneCollection sceneCollection, PictureService pictureService,
+                           AudioService audioService, BotController botController, GeolocationService geolocationService) {
+        this.sceneCollection = sceneCollection;
         this.pictureService = pictureService;
         this.audioService = audioService;
         this.botController = botController;
@@ -39,7 +39,7 @@ public class ResponseService {
 
 
     public void checkIncomingMessage(Message message, Long sceneId) {
-        Scene scene = sceneList.get(sceneId.intValue());
+        Scene scene = sceneCollection.get(sceneId);
 
         Trigger sceneTrigger = scene.getTrigger();
         if (sceneTrigger.triggerCheck(message)) ReplyResolver(message, scene);
@@ -69,7 +69,6 @@ public class ResponseService {
         responseContainer.setBotName(reply.getBotName());
 
 
-
         if (reply.hasPicture()) {
             Long pictureId = reply.getPictureId();
             String pathToPicture = pictureService.getPathToPicture(pictureId);
@@ -93,7 +92,7 @@ public class ResponseService {
             sendVoice.setVoice(audioFile);
             responseContainer.setSendVoice(sendVoice);
         }
-        if (reply.hasGelocation()) {
+        if (reply.hasGeolocation()) {
             Long geolocationId = reply.getGeolocationId();
             Geolocation geolocation = geolocationService.getGeolocationById(geolocationId);
             Double latitudeToSend = geolocation.getLatitude();

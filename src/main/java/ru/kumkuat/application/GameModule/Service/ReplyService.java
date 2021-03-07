@@ -25,7 +25,7 @@ public class ReplyService {
         Message resultMessage = new Message();
         Reply reply = replyCollection.getReply(id);
 
-        if (reply.hasGelocation()) {
+        if (reply.hasGeolocation()) {
             Long geolocationId = reply.getGeolocationId();
             Geolocation geolocation = geolocationService.getGeolocationById(geolocationId);
 

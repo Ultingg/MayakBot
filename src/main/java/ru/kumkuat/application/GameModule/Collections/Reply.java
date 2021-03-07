@@ -21,11 +21,12 @@ public class Reply {
     private String botName;
 
 
+
     public boolean hasPicture() {
         return pictureId != null;
     }
 
-    public boolean hasGelocation() {
+    public boolean hasGeolocation() {
         return geolocationId != null;
     }
 
