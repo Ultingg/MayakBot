@@ -3,7 +3,6 @@ package ru.kumkuat.application.GameModule.Collections;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ru.kumkuat.application.GameModule.Geolocation.Geolocation;
 
 @Slf4j
 @Setter
@@ -14,7 +13,7 @@ import ru.kumkuat.application.GameModule.Geolocation.Geolocation;
 @AllArgsConstructor
 public class Reply {
     private Long id;
-    private Geolocation geolocation;
+    private Long geolocationId; // change to geolocatin id
     private Long audioId;
     private String textMessage;
     private Long pictureId;
@@ -27,7 +26,7 @@ public class Reply {
     }
 
     public boolean hasGelocation() {
-        return geolocation != null;
+        return geolocationId != null;
     }
 
     public boolean hasAudio() {
