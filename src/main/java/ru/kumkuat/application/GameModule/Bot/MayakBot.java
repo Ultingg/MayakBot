@@ -17,6 +17,7 @@ import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Location;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import ru.kumkuat.application.GameModule.Controller.UpdateController;
 import ru.kumkuat.application.GameModule.Geolocation.GeoLocationUtils;
 import ru.kumkuat.application.GameModule.Geolocation.Geolocation;
 import ru.kumkuat.application.GameModule.Service.AudioService;
@@ -45,11 +46,12 @@ public class MayakBot extends TelegramLongPollingBot implements BotsSender{
     @Autowired
     private GeoLocationUtils geoLocationUtils;
 
-
+    private final UpdateController updateController;
     private final AudioService audioService;
 
-    public MayakBot(GeoLocationUtils geoLocationUtils, AudioService audioService) {
+    public MayakBot(GeoLocationUtils geoLocationUtils, UpdateController updateController, AudioService audioService) {
         this.geoLocationUtils = geoLocationUtils;
+        this.updateController = updateController;
         this.audioService = audioService;
     }
 
@@ -60,6 +62,7 @@ public class MayakBot extends TelegramLongPollingBot implements BotsSender{
 
 //        String message = update.getMessage().getText();
 //        botController.chooser(message, update);
+        updateController.receiveUpdate(update);
         System.out.println(update.getMessage().getPhoto());
         Thread sender = new Thread();
         sender.start();
