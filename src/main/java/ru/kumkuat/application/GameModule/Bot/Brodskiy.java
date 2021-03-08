@@ -8,6 +8,7 @@ import org.telegram.telegrambots.meta.bots.AbsSender;
 public class Brodskiy extends BotCommand {
     public Brodskiy(String commandIdentifier, String description) {
         super(commandIdentifier, description);
+
     }
 
     @Override
