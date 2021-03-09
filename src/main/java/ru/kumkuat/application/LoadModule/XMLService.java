@@ -3,6 +3,7 @@ package ru.kumkuat.application.LoadModule;
 import com.thoughtworks.xstream.XStream;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import ru.kumkuat.application.GameModule.Collections.Scene;
@@ -18,16 +19,21 @@ import java.util.List;
 
 @Component
 public class XMLService {
+    private DocumentBuilderFactory builderFactory;
+    private XPathFactory xpathFactory = null;
+    private DocumentBuilder builder = null;
+    private XPath xpath = null;
+    private Document doc = null;
+
     public XMLService(Scene scene) {
-        DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+        builderFactory = DocumentBuilderFactory.newInstance();
         builderFactory.setNamespaceAware(true);
 
-        DocumentBuilder builder = null;
         try {
-            XPathFactory xpathFactory = XPathFactory.newInstance();
-            XPath xpath = xpathFactory.newXPath();
+            xpathFactory = XPathFactory.newInstance();
+            xpath = xpathFactory.newXPath();
             builder = builderFactory.newDocumentBuilder();
-            Document doc = builder.parse("src/main/resources/scenario_template.xml");
+            doc = builder.parse("src/main/resources/scenario_template.xml");
 
             XPathExpression xPathExpression = xpath.compile(
                     "//location"
@@ -64,21 +70,53 @@ public class XMLService {
                 System.out.println(geolocation.getLatitude().toString());
             }
         } catch (
-                ParserConfigurationException e) {
-            e.printStackTrace();
-        } catch (
-                SAXException e) {
-            e.printStackTrace();
-        } catch (
-                IOException e) {
-            e.printStackTrace();
-        } catch (
-                XPathExpressionException e) {
+                ParserConfigurationException | SAXException | IOException | XPathExpressionException e) {
             e.printStackTrace();
         }
+    }
 
+    public Integer getCountScene() {
+        NodeList nodes = null;
+        try {
+            XPathExpression xPathExpression = xpath.compile(
+                    "//scene"
+            );
+            nodes = (NodeList) xPathExpression.evaluate(doc, XPathConstants.NODESET);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return nodes.getLength();
+    }
 
-//
-//        System.out.println(xml);
+    public Node getTriggerNode(Long sceneId) {
+        NodeList nodes = null;
+        try {
+            XPathExpression xPathExpression = xpath.compile(
+                    "//scene[@number='" + sceneId + "']/trigger"
+            );
+            nodes = (NodeList) xPathExpression.evaluate(doc, XPathConstants.NODESET);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return nodes.getLength() > 0 ? nodes.item(0).getChildNodes().item(1) : null;
+    }
+
+    public ArrayList<Node> getRepliesNodes(Long sceneId) {
+        NodeList nodes = null;
+        ArrayList<Node> replies = new ArrayList<>();
+        try {
+            XPathExpression xPathExpression = xpath.compile(
+                    "//scene[@number='" + sceneId + "']/replies/reply"
+            );
+            nodes = (NodeList) xPathExpression.evaluate(doc, XPathConstants.NODESET);
+            for (int i = 0; i < nodes.getLength(); i++) {
+                if(nodes.item(i).getNodeName().equals("reply")){
+                    replies.add(nodes.item(i));
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return replies.stream().count() > 0 ? replies : null;
     }
 }
