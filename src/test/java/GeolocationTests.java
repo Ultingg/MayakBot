@@ -1,11 +1,13 @@
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 public class GeolocationTests {
 
 
-    @Test
+
+
+
+
+      @Test
     public void nearestLocationTest() {
 //        MayakBot mayakBot = new MayakBot();
 //        Map<String, Location> locationMap = new HashMap<>();

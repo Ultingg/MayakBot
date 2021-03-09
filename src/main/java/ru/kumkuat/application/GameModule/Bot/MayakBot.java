@@ -1,9 +1,8 @@
 package ru.kumkuat.application.GameModule.Bot;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,26 +11,34 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendLocation;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.methods.send.SendVoice;
+import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Location;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import ru.kumkuat.application.GameModule.Controller.UpdateController;
 import ru.kumkuat.application.GameModule.Geolocation.GeoLocationUtils;
 import ru.kumkuat.application.GameModule.Geolocation.Geolocation;
+import ru.kumkuat.application.GameModule.Service.AudioService;
 
+import java.io.File;
+import java.nio.file.Path;
 import java.util.Map;
 
 @Slf4j
 @Setter
 @Getter
 @Component
-@NoArgsConstructor
-@AllArgsConstructor
 @PropertySource(name = "secret.yml", value = "secret.yml" )
-public class MayakBot extends TelegramLongPollingBot {
+@PropertySource(name = "application.yml", value = "application.yml")
+public class MayakBot extends TelegramLongPollingBot implements BotsSender{
     @Value("${bot.name}")
     private String botUsername;
     @Value("${bot.token}")
     private String botToken;
+    @Value("${text.path}")
+    private Path path;
 
     @Autowired
     private ru.kumkuat.application.GameModule.Controller.BotController botController;
@@ -39,32 +46,78 @@ public class MayakBot extends TelegramLongPollingBot {
     @Autowired
     private GeoLocationUtils geoLocationUtils;
 
+    private final UpdateController updateController;
+    private final AudioService audioService;
 
-    public MayakBot(GeoLocationUtils geoLocationUtils) {
+    public MayakBot(GeoLocationUtils geoLocationUtils, UpdateController updateController, AudioService audioService) {
         this.geoLocationUtils = geoLocationUtils;
+        this.updateController = updateController;
+        this.audioService = audioService;
     }
 
 
+    @SneakyThrows
     @Override
     public void onUpdateReceived(Update update) {
 
-        String message = update.getMessage().getText();
-        botController.chooser(message, update);
 //        String message = update.getMessage().getText();
-//        Long chatId = update.getMessage().getChatId();
-//        Integer messageId = update.getMessage().getMessageId();
-//
-//        if (update.getMessage().hasLocation()) {
-//            Location userLocation = update.getMessage().getLocation();
-//            sendLocation(userLocation, chatId.toString(), messageId);
-//
-//        } else {
-//            StringBuilder dd =new StringBuilder();
-//            sendMsg(chatId.toString(), message, messageId);
-//        }
+//        botController.chooser(message, update);
+        updateController.receiveUpdate(update);
+        System.out.println(update.getMessage().getPhoto());
+        Thread sender = new Thread();
+        sender.start();
+        String message = update.getMessage().getText();
+        Long chatId = update.getMessage().getChatId();
+        Integer messageId = update.getMessage().getMessageId();
+
+        if (update.getMessage().hasLocation()) {
+            Location userLocation = update.getMessage().getLocation();
+            sendLocation(userLocation, chatId.toString(), messageId);
+
+        } else {
+
+            sendVoice(chatId.toString());
+//            sender.sleep(40000);
+            sendPicture(chatId.toString());
+//            sender.sleep(30000);
+            sendMsg(chatId.toString(), message, messageId);
+        }
     }
 
+    public synchronized void sendVoice(String chatId) {
+        InputFile voiceFile = new InputFile();
+        String path = audioService.getPathToAudio(2L);
+        File file = new File(path);
 
+        voiceFile.setMedia(file);
+        SendVoice sendVoice = new SendVoice();
+        sendVoice.setChatId(chatId);
+        sendVoice.setVoice(voiceFile);
+        sendVoice.setDuration(150);
+
+        try{
+            execute(sendVoice);
+        } catch (TelegramApiException e) {
+            e.getStackTrace();
+        }
+    }
+
+    public synchronized void sendPicture(String chatId) {
+        InputFile pictureFile = new InputFile();
+        File file = new File(path.toFile() +"\\tea.jpg");
+        pictureFile.setMedia(file);
+        SendPhoto sendPhoto = new SendPhoto();
+        sendPhoto.setChatId(chatId);
+        sendPhoto.setPhoto(pictureFile);
+
+
+
+        try {execute(sendPhoto);}
+        catch (TelegramApiException e) {
+            e.getStackTrace();
+        }
+
+    }
 
     public synchronized void sendMsg(String chatId, String s) {
         SendMessage sendMessage = SendMessage.builder().chatId(chatId).text(s).build();
@@ -108,5 +161,34 @@ public class MayakBot extends TelegramLongPollingBot {
         }
     }
 
+    public void sendLocation2(SendLocation sendLocation) {
 
+        try {
+            executeAsync(sendLocation);
+        } catch (TelegramApiException e) {
+            e.getStackTrace();
+        }
+    }
+    public void sendVoice(SendVoice sendVoice) {
+        try {
+            execute(sendVoice);
+        } catch (TelegramApiException e) {
+            e.getStackTrace();
+        }
+    }
+    public void sendPicture(SendPhoto sendPhoto) {
+        try {
+            execute(sendPhoto);
+        } catch (TelegramApiException e) {
+            e.getStackTrace();
+        }
+    }
+
+    public void sendMessage (SendMessage sendMessage) {
+        try {
+            execute(sendMessage);
+        } catch (TelegramApiException e) {
+            e.getStackTrace();
+        }
+    }
 }
