@@ -14,7 +14,7 @@ public class Trigger {
     private Long id;
     private String text;
     private boolean hasPicture;
-    private Geolocation geolocation;
+    private Geolocation geolocationId;
 
 
     public boolean triggerCheck(String textToCheck) {
