@@ -12,14 +12,12 @@ import org.springframework.stereotype.Component;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Reply {
-    private Long id;
     private Long geolocationId; // change to geolocatin id
     private Long audioId;
     private String textMessage;
     private Long pictureId;
     private int timing;
     private String botName;
-
 
 
     public boolean hasPicture() {

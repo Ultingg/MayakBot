@@ -18,9 +18,9 @@ import org.telegram.telegrambots.meta.api.objects.Location;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.kumkuat.application.GameModule.Controller.UpdateController;
-import ru.kumkuat.application.GameModule.Geolocation.GeoLocationUtils;
-import ru.kumkuat.application.GameModule.Geolocation.Geolocation;
+import ru.kumkuat.application.GameModule.Models.Geolocation;
 import ru.kumkuat.application.GameModule.Service.AudioService;
+import ru.kumkuat.application.GameModule.Service.GeoLocationUtilsService;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -30,9 +30,9 @@ import java.util.Map;
 @Setter
 @Getter
 @Component
-@PropertySource(name = "secret.yml", value = "secret.yml" )
+@PropertySource(name = "secret.yml", value = "secret.yml")
 @PropertySource(name = "application.yml", value = "application.yml")
-public class MayakBot extends TelegramLongPollingBot implements BotsSender{
+public class MayakBot extends TelegramLongPollingBot implements BotsSender {
     @Value("${bot.name}")
     private String botUsername;
     @Value("${bot.token}")
@@ -44,13 +44,13 @@ public class MayakBot extends TelegramLongPollingBot implements BotsSender{
     private ru.kumkuat.application.GameModule.Controller.BotController botController;
 
     @Autowired
-    private GeoLocationUtils geoLocationUtils;
+    private GeoLocationUtilsService geoLocationUtilsService;
 
     private final UpdateController updateController;
     private final AudioService audioService;
 
-    public MayakBot(GeoLocationUtils geoLocationUtils, UpdateController updateController, AudioService audioService) {
-        this.geoLocationUtils = geoLocationUtils;
+    public MayakBot(GeoLocationUtilsService geoLocationUtilsService, UpdateController updateController, AudioService audioService) {
+        this.geoLocationUtilsService = geoLocationUtilsService;
         this.updateController = updateController;
         this.audioService = audioService;
     }
@@ -95,7 +95,7 @@ public class MayakBot extends TelegramLongPollingBot implements BotsSender{
         sendVoice.setVoice(voiceFile);
         sendVoice.setDuration(150);
 
-        try{
+        try {
             execute(sendVoice);
         } catch (TelegramApiException e) {
             e.getStackTrace();
@@ -104,16 +104,16 @@ public class MayakBot extends TelegramLongPollingBot implements BotsSender{
 
     public synchronized void sendPicture(String chatId) {
         InputFile pictureFile = new InputFile();
-        File file = new File(path.toFile() +"\\tea.jpg");
+        File file = new File(path.toFile() + "\\tea.jpg");
         pictureFile.setMedia(file);
         SendPhoto sendPhoto = new SendPhoto();
         sendPhoto.setChatId(chatId);
         sendPhoto.setPhoto(pictureFile);
 
 
-
-        try {execute(sendPhoto);}
-        catch (TelegramApiException e) {
+        try {
+            execute(sendPhoto);
+        } catch (TelegramApiException e) {
             e.getStackTrace();
         }
 
@@ -140,7 +140,7 @@ public class MayakBot extends TelegramLongPollingBot implements BotsSender{
     }
 
     public synchronized void sendLocation(Location userLocation, String chatId, Integer id) {
-        Map<String, Object> resultList = geoLocationUtils.foundNearestLocationService(userLocation);
+        Map<String, Object> resultList = geoLocationUtilsService.foundNearestLocationService(userLocation);
         Double distance = (Double) resultList.get("Distance");
         Geolocation resultGeolocation = (Geolocation) resultList.get("Geolocation");
         SendLocation sendLocation = SendLocation.builder()
@@ -157,7 +157,7 @@ public class MayakBot extends TelegramLongPollingBot implements BotsSender{
             execute(sendLocation);
             execute(sendMessage);
         } catch (TelegramApiException e) {
-        e.getStackTrace();
+            e.getStackTrace();
         }
     }
 
@@ -169,6 +169,7 @@ public class MayakBot extends TelegramLongPollingBot implements BotsSender{
             e.getStackTrace();
         }
     }
+
     public void sendVoice(SendVoice sendVoice) {
         try {
             execute(sendVoice);
@@ -176,6 +177,7 @@ public class MayakBot extends TelegramLongPollingBot implements BotsSender{
             e.getStackTrace();
         }
     }
+
     public void sendPicture(SendPhoto sendPhoto) {
         try {
             execute(sendPhoto);
@@ -184,7 +186,7 @@ public class MayakBot extends TelegramLongPollingBot implements BotsSender{
         }
     }
 
-    public void sendMessage (SendMessage sendMessage) {
+    public void sendMessage(SendMessage sendMessage) {
         try {
             execute(sendMessage);
         } catch (TelegramApiException e) {

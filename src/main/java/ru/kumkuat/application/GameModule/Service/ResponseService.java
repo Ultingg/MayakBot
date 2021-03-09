@@ -13,7 +13,7 @@ import ru.kumkuat.application.GameModule.Collections.ResponseContainer;
 import ru.kumkuat.application.GameModule.Collections.Scene;
 import ru.kumkuat.application.GameModule.Collections.Trigger;
 import ru.kumkuat.application.GameModule.Controller.BotController;
-import ru.kumkuat.application.GameModule.Geolocation.Geolocation;
+import ru.kumkuat.application.GameModule.Models.Geolocation;
 import ru.kumkuat.application.TemporaryCollections.SceneCollection;
 
 import java.io.File;
@@ -26,30 +26,37 @@ public class ResponseService {
     private final PictureService pictureService;
     private final AudioService audioService;
     private final BotController botController;
-    private final GeolocationService geolocationService;
+    private final GeolocationDatabaseService geolocationDatabaseService;
+    private final TriggerService triggerService;
 
     public ResponseService(SceneCollection sceneCollection, PictureService pictureService,
-                           AudioService audioService, BotController botController, GeolocationService geolocationService) {
+                           AudioService audioService, BotController botController, GeolocationDatabaseService geolocationDatabaseService, TriggerService triggerService) {
         this.sceneCollection = sceneCollection;
         this.pictureService = pictureService;
         this.audioService = audioService;
         this.botController = botController;
-        this.geolocationService = geolocationService;
+        this.geolocationDatabaseService = geolocationDatabaseService;
+        this.triggerService = triggerService;
     }
 
 
     public void checkIncomingMessage(Message message, Long sceneId) {
         Scene scene = sceneCollection.get(sceneId);
-
         Trigger sceneTrigger = scene.getTrigger();
-        if (sceneTrigger.triggerCheck(message)) ReplyResolver(message, scene);
+
+        if (triggerService.triggerCheck(sceneTrigger, message)) { //TODO: getPhoto условие переделать
+            ReplyResolver(message, scene);
+        }
+
         if (message.hasLocation()) {
             Location userLocation = message.getLocation();
-            if (sceneTrigger.triggerCheck(userLocation)) ReplyResolver(message, scene);
+            if (triggerService.triggerCheck(sceneTrigger, userLocation))  {
+                ReplyResolver(message, scene);
+            }
         }
         if (message.hasText()) {
             String userText = message.getText();
-            if (sceneTrigger.triggerCheck(userText)) ReplyResolver(message, scene);
+            if (triggerService.triggerCheck(sceneTrigger,userText)) ReplyResolver(message, scene);
         }
     }
 
@@ -94,7 +101,7 @@ public class ResponseService {
         }
         if (reply.hasGeolocation()) {
             Long geolocationId = reply.getGeolocationId();
-            Geolocation geolocation = geolocationService.getGeolocationById(geolocationId);
+            Geolocation geolocation = geolocationDatabaseService.getGeolocationById(geolocationId);
             Double latitudeToSend = geolocation.getLatitude();
             Double longitudeToSend = geolocation.getLongitude();
 

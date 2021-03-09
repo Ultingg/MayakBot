@@ -1,4 +1,4 @@
-package ru.kumkuat.application.LoadModule;
+package ru.kumkuat.application.GameModule.Factories;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -7,6 +7,10 @@ import org.w3c.dom.Node;
 import ru.kumkuat.application.GameModule.Collections.Reply;
 import ru.kumkuat.application.GameModule.Collections.Scene;
 import ru.kumkuat.application.GameModule.Collections.Trigger;
+import ru.kumkuat.application.GameModule.Service.AudioService;
+import ru.kumkuat.application.GameModule.Service.GeolocationDatabaseService;
+import ru.kumkuat.application.GameModule.Service.PictureService;
+import ru.kumkuat.application.GameModule.Service.XMLService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,12 +19,16 @@ import java.util.List;
 @Getter
 @Component
 public class SceneFactory {
-    private XMLService xmlService = null;
-    private SQLService sqlService = null;
+    private final XMLService xmlService;
+    private final GeolocationDatabaseService geolocationDatabaseService;
+    private final PictureService pictureService;
+    private final AudioService audioService;
 
-    public SceneFactory(XMLService xmlService, SQLService sqlService) {
+    public SceneFactory(XMLService xmlService, GeolocationDatabaseService geolocationDatabaseService, PictureService pictureService, AudioService audioService) {
         this.xmlService = xmlService;
-        this.sqlService = sqlService;
+        this.geolocationDatabaseService = geolocationDatabaseService;
+        this.pictureService = pictureService;
+        this.audioService = audioService;
     }
 
     public List<Scene> getSceneCollection() {
@@ -35,7 +43,7 @@ public class SceneFactory {
 
     private Scene getScene(Long sceneId) {
         Scene scene = new Scene();
-        scene.setId(sceneId);
+      //  scene.setId(sceneId);   //TODO: убрать sceneID  и в xml
         scene.setTrigger(getTrigger(sceneId));
         scene.setReplyCollection(getReplyCollection(sceneId));
         return scene;
@@ -50,7 +58,7 @@ public class SceneFactory {
                 if (triggerNode.getNodeName().equals("message")) {
                     trigger.setText(triggerNode.getFirstChild().getNodeValue());
                 } else if (triggerNode.getNodeName().equals("location")) {
-                    long r = sqlService.setGeolocationIntoDB(triggerNode);
+                    long r = geolocationDatabaseService.setGeolocationIntoDB(triggerNode);
                     trigger.setGeolocationId(r);
                 } else if (triggerNode.getNodeName().equals("image")) {
                     trigger.setHasPicture(true);
@@ -87,19 +95,18 @@ public class SceneFactory {
                         var msg = ContentNode.getFirstChild().getNodeValue();
                         reply.setTextMessage(msg);
                     } else if (ContentNode.getNodeName().equals("image")) {
-                        long r = sqlService.setPictureIntoDB(ContentNode);
+                        long r = pictureService.setPictureIntoDB(ContentNode);
                         reply.setPictureId(r);
                     } else if (ContentNode.getNodeName().equals("audio")) {
-                        long r = sqlService.setAudioIntoDB(ContentNode);
+                        long r = audioService.setAudioIntoDB(ContentNode);
                         reply.setAudioId(r);
                     } else if (ContentNode.getNodeName().equals("location")) {
-                        long r = sqlService.setGeolocationIntoDB(ContentNode);
+                        long r = geolocationDatabaseService.setGeolocationIntoDB(ContentNode);
                         reply.setGeolocationId(r);
                     }
                     replies.add(reply);
                 }
-            }
-            else{
+            } else {
                 throw new Exception("Replies list was not found");
             }
             return replies;

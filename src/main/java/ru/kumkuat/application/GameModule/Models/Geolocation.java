@@ -1,6 +1,5 @@
 package ru.kumkuat.application.GameModule.Models;
 
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,9 +12,16 @@ import javax.persistence.Id;
 @Setter
 @Entity
 
-public class Audio {
+public class Geolocation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String path;
+    //    @Column(columnDefinition = "full_name")
+    private String fullName;
+    //    @Column(columnDefinition = "latitude")
+    private Double latitude;
+    //    @Column(columnDefinition = "longitude")
+    private Double longitude;
+
+
 }

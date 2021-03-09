@@ -8,8 +8,9 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 public class UpdateController {
 
 
-    public void receiveUpdate(Update update){
+    public void receiveUpdate(Update update) {
         Message message = update.getMessage();
+
 
     }
 

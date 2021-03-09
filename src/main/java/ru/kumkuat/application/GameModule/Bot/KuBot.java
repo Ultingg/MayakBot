@@ -20,8 +20,8 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 @Getter
 @Component
 @NoArgsConstructor
-@PropertySource(name = "secret.yml", value = "secret.yml" )
-public class KuBot extends TelegramLongPollingBot implements BotsSender{
+@PropertySource(name = "secret.yml", value = "secret.yml")
+public class KuBot extends TelegramLongPollingBot implements BotsSender {
 
     @Value("${ku.name}")
     private String botUsername;
@@ -43,6 +43,7 @@ public class KuBot extends TelegramLongPollingBot implements BotsSender{
             e.getStackTrace();
         }
     }
+
     public void sendLocation2(SendLocation sendLocation) {
 
         try {
@@ -51,6 +52,7 @@ public class KuBot extends TelegramLongPollingBot implements BotsSender{
             e.getStackTrace();
         }
     }
+
     public void sendVoice(SendVoice sendVoice) {
         try {
             execute(sendVoice);
@@ -58,6 +60,7 @@ public class KuBot extends TelegramLongPollingBot implements BotsSender{
             e.getStackTrace();
         }
     }
+
     public void sendPicture(SendPhoto sendPhoto) {
         try {
             execute(sendPhoto);
@@ -66,7 +69,7 @@ public class KuBot extends TelegramLongPollingBot implements BotsSender{
         }
     }
 
-    public void sendMessage (SendMessage sendMessage) {
+    public void sendMessage(SendMessage sendMessage) {
         try {
             execute(sendMessage);
         } catch (TelegramApiException e) {

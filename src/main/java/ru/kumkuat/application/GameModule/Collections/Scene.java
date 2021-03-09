@@ -16,11 +16,8 @@ import java.util.List;
 @AllArgsConstructor
 public class Scene {
 
-    private Long id;
     private List<Reply> replyCollection;
     private Trigger trigger;
-
-
 
 
 }

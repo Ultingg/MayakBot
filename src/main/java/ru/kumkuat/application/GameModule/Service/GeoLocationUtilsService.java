@@ -1,8 +1,8 @@
-package ru.kumkuat.application.GameModule.Geolocation;
+package ru.kumkuat.application.GameModule.Service;
 
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Location;
-import ru.kumkuat.application.GameModule.Service.GeolocationService;
+import ru.kumkuat.application.GameModule.Models.Geolocation;
 
 import java.util.HashMap;
 import java.util.List;
@@ -11,13 +11,13 @@ import java.util.Map;
 import static java.lang.Math.*;
 
 @Service
-public class GeoLocationUtils {
+public class GeoLocationUtilsService {
 
-    private final GeolocationService geolocationService;
+    private final GeolocationDatabaseService geolocationDatabaseService;
 
 
-    public GeoLocationUtils(GeolocationService geolocationService) {
-        this.geolocationService = geolocationService;
+    public GeoLocationUtilsService(GeolocationDatabaseService geolocationDatabaseService) {
+        this.geolocationDatabaseService = geolocationDatabaseService;
     }
 
     public static double distanceToCurrentLocation(Double userLati, Double userLong, Double aimLati, Double aimLong) {
@@ -47,7 +47,7 @@ public class GeoLocationUtils {
     }
 
 
-    public  Geolocation nearestLocation(List<Geolocation> geolocationList, Location userLocation) {
+    public Geolocation nearestLocation(List<Geolocation> geolocationList, Location userLocation) {
         double userLong = userLocation.getLongitude();
         double userLat = userLocation.getLatitude();
         double min = 99999999.0;
@@ -77,7 +77,7 @@ public class GeoLocationUtils {
     public Map<String, Object> foundNearestLocationService(Location userLocation) {
         double distance;
         Map<String, Object> resultList = new HashMap<>();
-        List<Geolocation> geolocationList1 = geolocationService.getAll();
+        List<Geolocation> geolocationList1 = geolocationDatabaseService.getAll();
         Geolocation nearestGeolocation = nearestLocation(geolocationList1, userLocation);
         distance = distanceToCurrentLocation(userLocation.getLatitude(), userLocation.getLongitude(), nearestGeolocation.getLatitude(), nearestGeolocation.getLongitude());
 

@@ -7,5 +7,5 @@ import ru.kumkuat.application.GameModule.Models.Audio;
 @Repository
 public interface AudioRepository extends CrudRepository<Audio, Long> {
 
-     Audio getById(Long id);
+    Audio getById(Long id);
 }

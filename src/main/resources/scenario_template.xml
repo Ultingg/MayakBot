@@ -42,4 +42,55 @@
             </reply>
         </replies>
     </scene>
+    <scene number="3">
+        <trigger>
+            <location>
+                <fullName>Second Location</fullName>>
+                <longitude>55.450787</longitude>
+                <latitude>37.369387</latitude>
+            </location>
+        </trigger>
+        <replies>
+            <reply botname="Mayakovsky"  pause="0">
+                <message>Я дастаю из широких штанин ...</message>
+            </reply>
+            <reply botname="Akhmatova"  pause="15">
+                <message>Ну и полож его обратно...</message>
+            </reply>
+        </replies>
+    </scene>
+    <scene number="4">
+        <trigger>
+            <location>
+                <fullName>Third Location</fullName>>
+                <longitude>55.450787</longitude>
+                <latitude>37.369387</latitude>
+            </location>
+        </trigger>
+        <replies>
+            <reply botname="Mayakovsky"  pause="0">
+                <message>Я дастаю из широких штанин ...</message>
+            </reply>
+            <reply botname="Akhmatova"  pause="15">
+                <message>Ну и полож его обратно...</message>
+            </reply>
+        </replies>
+    </scene>
+    <scene number="5">
+        <trigger>
+            <location>
+                <fullName>Fourth Location</fullName>>
+                <longitude>55.450787</longitude>
+                <latitude>37.369387</latitude>
+            </location>
+        </trigger>
+        <replies>
+            <reply botname="Mayakovsky"  pause="0">
+                <message>Я дастаю из широких штанин ...</message>
+            </reply>
+            <reply botname="Akhmatova"  pause="15">
+                <message>Ну и полож его обратно...</message>
+            </reply>
+        </replies>
+    </scene>
 </scenes>
