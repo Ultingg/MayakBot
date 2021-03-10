@@ -44,19 +44,25 @@ public class ResponseService {
         Scene scene = sceneCollection.get(sceneId);
         Trigger sceneTrigger = scene.getTrigger();
 
-        if (triggerService.triggerCheck(sceneTrigger, message)) { //TODO: getPhoto условие переделать
-            ReplyResolver(message, scene);
+
+        if (message.hasPhoto()) {
+            if(sceneTrigger.isHasPicture()){
+                ReplyResolver(message, scene);
+            } else {
+                ResponseContainer wrongAnswerResponse = configureWrongTriggerMessage(message,scene);
+                botController.responseResolver(wrongAnswerResponse);
+            }
         }
 
         if (message.hasLocation()) {
             Location userLocation = message.getLocation();
-            if (triggerService.triggerCheck(sceneTrigger, userLocation))  {
+            if (triggerService.triggerCheck(sceneTrigger, userLocation)) {
                 ReplyResolver(message, scene);
             }
         }
         if (message.hasText()) {
             String userText = message.getText();
-            if (triggerService.triggerCheck(sceneTrigger,userText)) ReplyResolver(message, scene);
+            if (triggerService.triggerCheck(sceneTrigger, userText)) ReplyResolver(message, scene);
         }
     }
 
@@ -64,12 +70,24 @@ public class ResponseService {
         List<Reply> replyList = scene.getReplyCollection();
         ResponseContainer responseContainer;
         for (Reply reply : replyList) {
-            responseContainer = configuringMessage(reply, message);
+            responseContainer = configureMessage(reply, message);
             botController.responseResolver(responseContainer);
         }
     }
 
-    public synchronized ResponseContainer configuringMessage(Reply reply, Message message) {
+    public ResponseContainer configureWrongTriggerMessage(Message message, Scene scene) {
+        //пока Message и Scene не используются но при реализации индивидуальных ответов для каждого триггера они понадобятся
+        String wrongAnswerMessage = "Друг подумай еще разок над тем что сказал";
+        ResponseContainer responseContainer = new ResponseContainer();
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setText(wrongAnswerMessage);
+        responseContainer.setSendMessage(sendMessage);
+        responseContainer.setBotName("Mayak");
+        responseContainer.setTimingOfReply(100);
+        return responseContainer;
+    }
+
+    public synchronized ResponseContainer configureMessage(Reply reply, Message message) {
         String chatId = message.getChatId().toString();
         ResponseContainer responseContainer = new ResponseContainer();
         responseContainer.setTimingOfReply(reply.getTiming());

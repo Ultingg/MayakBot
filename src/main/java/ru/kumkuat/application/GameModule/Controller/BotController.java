@@ -19,6 +19,7 @@ public class BotController {
     }
 
 
+
     public void responseResolver(ResponseContainer responseContainer) {
         String botName = responseContainer.getBotName();
         int time = responseContainer.getTimingOfReply();
@@ -35,9 +36,9 @@ public class BotController {
         if (botName.equals("Ahmatova")) {
             sendResponseToUser(responseContainer, kuBot);
         }
-
-
     }
+
+
 
     private void sendResponseToUser(ResponseContainer responseContainer, BotsSender botsSender) {
         if (responseContainer.hasGeolocation()) {
