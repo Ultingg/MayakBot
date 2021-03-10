@@ -18,6 +18,7 @@ import org.telegram.telegrambots.meta.api.objects.Location;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.kumkuat.application.GameModule.Controller.UpdateController;
+import ru.kumkuat.application.GameModule.Controller.WebHookController;
 import ru.kumkuat.application.GameModule.Models.Geolocation;
 import ru.kumkuat.application.GameModule.Service.AudioService;
 import ru.kumkuat.application.GameModule.Service.GeoLocationUtilsService;
@@ -38,7 +39,7 @@ public class MayakBot extends TelegramLongPollingBot implements BotsSender {
     @Value("${bot.token}")
     private String botToken;
     @Value("${text.path}")
-    private Path path;
+    private Path path;    // TODO: убери эту заглушку!
 
     @Autowired
     private ru.kumkuat.application.GameModule.Controller.BotController botController;
@@ -46,11 +47,13 @@ public class MayakBot extends TelegramLongPollingBot implements BotsSender {
     @Autowired
     private GeoLocationUtilsService geoLocationUtilsService;
 
+    private final WebHookController webHookController;
     private final UpdateController updateController;
     private final AudioService audioService;
 
-    public MayakBot(GeoLocationUtilsService geoLocationUtilsService, UpdateController updateController, AudioService audioService) {
+    public MayakBot(GeoLocationUtilsService geoLocationUtilsService, WebHookController webHookController, UpdateController updateController, AudioService audioService) {
         this.geoLocationUtilsService = geoLocationUtilsService;
+        this.webHookController = webHookController;
         this.updateController = updateController;
         this.audioService = audioService;
     }
@@ -59,13 +62,10 @@ public class MayakBot extends TelegramLongPollingBot implements BotsSender {
     @SneakyThrows
     @Override
     public void onUpdateReceived(Update update) {
-
+        webHookController.onUpdateReceived(update);
 //        String message = update.getMessage().getText();
 //        botController.chooser(message, update);
         updateController.receiveUpdate(update);
-        System.out.println(update.getMessage().getPhoto());
-        Thread sender = new Thread();
-        sender.start();
         String message = update.getMessage().getText();
         Long chatId = update.getMessage().getChatId();
         Integer messageId = update.getMessage().getMessageId();
@@ -77,16 +77,14 @@ public class MayakBot extends TelegramLongPollingBot implements BotsSender {
         } else {
 
             sendVoice(chatId.toString());
-//            sender.sleep(40000);
             sendPicture(chatId.toString());
-//            sender.sleep(30000);
             sendMsg(chatId.toString(), message, messageId);
         }
     }
 
     public synchronized void sendVoice(String chatId) {
         InputFile voiceFile = new InputFile();
-        String path = audioService.getPathToAudio(2L);
+        String path = audioService.getPathToAudio(1L);
         File file = new File(path);
 
         voiceFile.setMedia(file);

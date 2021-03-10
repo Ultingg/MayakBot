@@ -82,7 +82,7 @@ public class ResponseService {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setText(wrongAnswerMessage);
         responseContainer.setSendMessage(sendMessage);
-        responseContainer.setBotName("Mayak");
+        responseContainer.setBotName("Mayak"); //дежурный по стране
         responseContainer.setTimingOfReply(100);
         return responseContainer;
     }

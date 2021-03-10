@@ -61,12 +61,6 @@ public class XMLService {
                         geolocation.setLatitude(latitude);
                     }
                 }
-                System.out.println("fullName");
-                System.out.println(geolocation.getFullName());
-                System.out.println("longitude");
-                System.out.println(geolocation.getLongitude().toString());
-                System.out.println("latitude");
-                System.out.println(geolocation.getLatitude().toString());
             }
         } catch (
                 ParserConfigurationException | SAXException | IOException | XPathExpressionException e) {

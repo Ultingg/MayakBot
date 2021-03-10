@@ -31,7 +31,7 @@
                 <message>Послушай и иди дальше ...</message>
             </reply>
             <reply botname="Gumilev" pause="15">
-                <audio path="https://zaycev.net/pages/23774/2377447.shtml"/>
+                <audio path="src\main\resources\voice\aloe.mp3"/>
             </reply>
             <reply botname="Gumilev" pause="15">
                 <location>
