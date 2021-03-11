@@ -17,8 +17,7 @@ import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Location;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import ru.kumkuat.application.GameModule.Controller.UpdateController;
-import ru.kumkuat.application.GameModule.Controller.WebHookController;
+import ru.kumkuat.application.GameModule.Controller.BotController;
 import ru.kumkuat.application.GameModule.Models.Geolocation;
 import ru.kumkuat.application.GameModule.Service.AudioService;
 import ru.kumkuat.application.GameModule.Service.GeoLocationUtilsService;
@@ -42,19 +41,15 @@ public class MayakBot extends TelegramLongPollingBot implements BotsSender {
     private Path path;    // TODO: убери эту заглушку!
 
     @Autowired
-    private ru.kumkuat.application.GameModule.Controller.BotController botController;
+    private BotController botController;
 
-    @Autowired
-    private GeoLocationUtilsService geoLocationUtilsService;
+//    @Autowired
+    private final GeoLocationUtilsService geoLocationUtilsService;
 
-    private final WebHookController webHookController;
-    private final UpdateController updateController;
     private final AudioService audioService;
 
-    public MayakBot(GeoLocationUtilsService geoLocationUtilsService, WebHookController webHookController, UpdateController updateController, AudioService audioService) {
+    public MayakBot(GeoLocationUtilsService geoLocationUtilsService, AudioService audioService) {
         this.geoLocationUtilsService = geoLocationUtilsService;
-        this.webHookController = webHookController;
-        this.updateController = updateController;
         this.audioService = audioService;
     }
 
@@ -62,10 +57,6 @@ public class MayakBot extends TelegramLongPollingBot implements BotsSender {
     @SneakyThrows
     @Override
     public void onUpdateReceived(Update update) {
-        webHookController.onUpdateReceived(update);
-//        String message = update.getMessage().getText();
-//        botController.chooser(message, update);
-        updateController.receiveUpdate(update);
         String message = update.getMessage().getText();
         Long chatId = update.getMessage().getChatId();
         Integer messageId = update.getMessage().getMessageId();

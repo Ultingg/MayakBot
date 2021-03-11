@@ -15,7 +15,7 @@ public class TriggerService {
 
     public boolean triggerCheck(Trigger trigger, String textToCheck) {
 
-        return trigger.getText().equals(textToCheck.toLowerCase());
+        return trigger.getText().toLowerCase().equals(textToCheck.toLowerCase());
     }
 
     public boolean triggerCheck(Trigger trigger, Location userLocation) {

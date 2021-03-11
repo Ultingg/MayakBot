@@ -62,7 +62,10 @@ public class ResponseService {
         }
         if (message.hasText()) {
             String userText = message.getText();
-            if (triggerService.triggerCheck(sceneTrigger, userText)) ReplyResolver(message, scene);
+            boolean flag = triggerService.triggerCheck(sceneTrigger, userText);
+            if (flag) {
+                ReplyResolver(message, scene);
+            }
         }
     }
 
@@ -135,7 +138,7 @@ public class ResponseService {
 
             SendMessage sendMessage = new SendMessage();
             sendMessage.setText(textToSend);
-
+            sendMessage.setChatId(chatId);
             responseContainer.setSendMessage(sendMessage);
         }
         return responseContainer;

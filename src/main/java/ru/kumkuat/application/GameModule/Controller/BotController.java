@@ -1,9 +1,7 @@
 package ru.kumkuat.application.GameModule.Controller;
 
 import org.springframework.stereotype.Component;
-import ru.kumkuat.application.GameModule.Bot.BotsSender;
-import ru.kumkuat.application.GameModule.Bot.KuBot;
-import ru.kumkuat.application.GameModule.Bot.MayakBot;
+import ru.kumkuat.application.GameModule.Bot.*;
 import ru.kumkuat.application.GameModule.Collections.ResponseContainer;
 
 @Component
@@ -11,11 +9,15 @@ public class BotController {
 
     private final KuBot kuBot;
     private final MayakBot mayakBot;
+    private final AkhmatovaBot akhmatovaBot;
+    private final Brodskiy brodskiy;
 
-    public BotController(KuBot kuBot, MayakBot mayakBot) {
+    public BotController(KuBot kuBot, MayakBot mayakBot, AkhmatovaBot akhmatovaBot, Brodskiy brodskiy) {
         this.kuBot = kuBot;
         this.mayakBot = mayakBot;
+        this.akhmatovaBot = akhmatovaBot;
 
+        this.brodskiy = brodskiy;
     }
 
 
@@ -30,11 +32,11 @@ public class BotController {
         catch (InterruptedException e) {
             e.getStackTrace();
         }
-        if (botName.equals("Mayak")) {
+        if (botName.equals("Mayakovsky")) {
             sendResponseToUser(responseContainer, mayakBot);
         }
-        if (botName.equals("Ahmatova")) {
-            sendResponseToUser(responseContainer, kuBot);
+        if (botName.equals("Akhmatova")) {
+            sendResponseToUser(responseContainer, akhmatovaBot);
         }
     }
 
