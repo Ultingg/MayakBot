@@ -33,86 +33,75 @@ public class SceneFactory {
 
     public List<Scene> getSceneCollection() {
         var scenes = new ArrayList<Scene>();
-        Integer countScene = xmlService.getCountScene();
-        for (int i = 0; i < countScene; i++) {
-            //Проверить все ли сцены по порядку
-            scenes.add(getScene((long) i));
+
+        try {
+            var scenesNodes = xmlService.getSceneNodes();
+            for (var sceneNode :
+                    scenesNodes) {
+                var TriggerNode = xmlService.getTriggerNode(sceneNode);
+                var RepliesNode = xmlService.getRepliesNodes(sceneNode);
+                Scene scene = new Scene();
+                scene.setTrigger(getTrigger(TriggerNode));
+                scene.setReplyCollection(getReplyCollection(RepliesNode));
+                scenes.add(scene);
+            }
+        } catch (Exception ex) {
+            System.out.println(ex.toString());
         }
         return scenes;
     }
 
-    private Scene getScene(Long sceneId) {
-        Scene scene = new Scene();
-      //  scene.setId(sceneId);   //TODO: убрать sceneID  и в xml
-        scene.setTrigger(getTrigger(sceneId));
-        scene.setReplyCollection(getReplyCollection(sceneId));
-        return scene;
+    private Trigger getTrigger(Node triggerNode) throws Exception {
+        Trigger trigger = new Trigger();
+        if (triggerNode.getNodeName().equals("message")) {
+            trigger.setText(triggerNode.getFirstChild().getNodeValue());
+        } else if (triggerNode.getNodeName().equals("location")) {
+            long r = geolocationDatabaseService.setGeolocationIntoDB(triggerNode);
+            trigger.setGeolocationId(r);
+        } else if (triggerNode.getNodeName().equals("image")) {
+            trigger.setHasPicture(true);
+        } else {
+            throw new Exception("EXCEPTION: Trigger is empty");
+        }
+        return trigger;
     }
 
-    private Trigger getTrigger(Long sceneId) {
-        try {
-            Trigger trigger = new Trigger();
-            Node triggerNode = xmlService.getTriggerNode(sceneId);
+    private ArrayList<Reply> getReplyCollection(ArrayList<Node> repliesNodes) throws Exception {
+        ArrayList<Reply> replies = new ArrayList<Reply>();
+        if (repliesNodes != null) {
+            for (var replyNode :
+                    repliesNodes) {
 
-            if (triggerNode != null) {
-                if (triggerNode.getNodeName().equals("message")) {
-                    trigger.setText(triggerNode.getFirstChild().getNodeValue());
-                } else if (triggerNode.getNodeName().equals("location")) {
-                    long r = geolocationDatabaseService.setGeolocationIntoDB(triggerNode);
-                    trigger.setGeolocationId(r);
-                } else if (triggerNode.getNodeName().equals("image")) {
-                    trigger.setHasPicture(true);
+                Reply reply = new Reply();
+                var ContentNode = replyNode.getChildNodes().item(1);
+
+                var botName = replyNode.getAttributes().getNamedItem("botname").getNodeValue();
+                reply.setBotName(botName);
+
+                var timing = replyNode.getAttributes().getNamedItem("pause").getNodeValue();
+                reply.setTiming(Integer.parseInt(timing));
+
+                if (ContentNode.getNodeName().equals("message")) {
+                    var msg = ContentNode.getFirstChild().getNodeValue();
+                    reply.setTextMessage(msg);
+                } else if (ContentNode.getNodeName().equals("image")) {
+                    long r = pictureService.setPictureIntoDB(ContentNode);
+                    reply.setPictureId(r);
+                } else if (ContentNode.getNodeName().equals("audio")) {
+                    long r = audioService.setAudioIntoDB(ContentNode);
+                    reply.setAudioId(r);
+                } else if (ContentNode.getNodeName().equals("location")) {
+                    long r = geolocationDatabaseService.setGeolocationIntoDB(ContentNode);
+                    reply.setGeolocationId(r);
                 }
-            } else {
-                throw new Exception("Trigger was not found");
-            }
-            return trigger;
-        } catch (Exception ex) {
-            System.out.println(ex.toString());
-        }
-        return null;
-    }
-
-    private ArrayList<Reply> getReplyCollection(Long sceneId) {
-        try {
-            ArrayList<Reply> replies = new ArrayList<Reply>();
-            var repliesNodes = xmlService.getRepliesNodes(sceneId);
-            if (repliesNodes != null) {
-
-                for (var replyNode :
-                        repliesNodes) {
-
-                    Reply reply = new Reply();
-                    var ContentNode = replyNode.getChildNodes().item(1);
-
-                    var botName = replyNode.getAttributes().getNamedItem("botname").getNodeValue();
-                    reply.setBotName(botName);
-
-                    var timing = replyNode.getAttributes().getNamedItem("pause").getNodeValue();
-                    reply.setTiming(Integer.parseInt(timing));
-
-                    if (ContentNode.getNodeName().equals("message")) {
-                        var msg = ContentNode.getFirstChild().getNodeValue();
-                        reply.setTextMessage(msg);
-                    } else if (ContentNode.getNodeName().equals("image")) {
-                        long r = pictureService.setPictureIntoDB(ContentNode);
-                        reply.setPictureId(r);
-                    } else if (ContentNode.getNodeName().equals("audio")) {
-                        long r = audioService.setAudioIntoDB(ContentNode);
-                        reply.setAudioId(r);
-                    } else if (ContentNode.getNodeName().equals("location")) {
-                        long r = geolocationDatabaseService.setGeolocationIntoDB(ContentNode);
-                        reply.setGeolocationId(r);
-                    }
-                    replies.add(reply);
+                else{
+                    throw new Exception("EXCEPTION: Reply is empty");
                 }
-            } else {
-                throw new Exception("Replies list was not found");
+                replies.add(reply);
             }
-            return replies;
-        } catch (Exception ex) {
-            System.out.println(ex.toString());
+        } else {
+            throw new Exception("EXCEPTION: Replies cannot was nullable");
         }
-        return null;
+        return replies;
     }
 }

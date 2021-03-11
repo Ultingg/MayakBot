@@ -1,5 +1,5 @@
 <scenes>
-    <scene number="0">
+    <scene>
         <trigger>
             <message>Я дастаю из широких штанин ...</message>
         </trigger>
@@ -12,7 +12,7 @@
             </reply>
         </replies>
     </scene>
-    <scene number="1">
+    <scene>
         <trigger>
             <location>
                 <fullName>Second Location</fullName>>
@@ -42,7 +42,7 @@
             </reply>
         </replies>
     </scene>
-    <scene number="2">
+    <scene>
         <trigger>
             <location>
                 <fullName>Second Location</fullName>>
@@ -59,7 +59,7 @@
             </reply>
         </replies>
     </scene>
-    <scene number="3">
+    <scene>
         <trigger>
             <location>
                 <fullName>Third Location</fullName>>
@@ -76,7 +76,7 @@
             </reply>
         </replies>
     </scene>
-    <scene number="4">
+    <scene>
         <trigger>
             <location>
                 <fullName>Fourth Location</fullName>>
