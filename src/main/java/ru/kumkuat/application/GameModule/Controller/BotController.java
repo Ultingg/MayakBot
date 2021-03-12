@@ -38,6 +38,12 @@ public class BotController {
         if (botName.equals("Akhmatova")) {
             sendResponseToUser(responseContainer, akhmatovaBot);
         }
+        if (botName.equals("Brodskiy")) {
+            sendResponseToUser(responseContainer, brodskiy);
+        }
+        if (botName.equals("Ku")) {
+            sendResponseToUser(responseContainer, kuBot);
+        }
     }
 
 

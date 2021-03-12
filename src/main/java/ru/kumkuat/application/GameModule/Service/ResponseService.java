@@ -84,8 +84,9 @@ public class ResponseService {
         ResponseContainer responseContainer = new ResponseContainer();
         SendMessage sendMessage = new SendMessage();
         sendMessage.setText(wrongAnswerMessage);
+        sendMessage.setChatId(message.getChatId().toString());
         responseContainer.setSendMessage(sendMessage);
-        responseContainer.setBotName("Mayak"); //дежурный по стране
+        responseContainer.setBotName("Mayakovsky"); //дежурный по стране
         responseContainer.setTimingOfReply(100);
         return responseContainer;
     }

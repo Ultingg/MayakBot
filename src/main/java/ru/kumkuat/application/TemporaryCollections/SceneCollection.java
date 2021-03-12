@@ -48,14 +48,21 @@ public class SceneCollection {
                 .build();
         Reply reply4 = Reply.builder()
                 .botName("Brodskiy")
-                .textMessage("Иди домой и не выходи более")
-                .timing(8000)
+                .textMessage("Я тут главный!")
+                .timing(2000)
                 .build();
+        Reply reply5 = Reply.builder()
+                .botName("Ku")
+                .geolocationId(1L)
+                .timing(3500)
+                .build();
+
         ArrayList<Reply> replyArrayList = new ArrayList<>();
         replyArrayList.add(reply1);
         replyArrayList.add(reply2);
         replyArrayList.add(reply3);
         replyArrayList.add(reply4);
+        replyArrayList.add(reply5);
 
         scene.setTrigger(trigger);
         scene.setReplyCollection(replyArrayList);

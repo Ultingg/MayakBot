@@ -57,20 +57,20 @@ public class MayakBot extends TelegramLongPollingBot implements BotsSender {
     @SneakyThrows
     @Override
     public void onUpdateReceived(Update update) {
-        String message = update.getMessage().getText();
-        Long chatId = update.getMessage().getChatId();
-        Integer messageId = update.getMessage().getMessageId();
-
-        if (update.getMessage().hasLocation()) {
-            Location userLocation = update.getMessage().getLocation();
-            sendLocation(userLocation, chatId.toString(), messageId);
-
-        } else {
-
-            sendVoice(chatId.toString());
-            sendPicture(chatId.toString());
-            sendMsg(chatId.toString(), message, messageId);
-        }
+//        String message = update.getMessage().getText();
+//        Long chatId = update.getMessage().getChatId();
+//        Integer messageId = update.getMessage().getMessageId();
+//
+//        if (update.getMessage().hasLocation()) {
+//            Location userLocation = update.getMessage().getLocation();
+//            sendLocation(userLocation, chatId.toString(), messageId);
+//
+//        } else {
+//
+//            sendVoice(chatId.toString());
+//            sendPicture(chatId.toString());
+//            sendMsg(chatId.toString(), message, messageId);
+//        }
     }
 
     public synchronized void sendVoice(String chatId) {
