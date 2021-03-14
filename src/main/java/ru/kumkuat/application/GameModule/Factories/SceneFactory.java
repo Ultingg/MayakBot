@@ -43,7 +43,6 @@ public class SceneFactory {
 
     private Scene getScene(Long sceneId) {
         Scene scene = new Scene();
-      //  scene.setId(sceneId);   //TODO: убрать sceneID  и в xml
         scene.setTrigger(getTrigger(sceneId));
         scene.setReplyCollection(getReplyCollection(sceneId));
         return scene;
@@ -75,7 +74,7 @@ public class SceneFactory {
 
     private ArrayList<Reply> getReplyCollection(Long sceneId) {
         try {
-            ArrayList<Reply> replies = new ArrayList<Reply>();
+            ArrayList<Reply> replies = new ArrayList<>();
             var repliesNodes = xmlService.getRepliesNodes(sceneId);
             if (repliesNodes != null) {
 

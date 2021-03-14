@@ -1,12 +1,6 @@
 package ru.kumkuat.application.GameModule.Service;
 
 import org.springframework.stereotype.Service;
-import org.telegram.telegrambots.meta.api.objects.Location;
-import ru.kumkuat.application.GameModule.Models.Geolocation;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import static java.lang.Math.*;
 
@@ -44,48 +38,6 @@ public class GeoLocationUtilsService {
 
         double ad = Math.atan2(y, x);
         return ad * EARTH_RADIUS;
-    }
-
-
-    public Geolocation nearestLocation(List<Geolocation> geolocationList, Location userLocation) {
-        double userLong = userLocation.getLongitude();
-        double userLat = userLocation.getLatitude();
-        double min = 99999999.0;
-        String fullName = "";
-        double resultLatitude = 0.0;
-        double resulLongitude = 0.0;
-        for (Geolocation entry : geolocationList) {
-
-            double longList = entry.getLongitude();
-            double latList = entry.getLatitude();
-            double temp = distanceToCurrentLocation(userLat, userLong, latList, longList);
-            if (temp < min) {
-                min = temp;
-                fullName = entry.getFullName();
-                resulLongitude = longList;
-                resultLatitude = latList;
-            }
-        }
-        Geolocation result = new Geolocation();
-        result.setFullName(fullName);
-        result.setLatitude(resultLatitude);
-        result.setLongitude(resulLongitude);
-        return result;
-    }
-
-
-    public Map<String, Object> foundNearestLocationService(Location userLocation) {
-        double distance;
-        Map<String, Object> resultList = new HashMap<>();
-        List<Geolocation> geolocationList1 = geolocationDatabaseService.getAll();
-        Geolocation nearestGeolocation = nearestLocation(geolocationList1, userLocation);
-        distance = distanceToCurrentLocation(userLocation.getLatitude(), userLocation.getLongitude(), nearestGeolocation.getLatitude(), nearestGeolocation.getLongitude());
-
-        resultList.put("Geolocation", nearestGeolocation);
-        resultList.put("Distance", distance);
-
-        return resultList;
-
     }
 }
 

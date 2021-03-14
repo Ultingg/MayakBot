@@ -28,12 +28,11 @@ public class Brodskiy extends TelegramWebhookBot implements BotsSender {
     private String BotPath;
 
 
-
     @Override
     public BotApiMethod onWebhookUpdateReceived(Update update) {
-        SendMessage sendMessage = new SendMessage(); //пустое сообщения для сервера Телеграмм
-        return sendMessage;
+        return new SendMessage();
     }
+
     public void sendLocation2(SendLocation sendLocation) {
 
         try {

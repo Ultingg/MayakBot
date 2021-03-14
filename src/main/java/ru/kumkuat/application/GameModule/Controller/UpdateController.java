@@ -28,7 +28,6 @@ public class UpdateController {
         Long testSceneId = 0L; //тут мы достаем Id сцены исходя из инфы о Юзере
         responseService.checkIncomingMessage(incomingMessage, testSceneId);
         //Тут вся механия распределения сообщений
-
         return brodskiy.onWebhookUpdateReceived(update); // слушатель возвращает на сервер Телеграмма HTTP 200(OK) с пустым сообщением
 
     }

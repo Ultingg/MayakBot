@@ -19,7 +19,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 @Slf4j
 @Component
 @PropertySource(name = "secret.yml", value = "secret.yml")
-public class AkhmatovaBot extends TelegramWebhookBot implements BotsSender{
+public class AkhmatovaBot extends TelegramWebhookBot implements BotsSender {
 
     @Value("${akhmatova.name}")
     private String botUsername;
@@ -30,7 +30,7 @@ public class AkhmatovaBot extends TelegramWebhookBot implements BotsSender{
 
     @Override
     public BotApiMethod onWebhookUpdateReceived(Update update) {
-        Message message =  update.getMessage();
+        Message message = update.getMessage();
         String chatId = String.valueOf(message.getChat().getId());
         int messageId = message.getMessageId();
 

@@ -20,8 +20,6 @@ public class BotController {
         this.brodskiy = brodskiy;
     }
 
-
-
     public void responseResolver(ResponseContainer responseContainer) {
         String botName = responseContainer.getBotName();
         int time = responseContainer.getTimingOfReply();
@@ -45,9 +43,6 @@ public class BotController {
             sendResponseToUser(responseContainer, kuBot);
         }
     }
-
-
-
     private void sendResponseToUser(ResponseContainer responseContainer, BotsSender botsSender) {
         if (responseContainer.hasGeolocation()) {
             botsSender.sendLocation2(responseContainer.getSendLocation());
@@ -62,32 +57,4 @@ public class BotController {
             botsSender.sendMessage(responseContainer.getSendMessage());
         }
     }
-
-//    public void mayakSend(String chatId, String message) {
-//        mayakBot.sendMsg(chatId, message);
-//
-//    }
-//
-//    public void KuSend(String chatId,String message) {
-//        kuBot.sendMsg(chatId, message);
-//    }
-
-//    public void chooser(String s, Update update) {
-//        String chatId = update.getMessage().getChatId().toString();
-//        switch (s) {
-//            case ("маяк"):
-//                mayakSend(chatId, replyCollection.getReply(1L).getTextMessage());
-//                break;
-//            case ("ку"):
-//                KuSend(chatId, replyCollection.getReply(0L).getTextMessage());
-//                break;
-//            case ("Я - писатель"):
-//                mayakSend(chatId, "А по моему ты говно!");
-//                break;
-//            default:
-//                mayakSend(chatId, "Я достаю из широких штанин!!!");
-//                break;
-//        }
-//
-//    }
 }

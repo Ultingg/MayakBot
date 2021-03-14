@@ -22,7 +22,7 @@
     </properties>
 
     <dependencies>
-<!--        Spring boot dependencies-->
+        <!--        Spring boot dependencies-->
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -34,7 +34,7 @@
         </dependency>
 
 
-<!--        TelegramBot  dependencies -->
+        <!--        TelegramBot  dependencies -->
         <dependency>
             <groupId>org.telegram</groupId>
             <artifactId>telegrambots-spring-boot-starter</artifactId>
@@ -61,7 +61,7 @@
             <scope>test</scope>
         </dependency>
 
-<!--        Util dependencies-->
+        <!--        Util dependencies-->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -79,7 +79,7 @@
         </dependency>
 
 
-<!--        Database  dependencies  -->
+        <!--        Database  dependencies  -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -108,7 +108,7 @@
 
     <build>
         <plugins>
-<!--            Delete this  and change for war plugin-->
+            <!--            Delete this  and change for war plugin-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>

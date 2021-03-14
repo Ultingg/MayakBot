@@ -46,10 +46,10 @@ public class ResponseService {
 
 
         if (message.hasPhoto()) {
-            if(sceneTrigger.isHasPicture()){
+            if (sceneTrigger.isHasPicture()) {
                 ReplyResolver(message, scene);
             } else {
-                ResponseContainer wrongAnswerResponse = configureWrongTriggerMessage(message,scene);
+                ResponseContainer wrongAnswerResponse = configureWrongTriggerMessage(message, scene);
                 botController.responseResolver(wrongAnswerResponse);
             }
         }
@@ -58,8 +58,8 @@ public class ResponseService {
             Location userLocation = message.getLocation();
             if (triggerService.triggerCheck(sceneTrigger, userLocation)) {
                 ReplyResolver(message, scene);
-            }else {
-                ResponseContainer wrongAnswerResponse = configureWrongTriggerMessage(message,scene);
+            } else {
+                ResponseContainer wrongAnswerResponse = configureWrongTriggerMessage(message, scene);
                 botController.responseResolver(wrongAnswerResponse);
             }
         }
@@ -69,7 +69,7 @@ public class ResponseService {
             if (flag) {
                 ReplyResolver(message, scene);
             } else {
-                ResponseContainer wrongAnswerResponse = configureWrongTriggerMessage(message,scene);
+                ResponseContainer wrongAnswerResponse = configureWrongTriggerMessage(message, scene);
                 botController.responseResolver(wrongAnswerResponse);
             }
         }
