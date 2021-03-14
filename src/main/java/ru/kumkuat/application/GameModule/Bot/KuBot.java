@@ -33,16 +33,7 @@ public class KuBot extends TelegramLongPollingBot implements BotsSender {
 
     }
 
-    public synchronized void sendMsg(String chatId, String s) {
-        SendMessage sendMessage = SendMessage.builder().chatId(chatId).text(s).build();
-        sendMessage.enableMarkdown(true);
-        System.out.println(chatId);
-        try {
-            execute(sendMessage);
-        } catch (TelegramApiException e) {
-            e.getStackTrace();
-        }
-    }
+
 
     public void sendLocation2(SendLocation sendLocation) {
 

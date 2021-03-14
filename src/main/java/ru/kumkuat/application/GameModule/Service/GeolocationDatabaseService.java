@@ -1,5 +1,6 @@
 package ru.kumkuat.application.GameModule.Service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Node;
 import ru.kumkuat.application.GameModule.Models.Geolocation;
@@ -15,6 +16,7 @@ public class GeolocationDatabaseService {
 
     public GeolocationDatabaseService(GeolocationRepository geolocationRepository) {
         this.geolocationRepository = geolocationRepository;
+        cleanAll();
     }
 
     public Geolocation getGeolocationById(Long id) {
@@ -43,6 +45,10 @@ public class GeolocationDatabaseService {
         }
         geolocationRepository.save(geolocation);
         return geolocation.getId();
+    }
+
+    public void cleanAll(){
+        geolocationRepository.deleteAll();
     }
 }
 

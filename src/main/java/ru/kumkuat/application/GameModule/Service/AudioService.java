@@ -12,6 +12,7 @@ public class AudioService {
 
     public AudioService(AudioRepository audioRepository) {
         this.audioRepository = audioRepository;
+        cleanAll();
     }
 
     public String getPathToAudio(Long id) {
@@ -26,5 +27,7 @@ public class AudioService {
         audioRepository.save(audio);
         return audio.getId();
     }
-
+    public void cleanAll(){
+        audioRepository.deleteAll();
+    }
 }
