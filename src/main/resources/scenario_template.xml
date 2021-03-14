@@ -1,18 +1,18 @@
 <scenes>
-    <scene>
+    <scene number="0">
         <trigger>
             <message>Я дастаю из широких штанин ...</message>
         </trigger>
         <replies>
-            <reply botname="Mayakovsky"  pause="0">
+            <reply botname="Mayakovsky" pause="0">
                 <message>Я дастаю из широких штанин ...</message>
             </reply>
-            <reply botname="Akhmatova"  pause="15">
+            <reply botname="Akhmatova" pause="15">
                 <message>Ну и полож его обратно...</message>
             </reply>
         </replies>
     </scene>
-    <scene>
+    <scene number="1">
         <trigger>
             <location>
                 <fullName>Second Location</fullName>>
@@ -24,8 +24,8 @@
             <reply botname="Mayakovsky" pause="0">
                 <message>Ну наконец ты пришел</message>
             </reply>
-            <reply botname="Akhmatova" pause="15" >
-                <image path="http://risovach.ru/upload/2015/10/mem/putin_96401420_orig_.jpg"/>
+            <reply botname="Akhmatova" pause="15">
+                <image path="src\main\resources\pictures\cat.jpg"/>
             </reply>
             <reply botname="Gumilev" pause="15">
                 <message>Послушай и иди дальше ...</message>
@@ -42,7 +42,7 @@
             </reply>
         </replies>
     </scene>
-    <scene>
+    <scene number="2">
         <trigger>
             <location>
                 <fullName>Second Location</fullName>>
@@ -51,15 +51,15 @@
             </location>
         </trigger>
         <replies>
-            <reply botname="Mayakovsky"  pause="0">
+            <reply botname="Mayakovsky" pause="0">
                 <message>Я дастаю из широких штанин ...</message>
             </reply>
-            <reply botname="Akhmatova"  pause="15">
+            <reply botname="Akhmatova" pause="15">
                 <message>Ну и полож его обратно...</message>
             </reply>
         </replies>
     </scene>
-    <scene>
+    <scene number="3">
         <trigger>
             <location>
                 <fullName>Third Location</fullName>>
@@ -68,15 +68,15 @@
             </location>
         </trigger>
         <replies>
-            <reply botname="Mayakovsky"  pause="0">
+            <reply botname="Mayakovsky" pause="0">
                 <message>Я дастаю из широких штанин ...</message>
             </reply>
-            <reply botname="Akhmatova"  pause="15">
+            <reply botname="Akhmatova" pause="15">
                 <message>Ну и полож его обратно...</message>
             </reply>
         </replies>
     </scene>
-    <scene>
+    <scene number="4">
         <trigger>
             <location>
                 <fullName>Fourth Location</fullName>>
@@ -85,10 +85,10 @@
             </location>
         </trigger>
         <replies>
-            <reply botname="Mayakovsky"  pause="0">
+            <reply botname="Mayakovsky" pause="0">
                 <message>Я дастаю из широких штанин ...</message>
             </reply>
-            <reply botname="Akhmatova"  pause="15">
+            <reply botname="Akhmatova" pause="15">
                 <message>Ну и полож его обратно...</message>
             </reply>
         </replies>

@@ -35,6 +35,7 @@ public class KuBot extends TelegramLongPollingBot implements BotsSender {
 
 
 
+
     public void sendLocation2(SendLocation sendLocation) {
 
         try {

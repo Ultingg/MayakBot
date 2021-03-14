@@ -46,10 +46,10 @@ public class ResponseService {
 
 
         if (message.hasPhoto()) {
-            if(sceneTrigger.isHasPicture()){
+            if (sceneTrigger.isHasPicture()) {
                 ReplyResolver(message, scene);
             } else {
-                ResponseContainer wrongAnswerResponse = configureWrongTriggerMessage(message,scene);
+                ResponseContainer wrongAnswerResponse = configureWrongTriggerMessage(message, scene);
                 botController.responseResolver(wrongAnswerResponse);
             }
         }
@@ -58,11 +58,20 @@ public class ResponseService {
             Location userLocation = message.getLocation();
             if (triggerService.triggerCheck(sceneTrigger, userLocation)) {
                 ReplyResolver(message, scene);
+            } else {
+                ResponseContainer wrongAnswerResponse = configureWrongTriggerMessage(message, scene);
+                botController.responseResolver(wrongAnswerResponse);
             }
         }
         if (message.hasText()) {
             String userText = message.getText();
-            if (triggerService.triggerCheck(sceneTrigger, userText)) ReplyResolver(message, scene);
+            boolean flag = triggerService.triggerCheck(sceneTrigger, userText);
+            if (flag) {
+                ReplyResolver(message, scene);
+            } else {
+                ResponseContainer wrongAnswerResponse = configureWrongTriggerMessage(message, scene);
+                botController.responseResolver(wrongAnswerResponse);
+            }
         }
     }
 
@@ -81,8 +90,9 @@ public class ResponseService {
         ResponseContainer responseContainer = new ResponseContainer();
         SendMessage sendMessage = new SendMessage();
         sendMessage.setText(wrongAnswerMessage);
+        sendMessage.setChatId(message.getChatId().toString());
         responseContainer.setSendMessage(sendMessage);
-        responseContainer.setBotName("Mayak");
+        responseContainer.setBotName("Mayakovsky"); //дежурный по стране
         responseContainer.setTimingOfReply(100);
         return responseContainer;
     }
@@ -135,7 +145,7 @@ public class ResponseService {
 
             SendMessage sendMessage = new SendMessage();
             sendMessage.setText(textToSend);
-
+            sendMessage.setChatId(chatId);
             responseContainer.setSendMessage(sendMessage);
         }
         return responseContainer;

@@ -14,8 +14,16 @@ public class TriggerService {
     }
 
     public boolean triggerCheck(Trigger trigger, String textToCheck) {
-
-        return trigger.getText().equals(textToCheck.toLowerCase());
+        String[] stringsFromTrigger = trigger.getText().split(",");
+        boolean flag = false;
+        for (String string : stringsFromTrigger) {
+            if (string.toLowerCase().equals(textToCheck.toLowerCase())) {
+                flag = true;
+                break;
+            }
+        }
+        return flag;
+//            return   textToCheck.toLowerCase().contains(trigger.getText().toLowerCase());
     }
 
     public boolean triggerCheck(Trigger trigger, Location userLocation) {
@@ -26,4 +34,4 @@ public class TriggerService {
         double distance = GeoLocationUtilsService.distanceToCurrentLocation(userLat, userLong, geolocation.getLatitude(), geolocation.getLongitude());
         return distance <= 50.0;
     }
-  }
+}
