@@ -53,7 +53,7 @@ public class BotController {
             botsSender.sendLocation2(responseContainer.getSendLocation());
         }
         if (responseContainer.hasAudio()) {
-            botsSender.sendPicture(responseContainer.getSendPhoto());
+            botsSender.sendVoice(responseContainer.getSendVoice());
         }
         if (responseContainer.hasPicture()) {
             botsSender.sendPicture(responseContainer.getSendPhoto());

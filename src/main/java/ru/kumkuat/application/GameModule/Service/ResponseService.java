@@ -58,6 +58,9 @@ public class ResponseService {
             Location userLocation = message.getLocation();
             if (triggerService.triggerCheck(sceneTrigger, userLocation)) {
                 ReplyResolver(message, scene);
+            }else {
+                ResponseContainer wrongAnswerResponse = configureWrongTriggerMessage(message,scene);
+                botController.responseResolver(wrongAnswerResponse);
             }
         }
         if (message.hasText()) {
@@ -65,6 +68,9 @@ public class ResponseService {
             boolean flag = triggerService.triggerCheck(sceneTrigger, userText);
             if (flag) {
                 ReplyResolver(message, scene);
+            } else {
+                ResponseContainer wrongAnswerResponse = configureWrongTriggerMessage(message,scene);
+                botController.responseResolver(wrongAnswerResponse);
             }
         }
     }

@@ -29,7 +29,7 @@ public class SceneCollection {
         // временно насели список сценами
         Scene scene = new Scene();
         Trigger trigger = new Trigger();
-        trigger.setText("привет");
+        trigger.setText("тут,здесь,на месте,наместе,тута,пришел");
 
         Reply reply1 = Reply.builder()
                 .textMessage("Ну здраствуй, поэт!")
@@ -56,6 +56,16 @@ public class SceneCollection {
                 .geolocationId(1L)
                 .timing(3500)
                 .build();
+        Reply reply6 = Reply.builder()
+                .botName("Brodskiy")
+                .pictureId(1L)
+                .timing(2000)
+                .build();
+        Reply reply7 = Reply.builder()
+                .botName("Ku")
+                .audioId(1L)
+                .timing(3500)
+                .build();
 
         ArrayList<Reply> replyArrayList = new ArrayList<>();
         replyArrayList.add(reply1);
@@ -63,6 +73,8 @@ public class SceneCollection {
         replyArrayList.add(reply3);
         replyArrayList.add(reply4);
         replyArrayList.add(reply5);
+        replyArrayList.add(reply6);
+        replyArrayList.add(reply7);
 
         scene.setTrigger(trigger);
         scene.setReplyCollection(replyArrayList);
