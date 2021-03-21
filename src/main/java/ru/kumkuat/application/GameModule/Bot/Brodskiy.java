@@ -30,7 +30,10 @@ public class Brodskiy extends TelegramWebhookBot implements BotsSender {
 
     @Override
     public BotApiMethod onWebhookUpdateReceived(Update update) {
-        return new SendMessage();
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(String.valueOf(update.getMessage().getChatId()));
+        sendMessage.setText("обратка");
+        return sendMessage;
     }
 
     public void sendLocation2(SendLocation sendLocation) {
