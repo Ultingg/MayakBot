@@ -30,7 +30,7 @@ public class XMLService {
             xpathFactory = XPathFactory.newInstance();
             xpath = xpathFactory.newXPath();
             builder = builderFactory.newDocumentBuilder();
-            doc = builder.parse(/*"src/main/resources/scenario_template.xml"*/"classes/scenario_template.xml");
+            doc = builder.parse("src/main/resources/scenario_template.xml" /*"classes/scenario_template.xml"*/);
         } catch (
                 Exception e) {
             e.printStackTrace();
