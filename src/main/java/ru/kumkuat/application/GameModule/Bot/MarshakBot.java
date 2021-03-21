@@ -30,11 +30,11 @@ public class MarshakBot extends TelegramWebhookCommandBot {
 //    @Autowired
 //    private PlayCommand playCommand;
 
-    private MarshakBot(PlayCommand playCommand, PayCommand payCommand) {
+    private MarshakBot(PlayCommand playCommand, PayCommand payCommand){
         this.RegisterCommand(playCommand, payCommand);
     }
 
-    public void RegisterCommand(PlayCommand playCommand, PayCommand payCommand) {
+    public void RegisterCommand(PlayCommand playCommand, PayCommand payCommand){
         register(playCommand);
         register(payCommand);
     }

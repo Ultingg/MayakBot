@@ -43,6 +43,8 @@ public class KuBot extends TelegramWebhookBot implements BotsSender {
     }
 
 
+
+
     public void sendLocation2(SendLocation sendLocation) {
 
         try {

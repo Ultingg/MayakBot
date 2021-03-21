@@ -21,9 +21,8 @@ public class Application implements CommandLineRunner {
 
 
     }
-
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String...args) throws Exception {
 
         var bot = applicationContextProvider.getContext().getBean(MarshakBot.class);
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));

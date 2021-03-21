@@ -19,11 +19,9 @@ import java.util.List;
 public class PayCommand extends BotCommand {
     @Autowired
     private UserService userService;
-
     public PayCommand() {
         super("/pay", "You can try payment system!\n");
     }
-
     @Override
     public void execute(AbsSender absSender, User user, Chat chat, String[] arguments) {
         SendMessage replyMessage = new SendMessage();
@@ -51,7 +49,6 @@ public class PayCommand extends BotCommand {
         } catch (TelegramApiException e) {
         }
     }
-
     void execute(AbsSender sender, SendMessage message, User user) {
         try {
             sender.execute(message);

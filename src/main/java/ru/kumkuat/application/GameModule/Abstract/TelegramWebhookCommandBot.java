@@ -16,26 +16,24 @@ import java.util.function.BiConsumer;
 
 public abstract class TelegramWebhookCommandBot extends TelegramWebhookBot implements ICommandRegistry {
     private final CommandRegistry commandRegistry;
-
     /**
      * Creates a TelegramWebhookCommandBot using default options
      * Use ICommandRegistry's methods on this bot to register commands
+     *
      */
     public TelegramWebhookCommandBot() {
         this(new DefaultBotOptions());
     }
-
     /**
      * Creates a TelegramWebhookCommandBot with custom options and allowing commands with
      * usernames
      * Use ICommandRegistry's methods on this bot to register commands
      *
-     * @param options Bot options
+     * @param options     Bot options
      */
     public TelegramWebhookCommandBot(DefaultBotOptions options) {
         this(options, true);
     }
-
     /**
      * Creates a TelegramWebhookCommandBot
      * Use ICommandRegistry's methods on this bot to register commands
@@ -48,7 +46,6 @@ public abstract class TelegramWebhookCommandBot extends TelegramWebhookBot imple
         super(options);
         this.commandRegistry = new CommandRegistry(allowCommandsWithUsername, this::getBotUsername);
     }
-
     @Override
     public final BotApiMethod onWebhookUpdateReceived(Update update) {
         if (update.hasMessage()) {
@@ -63,7 +60,6 @@ public abstract class TelegramWebhookCommandBot extends TelegramWebhookBot imple
         }
         return processNonCommandUpdate(update);
     }
-
     /**
      * This method is called when user sends a not registered command. By default it will just call processNonCommandUpdate(),
      * override it in your implementation if you want your bot to do other things, such as sending an error message
@@ -73,7 +69,6 @@ public abstract class TelegramWebhookCommandBot extends TelegramWebhookBot imple
     protected BotApiMethod processInvalidCommandUpdate(Update update) {
         return processNonCommandUpdate(update);
     }
-
     /**
      * Override this function in your bot implementation to filter messages with commands
      * <p>
@@ -90,7 +85,6 @@ public abstract class TelegramWebhookCommandBot extends TelegramWebhookBot imple
     protected boolean filter(Message message) {
         return false;
     }
-
     @Override
     public final boolean register(IBotCommand botCommand) {
         return commandRegistry.register(botCommand);
@@ -125,13 +119,11 @@ public abstract class TelegramWebhookCommandBot extends TelegramWebhookBot imple
     public final IBotCommand getRegisteredCommand(String commandIdentifier) {
         return commandRegistry.getRegisteredCommand(commandIdentifier);
     }
-
     /**
      * @return Bot username
      */
     @Override
     public abstract String getBotUsername();
-
     /**
      * Process all updates, that are not commands.
      *

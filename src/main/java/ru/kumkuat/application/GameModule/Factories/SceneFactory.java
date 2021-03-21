@@ -93,7 +93,8 @@ public class SceneFactory {
                 } else if (ContentNode.getNodeName().equals("location")) {
                     long r = geolocationDatabaseService.setGeolocationIntoDB(ContentNode);
                     reply.setGeolocationId(r);
-                } else {
+                }
+                else{
                     throw new Exception("EXCEPTION: Reply is empty");
                 }
                 replies.add(reply);

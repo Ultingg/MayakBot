@@ -46,7 +46,7 @@ public class GeolocationDatabaseService {
         return geolocation.getId();
     }
 
-    public void cleanAll() {
+    public void cleanAll(){
         geolocationRepository.deleteAll();
     }
 }

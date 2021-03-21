@@ -46,7 +46,6 @@ public class MayakBot extends TelegramWebhookBot implements BotsSender {
         this.geoLocationUtilsService = geoLocationUtilsService;
         this.audioService = audioService;
     }
-
     @Override
     public BotApiMethod onWebhookUpdateReceived(Update update) {
         return new SendMessage();
@@ -56,6 +55,7 @@ public class MayakBot extends TelegramWebhookBot implements BotsSender {
 //    @Override
 //    public void onUpdateReceived(Update update) {
 //    }
+
 
 
     public void sendLocation2(SendLocation sendLocation) {
