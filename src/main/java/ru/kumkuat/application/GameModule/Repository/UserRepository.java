@@ -10,6 +10,6 @@ public interface UserRepository extends CrudRepository<User, Long> {
     User getById(Long id);
 
 
-    @Query (" SELECT u FROM User u where u.telegramUserId = ?1")
+    @Query ("SELECT u FROM User u where u.telegramUserId = ?1")
     User getByTelegramUserId(Long id);
 }

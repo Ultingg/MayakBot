@@ -16,8 +16,8 @@
         <trigger>
             <location>
                 <fullName> Станция метро Площадь восстания</fullName>>
-                <longitude>59.931571</longitude>
-                <latitude>30.360541</latitude>
+                <longitude>30.360541</longitude>
+                <latitude>59.931571</latitude>
             </location>
         </trigger>
         <replies>
@@ -44,11 +44,7 @@
     </scene>
     <scene number="2">
         <trigger>
-            <location>
-                <fullName>Портрет Цоя</fullName>>
-                <longitude>59.933745</longitude>
-                <latitude>30.357682</latitude>
-            </location>
+            <message>УМЛЬ</message>
         </trigger>
         <replies>
             <reply botname="Mayakovsky" pause="0">
@@ -61,11 +57,7 @@
     </scene>
     <scene number="3">
         <trigger>
-            <location>
-                <fullName>Памятник Ахматовой</fullName>>
-                <longitude>59.934424</longitude>
-                <latitude>30.359823</latitude>
-            </location>
+            <message>ПОКА</message>
         </trigger>
         <replies>
             <reply botname="Mayakovsky" pause="0">
@@ -78,11 +70,7 @@
     </scene>
     <scene number="4">
         <trigger>
-            <location>
-                <fullName>Вид на БКЗ (Греческая церковь)</fullName>>
-                <longitude>59.935741</longitude>
-                <latitude>30.360412</latitude>
-            </location>
+            <message>Не будь как Тыщпыщук</message>
         </trigger>
         <replies>
             <reply botname="Mayakovsky" pause="0">

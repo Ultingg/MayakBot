@@ -5,6 +5,9 @@ import org.w3c.dom.Node;
 import ru.kumkuat.application.GameModule.Models.Audio;
 import ru.kumkuat.application.GameModule.Repository.AudioRepository;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class AudioService {
 
@@ -13,6 +16,14 @@ public class AudioService {
     public AudioService(AudioRepository audioRepository) {
         this.audioRepository = audioRepository;
         cleanAll();
+    }
+
+    public List<Audio> getAll() {
+        List<Audio> audioList = new ArrayList<>();
+        Iterable<Audio> repoCollection = audioRepository.findAll();
+        for (Audio audio : repoCollection) audioList.add(audio);
+
+        return audioList;
     }
 
     public String getPathToAudio(Long id) {
@@ -24,6 +35,8 @@ public class AudioService {
         Audio audio = new Audio();
         var path = replyNode.getAttributes().getNamedItem("path").getNodeValue();
         audio.setPath(path);
+        Long audiId = Long.valueOf(getAll().size()) + 1;
+        audio.setId(audiId);
         audioRepository.save(audio);
         return audio.getId();
     }

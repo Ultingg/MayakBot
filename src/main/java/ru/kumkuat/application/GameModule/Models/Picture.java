@@ -12,8 +12,9 @@ import javax.persistence.*;
 @Table
 public class Picture {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "img_generator")
-    @SequenceGenerator(name="img_generator", sequenceName = "img_id")
+//    @GeneratedValue
+//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "img_generator")
+//    @SequenceGenerator(name="img_generator", sequenceName = "img_id")
     private Long id;
     private String path;
 

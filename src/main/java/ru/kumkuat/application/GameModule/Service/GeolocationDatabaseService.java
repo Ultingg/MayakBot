@@ -41,6 +41,10 @@ public class GeolocationDatabaseService {
             } else if (nodes.item(i).getNodeName().equals("latitude")) {
                 geolocation.setLatitude(Double.parseDouble(nodes.item(i).getFirstChild().getNodeValue()));
             }
+            Long id = Long.valueOf(getAll().size() + 1); //костыль
+            geolocation.setId(id);
+
+
         }
         geolocationRepository.save(geolocation);
         return geolocation.getId();

@@ -14,7 +14,6 @@ import ru.kumkuat.application.GameModule.Collections.ResponseContainer;
 import ru.kumkuat.application.GameModule.Collections.Scene;
 import ru.kumkuat.application.GameModule.Collections.Trigger;
 import ru.kumkuat.application.GameModule.Controller.BotController;
-import ru.kumkuat.application.GameModule.Factories.SceneFactory;
 import ru.kumkuat.application.GameModule.Models.Geolocation;
 import ru.kumkuat.application.GameModule.Models.User;
 import ru.kumkuat.application.TemporaryCollections.SceneCollection;
@@ -32,25 +31,24 @@ public class ResponseService {
     private final BotController botController;
     private final GeolocationDatabaseService geolocationDatabaseService;
     private final TriggerService triggerService;
-    private final SceneFactory sceneFactory;
     private final UserService userService;
 
     public ResponseService(SceneCollection sceneCollection, PictureService pictureService,
-                           AudioService audioService, BotController botController, GeolocationDatabaseService geolocationDatabaseService, TriggerService triggerService, SceneFactory sceneFactory, UserService userService) {
+                           AudioService audioService, BotController botController,
+                           GeolocationDatabaseService geolocationDatabaseService,
+                           TriggerService triggerService, UserService userService) {
         this.sceneCollection = sceneCollection;
         this.pictureService = pictureService;
         this.audioService = audioService;
         this.botController = botController;
         this.geolocationDatabaseService = geolocationDatabaseService;
         this.triggerService = triggerService;
-        this.sceneFactory = sceneFactory;
 
         this.userService = userService;
     }
 
 
     public void checkIncomingMessage(Message message) {
-
         Long sceneId = getSceneId(message);
         Scene scene = sceneCollection.get(sceneId);
         Trigger sceneTrigger = scene.getTrigger();
@@ -163,10 +161,10 @@ public class ResponseService {
     }
 
     private Long getSceneId(Message message) {
-        Long userName = message.getChatId();
+        Long userId = Long.valueOf(message.getFrom().getId());
         User user = null;
         try {
-           user = userService.getUser(userName);
+           user = userService.getUser(userId);
         } catch (NullPointerException e) {
             e.getMessage();
         }
