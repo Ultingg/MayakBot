@@ -22,7 +22,7 @@
     </properties>
 
     <dependencies>
-        <!--        Spring boot dependencies-->
+<!--        Spring boot dependencies-->
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -34,7 +34,7 @@
         </dependency>
 
 
-        <!--        TelegramBot  dependencies -->
+<!--        TelegramBot  dependencies -->
         <dependency>
             <groupId>org.telegram</groupId>
             <artifactId>telegrambots-spring-boot-starter</artifactId>
@@ -61,7 +61,7 @@
             <scope>test</scope>
         </dependency>
 
-        <!--        Util dependencies-->
+<!--        Util dependencies-->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -79,7 +79,7 @@
         </dependency>
 
 
-        <!--        Database  dependencies  -->
+<!--        Database  dependencies  -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -109,18 +109,11 @@
         <plugins>
             <!--            Delete this  and change for war plugin-->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <archive>
-                        <manifest>
-                            <addClasspath>true</addClasspath>
-                            <classpathPrefix>libs/</classpathPrefix>
-                            <mainClass>
-                                ru.isaykin.application.Application
-                            </mainClass>
-                        </manifest>
-                    </archive>
+                    <fork>true</fork>
+                    <mainClass>ru.kumkuat.application.Application</mainClass>
                 </configuration>
             </plugin>
 
@@ -157,22 +150,28 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copy-dependencies</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>
-                                ${project.build.directory}/libs
-                            </outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
+              <artifactId>maven-assembly-plugin</artifactId>
+              <version>2.2-beta-5</version>
+              <configuration>
+                <archive>
+                  <manifest>
+                    <addClasspath>true</addClasspath>
+                    <mainClass>ru.kumkuat.application.Application</mainClass>
+                  </manifest>
+                </archive>
+                <descriptorRefs>
+                  <descriptorRef>jar-with-dependencies</descriptorRef>
+                </descriptorRefs>
+              </configuration>
+              <executions>
+                <execution>
+                  <id>assemble-all</id>
+                  <phase>package</phase>
+                  <goals>
+                    <goal>single</goal>
+                  </goals>
+                </execution>
+              </executions>
             </plugin>
         </plugins>
 

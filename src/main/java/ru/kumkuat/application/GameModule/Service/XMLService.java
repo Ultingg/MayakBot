@@ -30,7 +30,7 @@ public class XMLService {
             xpathFactory = XPathFactory.newInstance();
             xpath = xpathFactory.newXPath();
             builder = builderFactory.newDocumentBuilder();
-            doc = builder.parse("src/main/resources/scenario_template.xml");
+            doc = builder.parse(/*"src/main/resources/scenario_template.xml"*/"classes/scenario_template.xml");
         } catch (
                 Exception e) {
             e.printStackTrace();
@@ -59,7 +59,7 @@ public class XMLService {
                         replies.add(replyNodes.item(j));
                     }
                 }
-                if (replies.stream().count() == 0) {
+                if (replies.size() == 0) {
                     throw new Exception("EXCEPTION: Replies are empty");
                 }
                 return replies;
@@ -84,6 +84,6 @@ public class XMLService {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        return replies.stream().count() > 0 ? replies : null;
+        return replies.size() > 0 ? replies : null;
     }
 }

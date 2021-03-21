@@ -12,7 +12,8 @@ import javax.persistence.*;
 @Table
 public class Audio {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "audio_generator")
+    @SequenceGenerator(name="audio_generator", sequenceName = "audio_id")
     private Long id;
     private String path;
 }
