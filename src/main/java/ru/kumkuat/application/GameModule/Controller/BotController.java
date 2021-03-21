@@ -45,7 +45,7 @@ public class BotController {
     }
     private void sendResponseToUser(ResponseContainer responseContainer, BotsSender botsSender) {
         if (responseContainer.hasGeolocation()) {
-            botsSender.sendLocation2(responseContainer.getSendLocation());
+            botsSender.sendLocation(responseContainer.getSendLocation());
         }
         if (responseContainer.hasAudio()) {
             botsSender.sendVoice(responseContainer.getSendVoice());

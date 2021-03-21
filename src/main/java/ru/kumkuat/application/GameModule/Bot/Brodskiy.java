@@ -33,7 +33,7 @@ public class Brodskiy extends TelegramWebhookBot implements BotsSender {
         return new SendMessage();
     }
 
-    public void sendLocation2(SendLocation sendLocation) {
+    public void sendLocation(SendLocation sendLocation) {
 
         try {
             executeAsync(sendLocation);

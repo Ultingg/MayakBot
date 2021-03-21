@@ -27,9 +27,6 @@ public class MarshakBot extends TelegramWebhookCommandBot {
     @Value("${marshak.path}")
     private String botPath;
 
-//    @Autowired
-//    private PlayCommand playCommand;
-
     private MarshakBot(PlayCommand playCommand, PayCommand payCommand){
         this.RegisterCommand(playCommand, payCommand);
     }

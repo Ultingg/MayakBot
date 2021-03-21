@@ -1,5 +1,6 @@
 package ru.kumkuat.application.GameModule.Service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendLocation;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -19,6 +20,7 @@ import ru.kumkuat.application.TemporaryCollections.SceneCollection;
 import java.io.File;
 import java.util.List;
 
+@Slf4j
 @Service
 public class ResponseService {
 
@@ -44,7 +46,16 @@ public class ResponseService {
         Scene scene = sceneCollection.get(sceneId);
         Trigger sceneTrigger = scene.getTrigger();
 
-
+        if (message.hasText()) {
+            String userText = message.getText();
+            boolean flag = triggerService.triggerCheck(sceneTrigger, userText);
+            if (flag) {
+                ReplyResolver(message, scene);
+            } else {
+                ResponseContainer wrongAnswerResponse = configureWrongTriggerMessage(message, scene);
+                botController.responseResolver(wrongAnswerResponse);
+            }
+        }
         if (message.hasPhoto()) {
             if (sceneTrigger.isHasPicture()) {
                 ReplyResolver(message, scene);
@@ -63,16 +74,7 @@ public class ResponseService {
                 botController.responseResolver(wrongAnswerResponse);
             }
         }
-        if (message.hasText()) {
-            String userText = message.getText();
-            boolean flag = triggerService.triggerCheck(sceneTrigger, userText);
-            if (flag) {
-                ReplyResolver(message, scene);
-            } else {
-                ResponseContainer wrongAnswerResponse = configureWrongTriggerMessage(message, scene);
-                botController.responseResolver(wrongAnswerResponse);
-            }
-        }
+
     }
 
     public void ReplyResolver(Message message, Scene scene) {

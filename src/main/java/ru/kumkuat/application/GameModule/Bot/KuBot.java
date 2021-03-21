@@ -31,22 +31,12 @@ public class KuBot extends TelegramWebhookBot implements BotsSender {
 
     private String BotPath;
 
-//
-//    @Override
-//    public void onUpdateReceived(Update update) {
-//    }
-
     @Override
     public BotApiMethod onWebhookUpdateReceived(Update update) {
         return new SendMessage();
-
     }
 
-
-
-
-    public void sendLocation2(SendLocation sendLocation) {
-
+    public void sendLocation(SendLocation sendLocation) {
         try {
             executeAsync(sendLocation);
         } catch (TelegramApiException e) {

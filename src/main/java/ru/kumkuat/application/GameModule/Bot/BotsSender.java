@@ -6,7 +6,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.send.SendVoice;
 
 public interface BotsSender {
-    void sendLocation2(SendLocation sendLocation);
+    void sendLocation(SendLocation sendLocation);
 
 
     void sendVoice(SendVoice sendVoice);

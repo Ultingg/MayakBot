@@ -25,11 +25,28 @@ public class UpdateController {
     public BotApiMethod<?> onUpdateReceived(@RequestBody Update update) {
 
         Message incomingMessage = update.getMessage();
+
         Long testSceneId = 0L; //тут мы достаем Id сцены исходя из инфы о Юзере
-        responseService.checkIncomingMessage(incomingMessage, testSceneId);
+        if (commandChecker(incomingMessage)) {
+            System.out.println("command");
+        } else {
+            responseService.checkIncomingMessage(incomingMessage, testSceneId);
+        }
         //Тут вся механия распределения сообщений
         return brodskiy.onWebhookUpdateReceived(update); // слушатель возвращает на сервер Телеграмма HTTP 200(OK) с пустым сообщением
 
+    }
+
+    private boolean commandChecker(Message message) {
+        boolean result = false;
+        if(message.hasText()) {
+            String textToCheck = message.getText();
+            if(textToCheck.contains("/")) {
+                result = true;
+                System.out.println("There was a command!");
+            }
+        }
+        return result;
     }
 
 }

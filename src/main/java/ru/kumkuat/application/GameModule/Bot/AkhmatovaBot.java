@@ -42,12 +42,8 @@ public class AkhmatovaBot extends TelegramWebhookBot implements BotsSender {
         return sendMessage;
     }
 
-//    @Override
-//    public void onUpdateReceived(Update update) {
-//
-//    }
 
-    public void sendLocation2(SendLocation sendLocation) {
+    public void sendLocation(SendLocation sendLocation) {
 
         try {
             executeAsync(sendLocation);
