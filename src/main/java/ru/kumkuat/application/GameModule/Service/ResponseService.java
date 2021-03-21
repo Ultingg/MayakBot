@@ -14,7 +14,9 @@ import ru.kumkuat.application.GameModule.Collections.ResponseContainer;
 import ru.kumkuat.application.GameModule.Collections.Scene;
 import ru.kumkuat.application.GameModule.Collections.Trigger;
 import ru.kumkuat.application.GameModule.Controller.BotController;
+import ru.kumkuat.application.GameModule.Factories.SceneFactory;
 import ru.kumkuat.application.GameModule.Models.Geolocation;
+import ru.kumkuat.application.GameModule.Models.User;
 import ru.kumkuat.application.TemporaryCollections.SceneCollection;
 
 import java.io.File;
@@ -30,19 +32,26 @@ public class ResponseService {
     private final BotController botController;
     private final GeolocationDatabaseService geolocationDatabaseService;
     private final TriggerService triggerService;
+    private final SceneFactory sceneFactory;
+    private final UserService userService;
 
     public ResponseService(SceneCollection sceneCollection, PictureService pictureService,
-                           AudioService audioService, BotController botController, GeolocationDatabaseService geolocationDatabaseService, TriggerService triggerService) {
+                           AudioService audioService, BotController botController, GeolocationDatabaseService geolocationDatabaseService, TriggerService triggerService, SceneFactory sceneFactory, UserService userService) {
         this.sceneCollection = sceneCollection;
         this.pictureService = pictureService;
         this.audioService = audioService;
         this.botController = botController;
         this.geolocationDatabaseService = geolocationDatabaseService;
         this.triggerService = triggerService;
+        this.sceneFactory = sceneFactory;
+
+        this.userService = userService;
     }
 
 
-    public void checkIncomingMessage(Message message, Long sceneId) {
+    public void checkIncomingMessage(Message message) {
+
+        Long sceneId = getSceneId(message);
         Scene scene = sceneCollection.get(sceneId);
         Trigger sceneTrigger = scene.getTrigger();
 
@@ -77,7 +86,7 @@ public class ResponseService {
 
     }
 
-    public void ReplyResolver(Message message, Scene scene) {
+    private void ReplyResolver(Message message, Scene scene) {
         List<Reply> replyList = scene.getReplyCollection();
         ResponseContainer responseContainer;
         for (Reply reply : replyList) {
@@ -86,7 +95,7 @@ public class ResponseService {
         }
     }
 
-    public ResponseContainer configureWrongTriggerMessage(Message message, Scene scene) {
+    private ResponseContainer configureWrongTriggerMessage(Message message, Scene scene) {
         //пока Message и Scene не используются но при реализации индивидуальных ответов для каждого триггера они понадобятся
         String wrongAnswerMessage = "Друг подумай еще разок над тем что сказал";
         ResponseContainer responseContainer = new ResponseContainer();
@@ -99,7 +108,7 @@ public class ResponseService {
         return responseContainer;
     }
 
-    public synchronized ResponseContainer configureMessage(Reply reply, Message message) {
+    private synchronized ResponseContainer configureMessage(Reply reply, Message message) {
         String chatId = message.getChatId().toString();
         ResponseContainer responseContainer = new ResponseContainer();
         responseContainer.setTimingOfReply(reply.getTiming());
@@ -153,5 +162,17 @@ public class ResponseService {
         return responseContainer;
     }
 
+    private Long getSceneId(Message message) {
+        Long userName = message.getChatId();
+        User user = null;
+        try {
+           user = userService.getUser(userName);
+        } catch (NullPointerException e) {
+            e.getMessage();
+        }
+
+
+        return user.getSceneId();
+    }
 }
 

@@ -9,6 +9,11 @@ import ru.kumkuat.application.GameModule.Repository.UserRepository;
 public class UserService {
     private final UserRepository userRepository;
 
+    private User getUserByTelegramId(Long id) throws NullPointerException {
+        User result = userRepository.getByTelegramUserId(id);
+        if(result == null) throw new NullPointerException("User not found in DB!");
+        return result;
+    }
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
@@ -41,4 +46,5 @@ public class UserService {
         }
         return false;
     }
+
 }

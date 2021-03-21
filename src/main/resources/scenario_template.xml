@@ -1,13 +1,13 @@
 <scenes>
     <scene number="0">
         <trigger>
-            <message>Я дастаю из широких штанин ...</message>
+            <message>Привет</message>
         </trigger>
         <replies>
-            <reply botname="Mayakovsky" pause="0">
+            <reply botname="Mayakovsky" pause="10">
                 <message>Я дастаю из широких штанин ...</message>
             </reply>
-            <reply botname="Akhmatova" pause="15">
+            <reply botname="Akhmatova" pause="1500">
                 <message>Ну и полож его обратно...</message>
             </reply>
         </replies>
@@ -15,9 +15,9 @@
     <scene number="1">
         <trigger>
             <location>
-                <fullName>Second Location</fullName>>
-                <longitude>55.450787</longitude>
-                <latitude>37.369387</latitude>
+                <fullName> Станция метро Площадь восстания</fullName>>
+                <longitude>59.931571</longitude>
+                <latitude>30.360541</latitude>
             </location>
         </trigger>
         <replies>
@@ -27,17 +27,17 @@
             <reply botname="Akhmatova" pause="15">
                 <image path="src\main\resources\pictures\cat.jpg"/>
             </reply>
-            <reply botname="Gumilev" pause="15">
+            <reply botname="Brodskiy" pause="15">
                 <message>Послушай и иди дальше ...</message>
             </reply>
-            <reply botname="Gumilev" pause="15">
+            <reply botname="Brodskiy" pause="15">
                 <audio path="src\main\resources\voice\aloe.mp3"/>
             </reply>
-            <reply botname="Gumilev" pause="15">
+            <reply botname="Ku" pause="15">
                 <location>
-                    <fullName>Second Location</fullName>>
-                    <longitude>55.450787</longitude>
-                    <latitude>37.369387</latitude>
+                    <fullName>Невский проспект 100</fullName>>
+                    <longitude>59.931891</longitude>
+                    <latitude>30.355651</latitude>
                 </location>
             </reply>
         </replies>
@@ -45,9 +45,9 @@
     <scene number="2">
         <trigger>
             <location>
-                <fullName>Second Location</fullName>>
-                <longitude>55.450787</longitude>
-                <latitude>37.369387</latitude>
+                <fullName>Портрет Цоя</fullName>>
+                <longitude>59.933745</longitude>
+                <latitude>30.357682</latitude>
             </location>
         </trigger>
         <replies>
@@ -62,9 +62,9 @@
     <scene number="3">
         <trigger>
             <location>
-                <fullName>Third Location</fullName>>
-                <longitude>55.450787</longitude>
-                <latitude>37.369387</latitude>
+                <fullName>Памятник Ахматовой</fullName>>
+                <longitude>59.934424</longitude>
+                <latitude>30.359823</latitude>
             </location>
         </trigger>
         <replies>
@@ -79,9 +79,9 @@
     <scene number="4">
         <trigger>
             <location>
-                <fullName>Fourth Location</fullName>>
-                <longitude>55.450787</longitude>
-                <latitude>37.369387</latitude>
+                <fullName>Вид на БКЗ (Греческая церковь)</fullName>>
+                <longitude>59.935741</longitude>
+                <latitude>30.360412</latitude>
             </location>
         </trigger>
         <replies>

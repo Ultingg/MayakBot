@@ -8,16 +8,20 @@ import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.kumkuat.application.GameModule.Bot.Brodskiy;
+import ru.kumkuat.application.GameModule.Bot.MarshakBot;
 import ru.kumkuat.application.GameModule.Service.ResponseService;
 
 @RestController
 public class UpdateController {
 
+    private  final MarshakBot marshakBot;
     private final Brodskiy brodskiy; // бот слушатель
     private final ResponseService responseService;
 
-    public UpdateController(Brodskiy brodskiy, ResponseService responseService) {
+    public UpdateController(MarshakBot marshakBot, Brodskiy brodskiy, ResponseService responseService) {
+        this.marshakBot = marshakBot;
         this.brodskiy = brodskiy;
+
         this.responseService = responseService;
     }
 
@@ -25,12 +29,14 @@ public class UpdateController {
     public BotApiMethod<?> onUpdateReceived(@RequestBody Update update) {
 
         Message incomingMessage = update.getMessage();
-
-        Long testSceneId = 0L; //тут мы достаем Id сцены исходя из инфы о Юзере
+        System.out.println(update.getMessage().getChatId());
+        System.out.println(update.getMessage().getChat().getUserName());
+        System.out.println(update.getMessage().getText());
+       // Long testSceneId = 0L; //тут мы достаем Id сцены исходя из инфы о Юзере
         if (commandChecker(incomingMessage)) {
-            System.out.println("command");
+            marshakBot.onWebhookUpdateReceived(update);
         } else {
-            responseService.checkIncomingMessage(incomingMessage, testSceneId);
+            responseService.checkIncomingMessage(incomingMessage);
         }
         //Тут вся механия распределения сообщений
         return brodskiy.onWebhookUpdateReceived(update); // слушатель возвращает на сервер Телеграмма HTTP 200(OK) с пустым сообщением

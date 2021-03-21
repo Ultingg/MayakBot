@@ -34,10 +34,13 @@ public class MarshakBot extends TelegramWebhookCommandBot {
     public void RegisterCommand(PlayCommand playCommand, PayCommand payCommand){
         register(playCommand);
         register(payCommand);
+        System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     }
 
     @Override
     public BotApiMethod processNonCommandUpdate(Update update) {
+
+
         return null;
     }
 

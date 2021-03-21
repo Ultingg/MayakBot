@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 import ru.kumkuat.application.GameModule.Collections.Reply;
 import ru.kumkuat.application.GameModule.Collections.Scene;
 import ru.kumkuat.application.GameModule.Collections.Trigger;
+import ru.kumkuat.application.GameModule.Factories.SceneFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,20 +12,24 @@ import java.util.List;
 @Component
 public class SceneCollection {
 
-
+    private final SceneFactory sceneFactory;
     private List<Scene> sceneList;
 
     public Scene get(Long id) {
         return sceneList.get(Math.toIntExact(id));
     }
 
-    public SceneCollection() {
+    public SceneCollection(SceneFactory sceneFactory) {
+        this.sceneFactory = sceneFactory;
         sceneList = new ArrayList<>();
-        setUpCollection();
+        setUpCollectionFromFactory();
 
 
     }
 
+    private void setUpCollectionFromFactory(){
+        sceneList = sceneFactory.getSceneCollection();
+    }
     private void setUpCollection() {
         // временно насели список сценами
         Scene scene = new Scene();
