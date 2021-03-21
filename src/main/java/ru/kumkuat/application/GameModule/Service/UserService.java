@@ -67,7 +67,7 @@ public class UserService {
 
     private boolean restartScenes(Long sceneId) { //наша халява
         Long sceneSize = Long.valueOf(sceneService.count());
-        return sceneId >= sceneSize;
+        return sceneId >= sceneSize - 1;
 
     }
 

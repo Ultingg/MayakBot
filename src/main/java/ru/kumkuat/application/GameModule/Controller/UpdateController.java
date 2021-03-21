@@ -39,9 +39,9 @@ public class UpdateController {
             if (commandChecker(incomingMessage)) {
                 System.out.println("There was a command!");
             } else {
-                Long userId = Long.valueOf(incomingMessage.getFrom().getId());
-                responseService.checkIncomingMessage(incomingMessage);
-                userService.incrementSceneId(userId);
+
+                responseService.messageReciver(incomingMessage);
+
             }
         //Тут вся механия распределения сообщений
         return brodskiy.onWebhookUpdateReceived(update); // слушатель возвращает на сервер Телеграмма HTTP 200(OK) с пустым сообщением

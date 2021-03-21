@@ -48,40 +48,40 @@ public class ResponseService {
     }
 
 
-    public void checkIncomingMessage(Message message) {
-        Long sceneId = getSceneId(message);
-        Scene scene = sceneCollection.get(sceneId);
-        Trigger sceneTrigger = scene.getTrigger();
+    private boolean checkIncomingMessage(Message message, Trigger sceneTrigger) throws Exception {
 
         if (message.hasText()) {
             String userText = message.getText();
-            boolean flag = triggerService.triggerCheck(sceneTrigger, userText);
-            if (flag) {
-                ReplyResolver(message, scene);
-            } else {
-                ResponseContainer wrongAnswerResponse = configureWrongTriggerMessage(message, scene);
-                botController.responseResolver(wrongAnswerResponse);
-            }
+            return triggerService.triggerCheck(sceneTrigger, userText);
         }
         if (message.hasPhoto()) {
-            if (sceneTrigger.isHasPicture()) {
-                ReplyResolver(message, scene);
-            } else {
-                ResponseContainer wrongAnswerResponse = configureWrongTriggerMessage(message, scene);
-                botController.responseResolver(wrongAnswerResponse);
-            }
+            return sceneTrigger.isHasPicture();
         }
 
         if (message.hasLocation()) {
             Location userLocation = message.getLocation();
-            if (triggerService.triggerCheck(sceneTrigger, userLocation)) {
+            return triggerService.triggerCheck(sceneTrigger, userLocation);
+        }
+                throw new Exception("checkIncomingMessage didn't happened!");
+    }
+
+    public void messageReciver(Message message) {
+        Long sceneId = getSceneId(message);
+        Scene scene = sceneCollection.get(sceneId);
+        Trigger sceneTrigger = scene.getTrigger();
+
+        try {
+            if (checkIncomingMessage(message, sceneTrigger)) {
                 ReplyResolver(message, scene);
+                Long userId = Long.valueOf(message.getFrom().getId());
+                userService.incrementSceneId(userId);
             } else {
                 ResponseContainer wrongAnswerResponse = configureWrongTriggerMessage(message, scene);
                 botController.responseResolver(wrongAnswerResponse);
             }
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
-
     }
 
     private void ReplyResolver(Message message, Scene scene) {
@@ -164,7 +164,7 @@ public class ResponseService {
         Long userId = Long.valueOf(message.getFrom().getId());
         User user = null;
         try {
-           user = userService.getUser(userId);
+            user = userService.getUser(userId);
         } catch (NullPointerException e) {
             e.getMessage();
         }
