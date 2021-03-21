@@ -16,3 +16,5 @@ public class WebHookController {
 //        return  marshakBot.onWebhookUpdateReceived(update);
 //    }
 }
+
+//TODO: два webhooka - два адреса для телеграма
