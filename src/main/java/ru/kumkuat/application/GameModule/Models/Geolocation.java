@@ -3,10 +3,7 @@ package ru.kumkuat.application.GameModule.Models;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Getter
 @Setter
@@ -14,7 +11,8 @@ import javax.persistence.Id;
 
 public class Geolocation {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "geo_generator")
+    @SequenceGenerator(name="geo_generator", sequenceName = "geo_id")
     private Long id;
     //    @Column(columnDefinition = "full_name")
     private String fullName;

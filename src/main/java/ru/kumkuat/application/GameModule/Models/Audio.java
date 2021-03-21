@@ -4,10 +4,7 @@ package ru.kumkuat.application.GameModule.Models;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Getter
 @Setter
@@ -15,7 +12,8 @@ import javax.persistence.Id;
 
 public class Audio {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "audio_generator")
+    @SequenceGenerator(name="audio_generator", sequenceName = "audio_id")
     private Long id;
     private String path;
 }
