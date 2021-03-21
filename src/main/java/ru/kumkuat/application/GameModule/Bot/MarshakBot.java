@@ -1,20 +1,12 @@
 package ru.kumkuat.application.GameModule.Bot;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.bots.TelegramWebhookBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
-import org.telegram.telegrambots.meta.api.methods.send.SendLocation;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
-import org.telegram.telegrambots.meta.api.methods.send.SendVoice;
-import org.telegram.telegrambots.meta.api.methods.updates.SetWebhook;
-import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.kumkuat.application.GameModule.Abstract.TelegramWebhookCommandBot;
@@ -38,11 +30,11 @@ public class MarshakBot extends TelegramWebhookCommandBot {
 //    @Autowired
 //    private PlayCommand playCommand;
 
-    private MarshakBot(PlayCommand playCommand, PayCommand payCommand){
+    private MarshakBot(PlayCommand playCommand, PayCommand payCommand) {
         this.RegisterCommand(playCommand, payCommand);
     }
 
-    public void RegisterCommand(PlayCommand playCommand, PayCommand payCommand){
+    public void RegisterCommand(PlayCommand playCommand, PayCommand payCommand) {
         register(playCommand);
         register(payCommand);
     }

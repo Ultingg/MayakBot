@@ -2,13 +2,13 @@ package ru.kumkuat.application.GameModule.Bot;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.bots.TelegramWebhookBot;
+import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendLocation;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
@@ -19,21 +19,20 @@ import ru.kumkuat.application.GameModule.Controller.BotController;
 import ru.kumkuat.application.GameModule.Service.AudioService;
 import ru.kumkuat.application.GameModule.Service.GeoLocationUtilsService;
 
-import java.nio.file.Path;
-
 @Slf4j
 @Setter
 @Getter
 @Component
 @PropertySource(name = "secret.yml", value = "secret.yml")
 @PropertySource(name = "application.yml", value = "application.yml")
-public class MayakBot extends TelegramLongPollingBot implements BotsSender {
+public class MayakBot extends TelegramWebhookBot implements BotsSender {
     @Value("${bot.name}")
     private String botUsername;
     @Value("${bot.token}")
     private String botToken;
     @Value("${text.path}")
-    private Path path;    // TODO: убери эту заглушку!
+    private String BotPath;
+    // TODO: убери эту заглушку!
 
     @Autowired
     private BotController botController;
@@ -48,12 +47,15 @@ public class MayakBot extends TelegramLongPollingBot implements BotsSender {
         this.audioService = audioService;
     }
 
-
-    @SneakyThrows
     @Override
-    public void onUpdateReceived(Update update) {
+    public BotApiMethod onWebhookUpdateReceived(Update update) {
+        return new SendMessage();
     }
 
+//    @SneakyThrows
+//    @Override
+//    public void onUpdateReceived(Update update) {
+//    }
 
 
     public void sendLocation2(SendLocation sendLocation) {

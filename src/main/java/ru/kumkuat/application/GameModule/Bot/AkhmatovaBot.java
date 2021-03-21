@@ -42,6 +42,11 @@ public class AkhmatovaBot extends TelegramWebhookBot implements BotsSender {
         return sendMessage;
     }
 
+//    @Override
+//    public void onUpdateReceived(Update update) {
+//
+//    }
+
     public void sendLocation2(SendLocation sendLocation) {
 
         try {
@@ -74,4 +79,5 @@ public class AkhmatovaBot extends TelegramWebhookBot implements BotsSender {
             e.getStackTrace();
         }
     }
+
 }

@@ -14,10 +14,12 @@ public class PictureService {
         this.pictureRepository = pictureRepository;
         cleanAll();
     }
+
     public String getPathToPicture(Long id) {
         Picture picture = pictureRepository.getById(id);
         return picture.getPath();
     }
+
     public long setPictureIntoDB(Node replyNode) {
         Picture picture = new Picture();
         var path = replyNode.getAttributes().getNamedItem("path").getNodeValue();
@@ -25,7 +27,8 @@ public class PictureService {
         pictureRepository.save(picture);
         return picture.getId();
     }
-    public void cleanAll(){
+
+    public void cleanAll() {
         pictureRepository.deleteAll();
     }
 }

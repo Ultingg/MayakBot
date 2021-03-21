@@ -4,13 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ApplicationContext;
 import ru.kumkuat.application.GameModule.ApplicationContextProvider;
 import ru.kumkuat.application.GameModule.Bot.MarshakBot;
-import ru.kumkuat.application.GameModule.Service.GeolocationDatabaseService;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 
 
@@ -24,8 +21,9 @@ public class Application implements CommandLineRunner {
 
 
     }
+
     @Override
-    public void run(String...args) throws Exception {
+    public void run(String... args) throws Exception {
 
         var bot = applicationContextProvider.getContext().getBean(MarshakBot.class);
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));

@@ -1,21 +1,18 @@
 package ru.kumkuat.application.GameModule.Service;
 
-import com.thoughtworks.xstream.XStream;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 import ru.kumkuat.application.GameModule.Collections.Scene;
-import ru.kumkuat.application.GameModule.Models.Geolocation;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.*;
-import java.io.IOException;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathFactory;
 import java.util.ArrayList;
-import java.util.List;
 
 @Component
 public class XMLService {

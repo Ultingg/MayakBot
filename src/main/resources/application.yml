@@ -7,7 +7,7 @@ spring:
     initialization-mode: never
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
 
     properties:
       hibernate:

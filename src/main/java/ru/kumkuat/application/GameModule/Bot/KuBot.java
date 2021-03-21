@@ -7,7 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.bots.TelegramWebhookBot;
+import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendLocation;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
@@ -21,19 +22,25 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 @Component
 @NoArgsConstructor
 @PropertySource(name = "secret.yml", value = "secret.yml")
-public class KuBot extends TelegramLongPollingBot implements BotsSender {
+public class KuBot extends TelegramWebhookBot implements BotsSender {
 
     @Value("${ku.name}")
     private String botUsername;
     @Value("${ku.token}")
     private String botToken;
 
+    private String BotPath;
+
+//
+//    @Override
+//    public void onUpdateReceived(Update update) {
+//    }
+
     @Override
-    public void onUpdateReceived(Update update) {
+    public BotApiMethod onWebhookUpdateReceived(Update update) {
+        return new SendMessage();
 
     }
-
-
 
 
     public void sendLocation2(SendLocation sendLocation) {

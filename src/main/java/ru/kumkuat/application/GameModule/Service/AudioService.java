@@ -27,7 +27,8 @@ public class AudioService {
         audioRepository.save(audio);
         return audio.getId();
     }
-    public void cleanAll(){
+
+    public void cleanAll() {
         audioRepository.deleteAll();
     }
 }
