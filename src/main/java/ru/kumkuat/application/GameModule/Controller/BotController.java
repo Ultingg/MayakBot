@@ -43,6 +43,7 @@ public class BotController {
             sendResponseToUser(responseContainer, kuBot);
         }
     }
+
     private void sendResponseToUser(ResponseContainer responseContainer, BotsSender botsSender) {
         if (responseContainer.hasGeolocation()) {
             botsSender.sendLocation(responseContainer.getSendLocation());

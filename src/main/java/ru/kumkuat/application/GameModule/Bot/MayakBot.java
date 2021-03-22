@@ -35,8 +35,6 @@ public class MayakBot extends TelegramWebhookBot implements BotsSender {
     }
 
 
-
-
     public void sendLocation(SendLocation sendLocation) {
         try {
             executeAsync(sendLocation);

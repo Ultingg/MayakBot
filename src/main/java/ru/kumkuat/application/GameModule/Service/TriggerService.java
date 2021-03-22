@@ -17,7 +17,6 @@ public class TriggerService {
         boolean flag = false;
         if (trigger.getText() != null) {
             String[] stringsFromTrigger = trigger.getText().split(",");
-
             for (String string : stringsFromTrigger) {
                 if (string.toLowerCase().equals(textToCheck.toLowerCase())) {
                     flag = true;
@@ -26,7 +25,6 @@ public class TriggerService {
             }
         }
         return flag;
-//            return   textToCheck.toLowerCase().contains(trigger.getText().toLowerCase());
     }
 
     public boolean triggerCheck(Trigger trigger, Location userLocation) {

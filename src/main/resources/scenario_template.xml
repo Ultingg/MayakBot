@@ -15,7 +15,7 @@
     <scene number="1">
         <trigger>
             <location>
-                <fullName> Станция метро Площадь восстания</fullName>>
+                <fullName>Станция метро Площадь восстания</fullName>>
                 <longitude>30.360541</longitude>
                 <latitude>59.931571</latitude>
             </location>

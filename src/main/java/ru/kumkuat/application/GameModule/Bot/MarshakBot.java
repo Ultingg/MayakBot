@@ -27,14 +27,13 @@ public class MarshakBot extends TelegramWebhookCommandBot {
     @Value("${marshak.path}")
     private String botPath;
 
-    private MarshakBot(PlayCommand playCommand, PayCommand payCommand){
+    private MarshakBot(PlayCommand playCommand, PayCommand payCommand) {
         this.RegisterCommand(playCommand, payCommand);
     }
 
-    public void RegisterCommand(PlayCommand playCommand, PayCommand payCommand){
+    public void RegisterCommand(PlayCommand playCommand, PayCommand payCommand) {
         register(playCommand);
         register(payCommand);
-        System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     }
 
     @Override
@@ -44,7 +43,7 @@ public class MarshakBot extends TelegramWebhookCommandBot {
         return null;
     }
 
-    public synchronized void sendMsg(String chatId, String s, Integer ID) {
+    public synchronized void sendMsg(String chatId, String s, Integer ID) { //TODO: удалить этот метод???
         SendMessage sendMessage = new SendMessage();
         sendMessage.enableMarkdown(true);
         sendMessage.setChatId(chatId);

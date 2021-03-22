@@ -62,7 +62,7 @@ public class ResponseService {
             Location userLocation = message.getLocation();
             return triggerService.triggerCheck(sceneTrigger, userLocation);
         }
-                throw new Exception("checkIncomingMessage didn't happened!");
+        throw new Exception("checkIncomingMessage didn't happened!");
     }
 
     public void messageReciver(Message message) {

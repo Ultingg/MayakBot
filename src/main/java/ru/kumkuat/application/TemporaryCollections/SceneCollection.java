@@ -27,9 +27,10 @@ public class SceneCollection {
 
     }
 
-    private void setUpCollectionFromFactory(){
+    private void setUpCollectionFromFactory() {
         sceneList = sceneFactory.getSceneCollection();
     }
+
     private void setUpCollection() {
         // временно насели список сценами
         Scene scene = new Scene();

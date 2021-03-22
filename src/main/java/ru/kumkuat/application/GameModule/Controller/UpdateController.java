@@ -35,14 +35,13 @@ public class UpdateController {
         System.out.println(update.getMessage().getFrom().getId());
         System.out.println(update.getMessage().getChat().getUserName());
         System.out.println(update.getMessage().getText());
-        // Long testSceneId = 0L; //тут мы достаем Id сцены исходя из инфы о Юзере
-            if (commandChecker(incomingMessage)) {
-                System.out.println("There was a command!");
-            } else {
+        if (commandChecker(incomingMessage)) {
+            System.out.println("There was a command!");
+        } else {
 
-                responseService.messageReciver(incomingMessage);
+            responseService.messageReciver(incomingMessage);
 
-            }
+        }
         //Тут вся механия распределения сообщений
         return brodskiy.onWebhookUpdateReceived(update); // слушатель возвращает на сервер Телеграмма HTTP 200(OK) с пустым сообщением
 

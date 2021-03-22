@@ -57,7 +57,7 @@ public class UserService {
     public void incrementSceneId(Long userId) {
         User userToUpdate = getUser(userId);
         Long sceneId = userToUpdate.getSceneId();
-        if (restartScenes(sceneId)) {
+        if (restartScenesCounter(sceneId)) {
             userToUpdate.setSceneId(0l);
         } else {
             userToUpdate.setSceneId(sceneId + 1);
@@ -65,7 +65,15 @@ public class UserService {
         userRepository.save(userToUpdate);
     }
 
-    private boolean restartScenes(Long sceneId) { //наша халява
+    /* if(User == Maksim/Nikolay) привязать проверку к нашим telegramId не надо никаких проверок админа...
+    хотя это плохо тем что если нужен будет новый админ, надо лезть в код программы.
+    Пока вижу два решения:
+    1) флаг у Юзера isAdmin
+    2) отдельная таблица в БД для админов, куда ручками можно добавить админа
+    обдумать а как будет происходить добавления админа и в какой момент
+    */
+    private boolean restartScenesCounter(Long sceneId) { //наша халява обнуляет счетчик сцен
+        //читай коммент вверху ;)
         Long sceneSize = Long.valueOf(sceneService.count());
         return sceneId >= sceneSize - 1;
 

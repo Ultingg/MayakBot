@@ -18,11 +18,10 @@ public class Application implements CommandLineRunner {
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
-
-
     }
+
     @Override
-    public void run(String...args) throws Exception {
+    public void run(String... args) throws Exception {
 
         var bot = applicationContextProvider.getContext().getBean(MarshakBot.class);
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
