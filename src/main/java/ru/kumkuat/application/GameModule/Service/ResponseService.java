@@ -66,21 +66,23 @@ public class ResponseService {
     }
 
     public void messageReciver(Message message) {
-        Long sceneId = getSceneId(message);
-        Scene scene = sceneCollection.get(sceneId);
-        Trigger sceneTrigger = scene.getTrigger();
+        if(userService.IsUserExist(message.getFrom().getUserName())){
+            Long sceneId = getSceneId(message);
+            Scene scene = sceneCollection.get(sceneId);
+            Trigger sceneTrigger = scene.getTrigger();
 
-        try {
-            if (checkIncomingMessage(message, sceneTrigger)) {
-                ReplyResolver(message, scene);
-                Long userId = Long.valueOf(message.getFrom().getId());
-                userService.incrementSceneId(userId);
-            } else {
-                ResponseContainer wrongAnswerResponse = configureWrongTriggerMessage(message, scene);
-                botController.responseResolver(wrongAnswerResponse);
+            try {
+                if (checkIncomingMessage(message, sceneTrigger)) {
+                    ReplyResolver(message, scene);
+                    Long userId = Long.valueOf(message.getFrom().getId());
+                    userService.incrementSceneId(userId);
+                } else {
+                    ResponseContainer wrongAnswerResponse = configureWrongTriggerMessage(message, scene);
+                    botController.responseResolver(wrongAnswerResponse);
+                }
+            } catch (Exception exception) {
+                exception.printStackTrace();
             }
-        } catch (Exception exception) {
-            exception.printStackTrace();
         }
     }
 

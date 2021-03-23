@@ -23,12 +23,24 @@ public class PlayCommand extends BotCommand {
     public void execute(AbsSender absSender, User user, Chat chat, String[] arguments) {
         SendMessage replyMessage = new SendMessage();
         replyMessage.setChatId(chat.getId().toString());
-        if (!userService.IsUserExist(user.getUserName())) {
-            userService.setUserIntoDB(user);
-            replyMessage.enableHtml(true);
+        replyMessage.enableHtml(true);
+
+
+        if(user.getUserName() == null){
+            replyMessage.setText("Ты человек без имени. С тобой играть не получится. Разберись в себе для начала...");
+        }
+        else if(user.getUserName().equals("GroupAnonymousBot")){
+            replyMessage.setText("Нужно выключить ананонимность. Ты не бэтмэн! Сними маску -_-");
+        }
+        else if (!userService.IsUserExist(user.getUserName())) {
+
+            try {
+                userService.setUserIntoDB(user);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             replyMessage.setText("Доступ к игровому сценарию успешно предоставлен!");
         } else {
-            replyMessage.enableHtml(true);
             replyMessage.setText("Вам уже предоставлен доступ.");
         }
         execute(absSender, replyMessage, user);

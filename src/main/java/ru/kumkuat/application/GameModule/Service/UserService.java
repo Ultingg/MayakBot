@@ -21,13 +21,18 @@ public class UserService {
         this.sceneService = sceneService;
     }
 
-    public long setUserIntoDB(org.telegram.telegrambots.meta.api.objects.User telegramUser) {
-        User user = new User();
-        user.setName(telegramUser.getUserName());
-        user.setSceneId(0l);
-        user.setTelegramUserId((long) telegramUser.getId());
-        userRepository.save(user);
-        return user.getId();
+    public long setUserIntoDB(org.telegram.telegrambots.meta.api.objects.User telegramUser) throws Exception {
+        if(telegramUser.getUserName() != null){
+            User user = new User();
+            user.setName(telegramUser.getUserName());
+            user.setFirstName(telegramUser.getFirstName());
+            user.setLastName(telegramUser.getLastName());
+            user.setSceneId(0l);
+            user.setTelegramUserId((long) telegramUser.getId());
+            userRepository.save(user);
+            return user.getId();
+        }
+        throw new Exception("User name is null");
     }
 
     public User getUser(Long id) {

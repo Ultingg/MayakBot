@@ -29,22 +29,21 @@ public class UpdateController {
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
     public BotApiMethod<?> onUpdateReceived(@RequestBody Update update) {
+        if (update.getMessage() != null) {
+            Message incomingMessage = update.getMessage();
+            System.out.println(update.getMessage().getChatId());
+            System.out.println(update.getMessage().getFrom().getId());
+            System.out.println(update.getMessage().getChat().getUserName());
+            System.out.println(update.getMessage().getText());
+            if (commandChecker(incomingMessage)) {
+                System.out.println("There was a command!");
+            } else {
 
-        Message incomingMessage = update.getMessage();
-        System.out.println(update.getMessage().getChatId());
-        System.out.println(update.getMessage().getFrom().getId());
-        System.out.println(update.getMessage().getChat().getUserName());
-        System.out.println(update.getMessage().getText());
-        if (commandChecker(incomingMessage)) {
-            System.out.println("There was a command!");
-        } else {
-
-            responseService.messageReciver(incomingMessage);
-
+                responseService.messageReciver(incomingMessage);
+            }
         }
         //Тут вся механия распределения сообщений
         return brodskiy.onWebhookUpdateReceived(update); // слушатель возвращает на сервер Телеграмма HTTP 200(OK) с пустым сообщением
-
     }
 
     @RequestMapping(value = "/admin", method = RequestMethod.POST)
