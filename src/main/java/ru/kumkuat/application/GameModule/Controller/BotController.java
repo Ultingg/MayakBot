@@ -1,9 +1,11 @@
 package ru.kumkuat.application.GameModule.Controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.kumkuat.application.GameModule.Bot.*;
 import ru.kumkuat.application.GameModule.Collections.ResponseContainer;
 
+@Slf4j
 @Component
 public class BotController {
 
@@ -16,7 +18,6 @@ public class BotController {
         this.harms = harms;
         this.mayakBot = mayakBot;
         this.akhmatovaBot = akhmatovaBot;
-
         this.brodskiy = brodskiy;
     }
 
@@ -28,20 +29,26 @@ public class BotController {
             oneThread.sleep(time);
         } // тут какая-то ахенея
         catch (InterruptedException e) {
+            log.debug("Thread was Interrupted while waiting timing of reply.");
             e.getStackTrace();
         }
         if (botName.equals("Mayakovsky")) {
             sendResponseToUser(responseContainer, mayakBot);
+            log.debug("BotController processed reply of {}.", "Myakovskiy");
         }
         if (botName.equals("Akhmatova")) {
             sendResponseToUser(responseContainer, akhmatovaBot);
+            log.debug("BotController processed reply of {}.", "Akhmatova");
         }
         if (botName.equals("Brodskiy")) {
             sendResponseToUser(responseContainer, brodskiy);
+            log.debug("BotController processed reply of {}.", "Brodskiy");
         }
         if (botName.equals("Ku")) {
             sendResponseToUser(responseContainer, harms);
+            log.debug("BotController processed reply of {}.", "Harms");
         }
+
     }
 
     private void sendResponseToUser(ResponseContainer responseContainer, BotsSender botsSender) {

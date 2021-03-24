@@ -16,6 +16,7 @@ public class SceneCollection {
     private List<Scene> sceneList;
 
     public Scene get(Long id) {
+
         return sceneList.get(Math.toIntExact(id));
     }
 
