@@ -7,13 +7,13 @@ import ru.kumkuat.application.GameModule.Collections.ResponseContainer;
 @Component
 public class BotController {
 
-    private final KuBot kuBot;
+    private final Harms harms;
     private final MayakBot mayakBot;
     private final AkhmatovaBot akhmatovaBot;
     private final Brodskiy brodskiy;
 
-    public BotController(KuBot kuBot, MayakBot mayakBot, AkhmatovaBot akhmatovaBot, Brodskiy brodskiy) {
-        this.kuBot = kuBot;
+    public BotController(Harms harms, MayakBot mayakBot, AkhmatovaBot akhmatovaBot, Brodskiy brodskiy) {
+        this.harms = harms;
         this.mayakBot = mayakBot;
         this.akhmatovaBot = akhmatovaBot;
 
@@ -40,7 +40,7 @@ public class BotController {
             sendResponseToUser(responseContainer, brodskiy);
         }
         if (botName.equals("Ku")) {
-            sendResponseToUser(responseContainer, kuBot);
+            sendResponseToUser(responseContainer, harms);
         }
     }
 
