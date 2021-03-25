@@ -12,6 +12,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.kumkuat.application.GameModule.Abstract.TelegramWebhookCommandBot;
 import ru.kumkuat.application.GameModule.Commands.MarshakCommands.PayCommand;
 import ru.kumkuat.application.GameModule.Commands.MarshakCommands.PlayCommand;
+import ru.kumkuat.application.GameModule.Commands.MarshakCommands.ResetCommand;
 
 
 @Setter
@@ -27,13 +28,10 @@ public class MarshakBot extends TelegramWebhookCommandBot {
     @Value("${marshak.path}")
     private String botPath;
 
-    private MarshakBot(PlayCommand playCommand, PayCommand payCommand) {
-        this.RegisterCommand(playCommand, payCommand);
-    }
-
-    public void RegisterCommand(PlayCommand playCommand, PayCommand payCommand) {
+    private MarshakBot(PlayCommand playCommand, PayCommand payCommand, ResetCommand resetCommand) {
         register(playCommand);
         register(payCommand);
+        register(resetCommand);
     }
 
     @Override
