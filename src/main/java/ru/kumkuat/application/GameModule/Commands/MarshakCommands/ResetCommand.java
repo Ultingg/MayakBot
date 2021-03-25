@@ -25,7 +25,7 @@ public class ResetCommand extends BotCommand {
         replyMessage.setChatId(chat.getId().toString());
         replyMessage.enableHtml(true);
 
-        if(userService.IsUserExist(user.getUserName())){
+        if (userService.IsUserExist(user.getUserName())) {
             try {
                 userService.setUserScene(user, 0);
                 replyMessage.setText("Ваш игровой прогресс успешно сброшен");
