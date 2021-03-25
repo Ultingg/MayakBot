@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 import ru.kumkuat.application.GameModule.Collections.Scene;
 import ru.kumkuat.application.GameModule.Exceptions.RepliesEmptyException;
 import ru.kumkuat.application.GameModule.Exceptions.RepliesNotFoundException;
@@ -12,8 +13,11 @@ import ru.kumkuat.application.GameModule.Exceptions.TriggerNotFoundException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.*;
+import java.io.IOException;
 import java.util.ArrayList;
+
 @Slf4j
 @Component
 public class XMLService {
@@ -32,10 +36,17 @@ public class XMLService {
             xpath = xpathFactory.newXPath();
             builder = builderFactory.newDocumentBuilder();
             doc = builder.parse("src/main/resources/scenario_template.xml" /*"classes/scenario_template.xml"*/);
-        } catch (
-                Exception e) {
+        } catch (SAXException e) {
             e.printStackTrace();
+            log.debug("XMLService:SAX exception with XMLService.");
+        } catch (IOException e) {
+            e.printStackTrace();
+            log.debug("XMLService: Path wrong or empty.");
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+            log.debug("XMLService: Parser config wrong.");
         }
+
 
     }
 

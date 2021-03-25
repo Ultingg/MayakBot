@@ -19,6 +19,7 @@ import ru.kumkuat.application.GameModule.Service.XMLService;
 
 import java.util.ArrayList;
 import java.util.List;
+
 @Slf4j
 @Setter
 @Getter
@@ -59,7 +60,7 @@ public class SceneFactory {
         } catch (RepliesEmptyException ex) {
             ex.getMessage();
             log.debug("Reply is empty.");
-        } catch (TriggerEmptyException ex){
+        } catch (TriggerEmptyException ex) {
             ex.getMessage();
             log.debug("Trigger is empty.");
         } catch (NullPointerException ex) {

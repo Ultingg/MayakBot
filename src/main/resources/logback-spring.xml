@@ -25,13 +25,13 @@
         </encoder>
     </appender>
 
-    <springProfile  name = 'dev'>
+    <springProfile name='dev'>
         <root level="DEBUG">
             <appender-ref ref="STDOUT"/>
             <appender-ref ref="FILE"/>
         </root>
     </springProfile>
-    <springProfile  name = 'prod'>
+    <springProfile name='prod'>
         <root level="INFO">
             <appender-ref ref="STDOUT"/>
             <appender-ref ref="FILE"/>

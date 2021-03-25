@@ -67,7 +67,7 @@ public class ResponseService {
     }
 
     public void messageReceiver(Message message) {
-        if(userService.IsUserExist(message.getFrom().getUserName())){
+        if (userService.IsUserExist(message.getFrom().getUserName())) {
 
             Long sceneId = getSceneId(message);
             Scene scene = sceneCollection.get(sceneId);
@@ -169,7 +169,7 @@ public class ResponseService {
         return responseContainer;
     }
 
-    private Long getSceneId(Message message) throws NullPointerException{
+    private Long getSceneId(Message message) throws NullPointerException {
         Long userId = Long.valueOf(message.getFrom().getId());
         User user = null;
         try {
@@ -178,7 +178,7 @@ public class ResponseService {
             e.getMessage();
             log.debug("User is null. Is absent in DB");
         }
-        if(user == null) {
+        if (user == null) {
             throw new NullPointerException("User is null.");
         }
 

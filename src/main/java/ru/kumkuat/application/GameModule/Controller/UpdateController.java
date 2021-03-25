@@ -12,6 +12,7 @@ import ru.kumkuat.application.GameModule.Bot.Brodskiy;
 import ru.kumkuat.application.GameModule.Bot.MarshakBot;
 import ru.kumkuat.application.GameModule.Service.ResponseService;
 import ru.kumkuat.application.GameModule.Service.UserService;
+
 @Slf4j
 @RestController
 public class UpdateController {

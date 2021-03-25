@@ -29,13 +29,11 @@ public class PlayCommand extends BotCommand {
         replyMessage.enableHtml(true);
 
 
-        if(user.getUserName() == null){
+        if (user.getUserName() == null) {
             replyMessage.setText("Ты человек без имени. С тобой играть не получится. Разберись в себе для начала...");
-        }
-        else if(user.getUserName().equals("GroupAnonymousBot")){
+        } else if (user.getUserName().equals("GroupAnonymousBot")) {
             replyMessage.setText("Нужно выключить ананонимность. Ты не бэтмэн! Сними маску -_-");
-        }
-        else if (!userService.IsUserExist(user.getUserName())) {
+        } else if (!userService.IsUserExist(user.getUserName())) {
 
             try {
                 userService.setUserIntoDB(user);

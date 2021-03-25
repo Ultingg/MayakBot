@@ -60,10 +60,10 @@ public class AkhmatovaBot extends TelegramWebhookBot implements BotsSender {
         log.debug("{} get SendVoiceMessage!", secretName);
         try {
             execute(sendVoice);
-            log.debug("{} send SendVoiceMessage!",secretName);
+            log.debug("{} send SendVoiceMessage!", secretName);
         } catch (TelegramApiException e) {
             e.getStackTrace();
-            log.debug("{} failed sending SendVoiceMessage!",secretName);
+            log.debug("{} failed sending SendVoiceMessage!", secretName);
         }
     }
 
