@@ -14,6 +14,7 @@ import ru.kumkuat.application.GameModule.Collections.ResponseContainer;
 import ru.kumkuat.application.GameModule.Collections.Scene;
 import ru.kumkuat.application.GameModule.Collections.Trigger;
 import ru.kumkuat.application.GameModule.Controller.BotController;
+import ru.kumkuat.application.GameModule.Exceptions.IncomingMessageException;
 import ru.kumkuat.application.GameModule.Models.Geolocation;
 import ru.kumkuat.application.GameModule.Models.User;
 import ru.kumkuat.application.TemporaryCollections.SceneCollection;
@@ -48,7 +49,7 @@ public class ResponseService {
     }
 
 
-    private boolean checkIncomingMessage(Message message, Trigger sceneTrigger) throws Exception {
+    private boolean checkIncomingMessage(Message message, Trigger sceneTrigger) throws IncomingMessageException {
 
         if (message.hasText()) {
             String userText = message.getText();
@@ -62,11 +63,12 @@ public class ResponseService {
             Location userLocation = message.getLocation();
             return triggerService.triggerCheck(sceneTrigger, userLocation);
         }
-        throw new Exception("checkIncomingMessage didn't happened!");
+        throw new IncomingMessageException("checkIncomingMessage didn't happened!");
     }
 
-    public void messageReciver(Message message) {
-        if(userService.IsUserExist(message.getFrom().getUserName())){
+    public void messageReceiver(Message message) {
+        if (userService.IsUserExist(message.getFrom().getUserName())) {
+
             Long sceneId = getSceneId(message);
             Scene scene = sceneCollection.get(sceneId);
             Trigger sceneTrigger = scene.getTrigger();
@@ -80,8 +82,9 @@ public class ResponseService {
                     ResponseContainer wrongAnswerResponse = configureWrongTriggerMessage(message, scene);
                     botController.responseResolver(wrongAnswerResponse);
                 }
-            } catch (Exception exception) {
+            } catch (IncomingMessageException exception) {
                 exception.printStackTrace();
+                log.debug("Incoming message Exception!");
             }
         }
     }
@@ -116,6 +119,7 @@ public class ResponseService {
 
 
         if (reply.hasPicture()) {
+            log.debug("Reply has picture.");
             Long pictureId = reply.getPictureId();
             String pathToPicture = pictureService.getPathToPicture(pictureId);
             File fileFromDb = new File(pathToPicture);
@@ -124,10 +128,10 @@ public class ResponseService {
             SendPhoto sendPhoto = new SendPhoto();
             sendPhoto.setChatId(chatId);
             sendPhoto.setPhoto(pictureFile);
-
             responseContainer.setSendPhoto(sendPhoto);
         }
         if (reply.hasAudio()) {
+            log.debug("Reply has audio.");
             Long audioId = reply.getAudioId();
             String pathToAudio = audioService.getPathToAudio(audioId);
             File fileFromDb = new File(pathToAudio);
@@ -139,6 +143,7 @@ public class ResponseService {
             responseContainer.setSendVoice(sendVoice);
         }
         if (reply.hasGeolocation()) {
+            log.debug("Reply has geolocation.");
             Long geolocationId = reply.getGeolocationId();
             Geolocation geolocation = geolocationDatabaseService.getGeolocationById(geolocationId);
             Double latitudeToSend = geolocation.getLatitude();
@@ -152,6 +157,7 @@ public class ResponseService {
             responseContainer.setSendLocation(sendLocation);
         }
         if (reply.hasText()) {
+            log.debug("Reply has text.");
             String textToSend = reply.getTextMessage();
 
             SendMessage sendMessage = new SendMessage();
@@ -159,18 +165,22 @@ public class ResponseService {
             sendMessage.setChatId(chatId);
             responseContainer.setSendMessage(sendMessage);
         }
+        log.debug("Response container created.");
         return responseContainer;
     }
 
-    private Long getSceneId(Message message) {
+    private Long getSceneId(Message message) throws NullPointerException {
         Long userId = Long.valueOf(message.getFrom().getId());
         User user = null;
         try {
             user = userService.getUser(userId);
         } catch (NullPointerException e) {
             e.getMessage();
+            log.debug("User is null. Is absent in DB");
         }
-
+        if (user == null) {
+            throw new NullPointerException("User is null.");
+        }
 
         return user.getSceneId();
     }

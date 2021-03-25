@@ -22,6 +22,8 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 @PropertySource(name = "secret.yml", value = "secret.yml")
 @PropertySource(name = "application.yml", value = "application.yml")
 public class MayakBot extends TelegramWebhookBot implements BotsSender {
+    private final String secretName = "Mayakovskiy";
+
     @Value("${bot.name}")
     private String botUsername;
     @Value("${bot.token}")
@@ -36,34 +38,46 @@ public class MayakBot extends TelegramWebhookBot implements BotsSender {
 
 
     public void sendLocation(SendLocation sendLocation) {
+        log.debug("{} get SendLocationMessage!", secretName);
         try {
             executeAsync(sendLocation);
+            log.debug("{} send SendLocationMessage!", secretName);
         } catch (TelegramApiException e) {
+            log.debug("{} failed sending SendLocationMessage!", secretName);
             e.getStackTrace();
         }
     }
 
     public void sendVoice(SendVoice sendVoice) {
+        log.debug("{} get SendVoiceMessage!", secretName);
         try {
             execute(sendVoice);
+            log.debug("{} send SendVoiceMessage!", secretName);
         } catch (TelegramApiException e) {
             e.getStackTrace();
+            log.debug("{} failed sending SendVoiceMessage!", secretName);
         }
     }
 
     public void sendPicture(SendPhoto sendPhoto) {
+        log.debug("{} get SendPhotoMessage!", secretName);
         try {
             execute(sendPhoto);
+            log.debug("{} send SendPhotoMessage!", secretName);
         } catch (TelegramApiException e) {
             e.getStackTrace();
+            log.debug("{} failed sending SendPhotoMessage!", secretName);
         }
     }
 
     public void sendMessage(SendMessage sendMessage) {
+        log.debug("{} get SendTextMessage!", secretName);
         try {
             execute(sendMessage);
+            log.debug("{} send SendTextMessage!", secretName);
         } catch (TelegramApiException e) {
             e.getStackTrace();
+            log.debug("{} failed sending SendTextMessage!", secretName);
         }
     }
 }

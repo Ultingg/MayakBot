@@ -30,7 +30,7 @@ public class UserService {
     }
 
     public long setUserIntoDB(org.telegram.telegrambots.meta.api.objects.User telegramUser) throws Exception {
-        if(telegramUser.getUserName() != null){
+        if (telegramUser.getUserName() != null) {
             User user = new User();
             user.setName(telegramUser.getUserName());
             user.setFirstName(telegramUser.getFirstName());
@@ -43,19 +43,16 @@ public class UserService {
         throw new Exception("User name is null");
     }
 
-    public User getUser(Long id) {
-        return userRepository.getByTelegramUserId(id);
+    public User getUser(Long id) throws NullPointerException {
+        User user = userRepository.getByTelegramUserId(id);
+        if (user == null) {
+            throw new NullPointerException("User is doesn't exist in DB. NullPointerException.");
+        }
+
+        return user;
+
     }
 
-    public User getUser(String name) throws Exception {
-        for (User user :
-                userRepository.findAll()) {
-            if (user.getName().equals(name)) {
-                return user;
-            }
-        }
-        throw new Exception("User doesn't exist");
-    }
 
     public boolean IsUserExist(String name) {
         for (User user :
@@ -68,14 +65,18 @@ public class UserService {
     }
 
     public void incrementSceneId(Long userId) {
-        User userToUpdate = getUser(userId);
-        Long sceneId = userToUpdate.getSceneId();
-        if (restartScenesCounter(sceneId)) {
-            userToUpdate.setSceneId(0l);
-        } else {
-            userToUpdate.setSceneId(sceneId + 1);
+        try {
+            User userToUpdate = getUser(userId);
+            Long sceneId = userToUpdate.getSceneId();
+            if (restartScenesCounter(sceneId)) {
+                userToUpdate.setSceneId(0l);
+            } else {
+                userToUpdate.setSceneId(sceneId + 1);
+            }
+            userRepository.save(userToUpdate);
+        } catch (NullPointerException ex) {
+            ex.getMessage();
         }
-        userRepository.save(userToUpdate);
     }
 
     /* if(User == Maksim/Nikolay) привязать проверку к нашим telegramId не надо никаких проверок админа...

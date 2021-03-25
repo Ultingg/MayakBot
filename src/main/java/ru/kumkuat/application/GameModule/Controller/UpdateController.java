@@ -1,5 +1,6 @@
 package ru.kumkuat.application.GameModule.Controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -12,6 +13,7 @@ import ru.kumkuat.application.GameModule.Bot.MarshakBot;
 import ru.kumkuat.application.GameModule.Service.ResponseService;
 import ru.kumkuat.application.GameModule.Service.UserService;
 
+@Slf4j
 @RestController
 public class UpdateController {
 
@@ -31,15 +33,11 @@ public class UpdateController {
     public BotApiMethod<?> onUpdateReceived(@RequestBody Update update) {
         if (update.getMessage() != null) {
             Message incomingMessage = update.getMessage();
-            System.out.println(update.getMessage().getChatId());
-            System.out.println(update.getMessage().getFrom().getId());
-            System.out.println(update.getMessage().getChat().getUserName());
-            System.out.println(update.getMessage().getText());
             if (commandChecker(incomingMessage)) {
-                System.out.println("There was a command!");
+                log.debug("Received throw to Marshak.");
             } else {
-
-                responseService.messageReciver(incomingMessage);
+                log.debug("Received message.");
+                responseService.messageReceiver(incomingMessage);
             }
         }
         //Тут вся механия распределения сообщений
@@ -48,6 +46,7 @@ public class UpdateController {
 
     @RequestMapping(value = "/admin", method = RequestMethod.POST)
     public BotApiMethod<?> onUpdateReceiver(@RequestBody Update update) {
+        log.debug("Received by Marshak command.");
         return marshakBot.onWebhookUpdateReceived(update);
     }
 
@@ -57,7 +56,6 @@ public class UpdateController {
             String textToCheck = message.getText();
             if (textToCheck.contains("/")) {
                 result = true;
-                System.out.println("There was a command!");
             }
         }
         return result;

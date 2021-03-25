@@ -1,21 +1,25 @@
 spring:
   datasource:
     username: root
-    password: 1720Maximnn
+    password: 9999
     url: jdbc:mysql://localhost:3306/promenad?serverTimezone=UTC
     driver-class-name: com.mysql.cj.jdbc.Driver
     initialization-mode: never
+
   jpa:
     hibernate:
       ddl-auto: update
 
     properties:
       hibernate:
-      #        dialect: org.hibernate.dialect.MySQLDialect
       format_sql: true
       show_sql: true
+
+  profiles:
+    active: dev   #2 types of profile: 'dev' - DEBUG level, 'prod' - INFO level
 jdbc:
   driverClassName: com.mysql.cj.jdbc.Driver
+
 
 
 text.path: src\\main\\resources\\voice\\
