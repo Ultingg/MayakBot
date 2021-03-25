@@ -1,10 +1,11 @@
 package ru.kumkuat.application.GameModule.Service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.kumkuat.application.GameModule.Models.User;
 import ru.kumkuat.application.GameModule.Repository.UserRepository;
 
-
+@Slf4j
 @Service
 public class UserService {
     private final UserRepository userRepository;
@@ -21,11 +22,16 @@ public class UserService {
         this.sceneService = sceneService;
     }
 
-    public void setUserScene(org.telegram.telegrambots.meta.api.objects.User telegramUser, Integer i) throws Exception {
-        if (telegramUser.getUserName() != null) {
-            var user = userRepository.getByTelegramUserId(telegramUser.getId().longValue());
-            user.setSceneId(i.longValue());
-            userRepository.save(user);
+    public void setUserScene(org.telegram.telegrambots.meta.api.objects.User telegramUser, Integer i)   {
+        if(telegramUser.getUserName() != null) {
+            try {
+                var user = userRepository.getByTelegramUserId(telegramUser.getId().longValue());
+                user.setSceneId(i.longValue());
+                userRepository.save(user);
+            } catch (NullPointerException e) {
+                e.getMessage();
+                log.debug("User is null.");
+            }
         }
     }
 
