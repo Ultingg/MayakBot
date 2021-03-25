@@ -11,12 +11,12 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.kumkuat.application.GameModule.Service.UserService;
 
 @Service
-public class PlayCommand extends BotCommand {
+public class ResetCommand extends BotCommand {
     @Autowired
     private UserService userService;
 
-    public PlayCommand() {
-        super("/play", "Write that command and lets get to play!\n");
+    public ResetCommand() {
+        super("/reset", "Reset your scene count!\n");
     }
 
     @Override
@@ -25,23 +25,15 @@ public class PlayCommand extends BotCommand {
         replyMessage.setChatId(chat.getId().toString());
         replyMessage.enableHtml(true);
 
-
-        if(user.getUserName() == null){
-            replyMessage.setText("Ты человек без имени. С тобой играть не получится. Разберись в себе для начала...");
-        }
-        else if(user.getUserName().equals("GroupAnonymousBot")){
-            replyMessage.setText("Нужно выключить ананонимность. Ты не бэтмэн! Сними маску -_-");
-        }
-        else if (!userService.IsUserExist(user.getUserName())) {
-
+        if(userService.IsUserExist(user.getUserName())){
             try {
-                userService.setUserIntoDB(user);
+                userService.setUserScene(user, 0);
+                replyMessage.setText("Ваш игровой прогресс успешно сброшен");
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            replyMessage.setText("Доступ к игровому сценарию успешно предоставлен!");
         } else {
-            replyMessage.setText("Вам уже предоставлен доступ.");
+            replyMessage.setText("Вам надо сначала зарегистрироваться.");
         }
         execute(absSender, replyMessage, user);
     }

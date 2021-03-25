@@ -1,6 +1,5 @@
 package ru.kumkuat.application.GameModule.Service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Node;
 import ru.kumkuat.application.GameModule.Models.Geolocation;
@@ -42,12 +41,16 @@ public class GeolocationDatabaseService {
             } else if (nodes.item(i).getNodeName().equals("latitude")) {
                 geolocation.setLatitude(Double.parseDouble(nodes.item(i).getFirstChild().getNodeValue()));
             }
+            Long id = Long.valueOf(getAll().size() + 1); //костыль
+            geolocation.setId(id);
+
+
         }
         geolocationRepository.save(geolocation);
         return geolocation.getId();
     }
 
-    public void cleanAll(){
+    public void cleanAll() {
         //geolocationRepository.
         geolocationRepository.deleteAll();
     }

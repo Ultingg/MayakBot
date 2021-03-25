@@ -4,9 +4,10 @@ import org.telegram.telegrambots.meta.api.methods.send.SendLocation;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.send.SendVoice;
+import org.telegram.telegrambots.meta.generics.BotOptions;
 
-public interface BotsSender {
-    void sendLocation2(SendLocation sendLocation);
+public interface BotsSender extends BotOptions {
+    void sendLocation(SendLocation sendLocation);
 
 
     void sendVoice(SendVoice sendVoice);

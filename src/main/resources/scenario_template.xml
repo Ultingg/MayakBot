@@ -1,94 +1,82 @@
 <scenes>
-    <scene>
+    <scene number="0">
         <trigger>
-            <message>Я дастаю из широких штанин ...</message>
+            <message>Привет</message>
         </trigger>
         <replies>
-            <reply botname="Mayakovsky"  pause="0">
+            <reply botname="Mayakovsky" pause="10">
                 <message>Я дастаю из широких штанин ...</message>
             </reply>
-            <reply botname="Akhmatova"  pause="15">
+            <reply botname="Akhmatova" pause="1500">
                 <message>Ну и полож его обратно...</message>
             </reply>
         </replies>
     </scene>
-    <scene>
+    <scene number="1">
         <trigger>
             <location>
-                <fullName>Second Location</fullName>>
-                <longitude>55.450787</longitude>
-                <latitude>37.369387</latitude>
+                <fullName>Станция метро Площадь восстания</fullName>>
+                <longitude>30.360541</longitude>
+                <latitude>59.931571</latitude>
             </location>
         </trigger>
         <replies>
             <reply botname="Mayakovsky" pause="0">
                 <message>Ну наконец ты пришел</message>
             </reply>
-            <reply botname="Akhmatova" pause="15" >
-                <image path="http://risovach.ru/upload/2015/10/mem/putin_96401420_orig_.jpg"/>
+            <reply botname="Akhmatova" pause="15">
+                <image path="src\main\resources\pictures\cat.jpg"/>
             </reply>
-            <reply botname="Gumilev" pause="15">
+            <reply botname="Brodskiy" pause="15">
                 <message>Послушай и иди дальше ...</message>
             </reply>
-            <reply botname="Gumilev" pause="15">
+            <reply botname="Brodskiy" pause="15">
                 <audio path="src\main\resources\voice\aloe.mp3"/>
             </reply>
-            <reply botname="Gumilev" pause="15">
+            <reply botname="Ku" pause="15">
                 <location>
-                    <fullName>Second Location</fullName>>
-                    <longitude>55.450787</longitude>
-                    <latitude>37.369387</latitude>
+                    <fullName>Невский проспект 100</fullName>>
+                    <longitude>59.931891</longitude>
+                    <latitude>30.355651</latitude>
                 </location>
             </reply>
         </replies>
     </scene>
-    <scene>
+    <scene number="2">
         <trigger>
-            <location>
-                <fullName>Second Location</fullName>>
-                <longitude>55.450787</longitude>
-                <latitude>37.369387</latitude>
-            </location>
+            <message>УМЛЬ</message>
         </trigger>
         <replies>
-            <reply botname="Mayakovsky"  pause="0">
+            <reply botname="Mayakovsky" pause="0">
                 <message>Я дастаю из широких штанин ...</message>
             </reply>
-            <reply botname="Akhmatova"  pause="15">
+            <reply botname="Akhmatova" pause="15">
                 <message>Ну и полож его обратно...</message>
             </reply>
         </replies>
     </scene>
-    <scene>
+    <scene number="3">
         <trigger>
-            <location>
-                <fullName>Third Location</fullName>>
-                <longitude>55.450787</longitude>
-                <latitude>37.369387</latitude>
-            </location>
+            <message>ПОКА</message>
         </trigger>
         <replies>
-            <reply botname="Mayakovsky"  pause="0">
+            <reply botname="Mayakovsky" pause="0">
                 <message>Я дастаю из широких штанин ...</message>
             </reply>
-            <reply botname="Akhmatova"  pause="15">
+            <reply botname="Akhmatova" pause="15">
                 <message>Ну и полож его обратно...</message>
             </reply>
         </replies>
     </scene>
-    <scene>
+    <scene number="4">
         <trigger>
-            <location>
-                <fullName>Fourth Location</fullName>>
-                <longitude>55.450787</longitude>
-                <latitude>37.369387</latitude>
-            </location>
+            <message>Не будь как Тыщпыщук</message>
         </trigger>
         <replies>
-            <reply botname="Mayakovsky"  pause="0">
+            <reply botname="Mayakovsky" pause="0">
                 <message>Я дастаю из широких штанин ...</message>
             </reply>
-            <reply botname="Akhmatova"  pause="15">
+            <reply botname="Akhmatova" pause="15">
                 <message>Ну и полож его обратно...</message>
             </reply>
         </replies>

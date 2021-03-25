@@ -1,5 +1,6 @@
 package ru.kumkuat.application.GameModule.Service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendLocation;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -14,11 +15,13 @@ import ru.kumkuat.application.GameModule.Collections.Scene;
 import ru.kumkuat.application.GameModule.Collections.Trigger;
 import ru.kumkuat.application.GameModule.Controller.BotController;
 import ru.kumkuat.application.GameModule.Models.Geolocation;
+import ru.kumkuat.application.GameModule.Models.User;
 import ru.kumkuat.application.TemporaryCollections.SceneCollection;
 
 import java.io.File;
 import java.util.List;
 
+@Slf4j
 @Service
 public class ResponseService {
 
@@ -28,45 +31,62 @@ public class ResponseService {
     private final BotController botController;
     private final GeolocationDatabaseService geolocationDatabaseService;
     private final TriggerService triggerService;
+    private final UserService userService;
 
     public ResponseService(SceneCollection sceneCollection, PictureService pictureService,
-                           AudioService audioService, BotController botController, GeolocationDatabaseService geolocationDatabaseService, TriggerService triggerService) {
+                           AudioService audioService, BotController botController,
+                           GeolocationDatabaseService geolocationDatabaseService,
+                           TriggerService triggerService, UserService userService) {
         this.sceneCollection = sceneCollection;
         this.pictureService = pictureService;
         this.audioService = audioService;
         this.botController = botController;
         this.geolocationDatabaseService = geolocationDatabaseService;
         this.triggerService = triggerService;
+
+        this.userService = userService;
     }
 
 
-    public void checkIncomingMessage(Message message, Long sceneId) {
-        Scene scene = sceneCollection.get(sceneId);
-        Trigger sceneTrigger = scene.getTrigger();
+    private boolean checkIncomingMessage(Message message, Trigger sceneTrigger) throws Exception {
 
-
+        if (message.hasText()) {
+            String userText = message.getText();
+            return triggerService.triggerCheck(sceneTrigger, userText);
+        }
         if (message.hasPhoto()) {
-            if(sceneTrigger.isHasPicture()){
-                ReplyResolver(message, scene);
-            } else {
-                ResponseContainer wrongAnswerResponse = configureWrongTriggerMessage(message,scene);
-                botController.responseResolver(wrongAnswerResponse);
-            }
+            return sceneTrigger.isHasPicture();
         }
 
         if (message.hasLocation()) {
             Location userLocation = message.getLocation();
-            if (triggerService.triggerCheck(sceneTrigger, userLocation)) {
-                ReplyResolver(message, scene);
-            }
+            return triggerService.triggerCheck(sceneTrigger, userLocation);
         }
-        if (message.hasText()) {
-            String userText = message.getText();
-            if (triggerService.triggerCheck(sceneTrigger, userText)) ReplyResolver(message, scene);
+        throw new Exception("checkIncomingMessage didn't happened!");
+    }
+
+    public void messageReciver(Message message) {
+        if(userService.IsUserExist(message.getFrom().getUserName())){
+            Long sceneId = getSceneId(message);
+            Scene scene = sceneCollection.get(sceneId);
+            Trigger sceneTrigger = scene.getTrigger();
+
+            try {
+                if (checkIncomingMessage(message, sceneTrigger)) {
+                    ReplyResolver(message, scene);
+                    Long userId = Long.valueOf(message.getFrom().getId());
+                    userService.incrementSceneId(userId);
+                } else {
+                    ResponseContainer wrongAnswerResponse = configureWrongTriggerMessage(message, scene);
+                    botController.responseResolver(wrongAnswerResponse);
+                }
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
         }
     }
 
-    public void ReplyResolver(Message message, Scene scene) {
+    private void ReplyResolver(Message message, Scene scene) {
         List<Reply> replyList = scene.getReplyCollection();
         ResponseContainer responseContainer;
         for (Reply reply : replyList) {
@@ -75,19 +95,20 @@ public class ResponseService {
         }
     }
 
-    public ResponseContainer configureWrongTriggerMessage(Message message, Scene scene) {
+    private ResponseContainer configureWrongTriggerMessage(Message message, Scene scene) {
         //пока Message и Scene не используются но при реализации индивидуальных ответов для каждого триггера они понадобятся
         String wrongAnswerMessage = "Друг подумай еще разок над тем что сказал";
         ResponseContainer responseContainer = new ResponseContainer();
         SendMessage sendMessage = new SendMessage();
         sendMessage.setText(wrongAnswerMessage);
+        sendMessage.setChatId(message.getChatId().toString());
         responseContainer.setSendMessage(sendMessage);
-        responseContainer.setBotName("Mayak");
+        responseContainer.setBotName("Mayakovsky"); //дежурный по стране
         responseContainer.setTimingOfReply(100);
         return responseContainer;
     }
 
-    public synchronized ResponseContainer configureMessage(Reply reply, Message message) {
+    private synchronized ResponseContainer configureMessage(Reply reply, Message message) {
         String chatId = message.getChatId().toString();
         ResponseContainer responseContainer = new ResponseContainer();
         responseContainer.setTimingOfReply(reply.getTiming());
@@ -135,11 +156,23 @@ public class ResponseService {
 
             SendMessage sendMessage = new SendMessage();
             sendMessage.setText(textToSend);
-
+            sendMessage.setChatId(chatId);
             responseContainer.setSendMessage(sendMessage);
         }
         return responseContainer;
     }
 
+    private Long getSceneId(Message message) {
+        Long userId = Long.valueOf(message.getFrom().getId());
+        User user = null;
+        try {
+            user = userService.getUser(userId);
+        } catch (NullPointerException e) {
+            e.getMessage();
+        }
+
+
+        return user.getSceneId();
+    }
 }
 

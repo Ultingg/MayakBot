@@ -14,16 +14,29 @@ public class TriggerService {
     }
 
     public boolean triggerCheck(Trigger trigger, String textToCheck) {
-
-        return trigger.getText().equals(textToCheck.toLowerCase());
+        boolean flag = false;
+        if (trigger.getText() != null) {
+            String[] stringsFromTrigger = trigger.getText().split(",");
+            for (String string : stringsFromTrigger) {
+                if (string.toLowerCase().equals(textToCheck.toLowerCase())) {
+                    flag = true;
+                    break;
+                }
+            }
+        }
+        return flag;
     }
 
     public boolean triggerCheck(Trigger trigger, Location userLocation) {
-        double userLat = userLocation.getLatitude();
-        double userLong = userLocation.getLongitude();
-        Long geolocationId = trigger.getGeolocationId();
-        Geolocation geolocation = geolocationDatabaseService.getGeolocationById(geolocationId);
-        double distance = GeoLocationUtilsService.distanceToCurrentLocation(userLat, userLong, geolocation.getLatitude(), geolocation.getLongitude());
-        return distance <= 50.0;
+        if (trigger.getGeolocationId() != null) {
+            double userLat = userLocation.getLatitude();
+            double userLong = userLocation.getLongitude();
+            Long geolocationId = trigger.getGeolocationId();
+            Geolocation geolocation = geolocationDatabaseService.getGeolocationById(geolocationId);
+            double distance = GeoLocationUtilsService.distanceToCurrentLocation(userLat, userLong, geolocation.getLatitude(), geolocation.getLongitude());
+            return distance <= 50.0;
+        }
+        return false;
+
     }
-  }
+}

@@ -3,11 +3,7 @@ import org.junit.jupiter.api.Test;
 public class GeolocationTests {
 
 
-
-
-
-
-      @Test
+    @Test
     public void nearestLocationTest() {
 //        MayakBot mayakBot = new MayakBot();
 //        Map<String, Location> locationMap = new HashMap<>();
