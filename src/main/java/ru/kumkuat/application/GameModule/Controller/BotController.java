@@ -17,11 +17,12 @@ public class BotController {
     private final Brodskiy brodskiy;
     private final MarshakBot marshakBot;
 
-    public BotController(Harms harms, MayakBot mayakBot, AkhmatovaBot akhmatovaBot, Brodskiy brodskiy) {
+    public BotController(MarshakBot marshakBot, Harms harms, MayakBot mayakBot, AkhmatovaBot akhmatovaBot, Brodskiy brodskiy) {
         this.harms = harms;
         this.mayakBot = mayakBot;
         this.akhmatovaBot = akhmatovaBot;
         this.brodskiy = brodskiy;
+        this.marshakBot = marshakBot;
 
         try {
             SetWebhook setWebhook = new SetWebhook();

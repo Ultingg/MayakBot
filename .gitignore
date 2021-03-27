@@ -1,0 +1,7 @@
+*.yml
+*.iml
+.idea/
+classes/
+META-INF/
+target/
+src/main/resources/

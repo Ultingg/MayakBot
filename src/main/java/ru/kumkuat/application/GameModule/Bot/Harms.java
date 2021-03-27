@@ -22,7 +22,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 @Component
 @NoArgsConstructor
 @PropertySource(name = "secret.yml", value = "secret.yml")
-public class KuBot extends TelegramWebhookBot implements BotsSender {
+public class Harms extends TelegramWebhookBot implements BotsSender {
 
     @Value("${harms..name}")
     private String botUsername;
