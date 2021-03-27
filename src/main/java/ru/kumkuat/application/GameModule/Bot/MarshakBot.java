@@ -2,17 +2,20 @@ package ru.kumkuat.application.GameModule.Bot;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updates.SetWebhook;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.kumkuat.application.GameModule.Abstract.TelegramWebhookCommandBot;
 import ru.kumkuat.application.GameModule.Commands.MarshakCommands.PayCommand;
 import ru.kumkuat.application.GameModule.Commands.MarshakCommands.PlayCommand;
 import ru.kumkuat.application.GameModule.Commands.MarshakCommands.ResetCommand;
+import ru.kumkuat.application.GameModule.Commands.MarshakCommands.SetChatCommand;
 
 
 @Setter
@@ -28,16 +31,24 @@ public class MarshakBot extends TelegramWebhookCommandBot {
     @Value("${marshak.path}")
     private String botPath;
 
-    private MarshakBot(PlayCommand playCommand, PayCommand payCommand, ResetCommand resetCommand) {
+//    @Autowired
+//    private PlayCommand playCommand;
+//    @Autowired
+//    private PayCommand payCommand;
+//    @Autowired
+//    private ResetCommand resetCommand;
+//    @Autowired
+//    private SetChatCommand setChatCommand;
+
+    private MarshakBot(PlayCommand playCommand, PayCommand payCommand, ResetCommand resetCommand, SetChatCommand setChatCommand) {
         register(playCommand);
         register(payCommand);
         register(resetCommand);
+        register(setChatCommand);
     }
 
     @Override
     public BotApiMethod processNonCommandUpdate(Update update) {
-
-
         return null;
     }
 

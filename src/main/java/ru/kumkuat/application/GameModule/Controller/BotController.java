@@ -2,6 +2,8 @@ package ru.kumkuat.application.GameModule.Controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.methods.updates.SetWebhook;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.kumkuat.application.GameModule.Bot.*;
 import ru.kumkuat.application.GameModule.Collections.ResponseContainer;
 
@@ -13,12 +15,23 @@ public class BotController {
     private final MayakBot mayakBot;
     private final AkhmatovaBot akhmatovaBot;
     private final Brodskiy brodskiy;
+    private final MarshakBot marshakBot;
 
     public BotController(Harms harms, MayakBot mayakBot, AkhmatovaBot akhmatovaBot, Brodskiy brodskiy) {
         this.harms = harms;
         this.mayakBot = mayakBot;
         this.akhmatovaBot = akhmatovaBot;
         this.brodskiy = brodskiy;
+
+        try {
+            SetWebhook setWebhook = new SetWebhook();
+            setWebhook.setUrl(brodskiy.getBotPath());
+            brodskiy.execute(setWebhook);
+            setWebhook.setUrl(marshakBot.getBotPath());
+            marshakBot.execute(setWebhook);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
     }
 
     public void responseResolver(ResponseContainer responseContainer) {
