@@ -22,8 +22,8 @@ public class UserService {
         this.sceneService = sceneService;
     }
 
-    public void setUserScene(org.telegram.telegrambots.meta.api.objects.User telegramUser, Integer i)   {
-        if(telegramUser.getUserName() != null) {
+    public void setUserScene(org.telegram.telegrambots.meta.api.objects.User telegramUser, Integer i) {
+        if (telegramUser.getUserName() != null) {
             try {
                 var user = userRepository.getByTelegramUserId(telegramUser.getId().longValue());
                 user.setSceneId(i.longValue());
@@ -34,6 +34,8 @@ public class UserService {
             }
         }
     }
+
+
 
     public long setUserIntoDB(org.telegram.telegrambots.meta.api.objects.User telegramUser) throws Exception {
         if (telegramUser.getUserName() != null) {
@@ -68,6 +70,10 @@ public class UserService {
             }
         }
         return false;
+    }
+
+    public boolean IsUserExist(Long id) {
+        return userRepository.getByTelegramUserId(id) != null;
     }
 
     public void incrementSceneId(Long userId) {
