@@ -12,12 +12,17 @@ import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import ru.kumkuat.application.GameModule.Exceptions.TelegramChatServiceException;
+import ru.kumkuat.application.GameModule.Repository.TelegramChatRepository;
+import ru.kumkuat.application.GameModule.Service.TelegramChatService;
 import ru.kumkuat.application.GameModule.Service.UserService;
 
 @Service
 public class SetChatCommand extends BotCommand {
     @Autowired
     private UserService userService;
+    @Autowired
+    private TelegramChatService telegramChatService;
 
     public SetChatCommand() {
         super("/setchat", "Save chat into DB\n");
@@ -25,34 +30,46 @@ public class SetChatCommand extends BotCommand {
 
     @Override
     public void execute(AbsSender absSender, User user, Chat chat, String[] arguments) {
-//        SendMessage replyMessage = new SendMessage();
-//        replyMessage.setChatId(chat.getId().toString());
-//        replyMessage.enableHtml(true);
-
-        GetChat getChat = new GetChat();
-        getChat.setChatId(chat.getId().toString());
+        SendMessage replyMessage = new SendMessage();
+        replyMessage.setChatId(chat.getId().toString());
+        replyMessage.enableHtml(true);
 
         if (userService.IsUserExist(user.getUserName())) {
             try {
+                GetChat getChat = new GetChat();
+                getChat.setChatId(chat.getId().toString());
+                try {
+                    var chatInfo = absSender.execute(getChat);
+                    var tittle = chatInfo.getTitle();
+                    var inviteLink = chatInfo.getInviteLink();
 
+                    if (inviteLink != null && tittle != null) {
+                        System.out.println(tittle);
+                        System.out.println(inviteLink);
+                        telegramChatService.setChatIntoDB(chatInfo);
+                        replyMessage.setText("Ссылка записана: " + inviteLink);
+                    } else {
+                        replyMessage.setText("Не удалось получить ссылку");
+                    }
+                } catch (TelegramChatServiceException ex) {
+                    replyMessage.setText(ex.getMessage());
+                } catch (TelegramApiException ex) {
+                    replyMessage.setText("Чат не добавлен, возникли неполадки.");
+                }
             } catch (Exception e) {
                 e.printStackTrace();
+                replyMessage.setText("Чат не добавлен, возникли неполадки.");
             }
         } else {
-            //replyMessage.setText("Вам надо сначала зарегистрироваться.");
+            replyMessage.setText("Вам надо сначала зарегистрироваться.");
         }
-        execute(absSender, getChat);
+
+        execute(absSender, replyMessage, user);
     }
 
     void execute(AbsSender sender, SendMessage message, User user) {
         try {
             sender.execute(message);
-        } catch (TelegramApiException e) {
-        }
-    }
-    void execute(AbsSender sender, GetChat getChat) {
-        try {
-            sender.execute(getChat);
         } catch (TelegramApiException e) {
         }
     }

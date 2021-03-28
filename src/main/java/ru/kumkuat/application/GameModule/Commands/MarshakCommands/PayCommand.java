@@ -47,7 +47,8 @@ public class PayCommand extends BotCommand {
         sendInvoice.setPrices(labeledPrices);
         try {
             absSender.execute(replyMessage);
-            absSender.execute(sendInvoice);
+            var result = absSender.execute(sendInvoice);
+            System.out.println(result.getText());
         } catch (TelegramApiException e) {
         }
     }

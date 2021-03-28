@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.methods.AnswerPreCheckoutQuery;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
+import org.telegram.telegrambots.meta.api.methods.send.SendInvoice;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updates.SetWebhook;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -49,6 +51,16 @@ public class MarshakBot extends TelegramWebhookCommandBot {
 
     @Override
     public BotApiMethod processNonCommandUpdate(Update update) {
+        if(update.hasPreCheckoutQuery()){
+            AnswerPreCheckoutQuery answerPreCheckoutQuery = new AnswerPreCheckoutQuery();
+            answerPreCheckoutQuery.setPreCheckoutQueryId(update.getPreCheckoutQuery().getId());
+            answerPreCheckoutQuery.setOk(true);
+            try {
+                this.execute(answerPreCheckoutQuery);
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+            }
+        }
         return null;
     }
 

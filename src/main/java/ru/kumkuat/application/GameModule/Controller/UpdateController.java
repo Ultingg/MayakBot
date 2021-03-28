@@ -46,6 +46,7 @@ public class UpdateController {
 
     @RequestMapping(value = "/admin", method = RequestMethod.POST)
     public BotApiMethod<?> onUpdateReceiver(@RequestBody Update update) {
+
         log.debug("Received by Marshak command.");
         return marshakBot.onWebhookUpdateReceived(update);
     }
