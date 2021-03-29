@@ -11,7 +11,6 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.kumkuat.application.GameModule.Bot.Brodskiy;
 import ru.kumkuat.application.GameModule.Bot.MarshakBot;
 import ru.kumkuat.application.GameModule.Service.ResponseService;
-import ru.kumkuat.application.GameModule.Service.UserService;
 
 @Slf4j
 @RestController
@@ -20,13 +19,11 @@ public class UpdateController {
     private final MarshakBot marshakBot;
     private final Brodskiy brodskiy; // бот слушатель
     private final ResponseService responseService;
-    private final UserService userService;
 
-    public UpdateController(MarshakBot marshakBot, Brodskiy brodskiy, ResponseService responseService, UserService userService) {
+    public UpdateController(MarshakBot marshakBot, Brodskiy brodskiy, ResponseService responseService ) {
         this.marshakBot = marshakBot;
         this.brodskiy = brodskiy;
         this.responseService = responseService;
-        this.userService = userService;
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST)

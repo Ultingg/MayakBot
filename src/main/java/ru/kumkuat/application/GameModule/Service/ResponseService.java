@@ -1,5 +1,6 @@
 package ru.kumkuat.application.GameModule.Service;
 
+import com.vdurmont.emoji.EmojiParser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendLocation;
@@ -53,6 +54,7 @@ public class ResponseService {
 
         if (message.hasText()) {
             String userText = message.getText();
+
             return triggerService.triggerCheck(sceneTrigger, userText);
         }
         if (message.hasPhoto()) {
@@ -159,7 +161,7 @@ public class ResponseService {
         if (reply.hasText()) {
             log.debug("Reply has text.");
             String textToSend = reply.getTextMessage();
-
+            textToSend = EmojiParser.parseToUnicode(textToSend);
             SendMessage sendMessage = new SendMessage();
             sendMessage.setText(textToSend);
             sendMessage.setChatId(chatId);

@@ -8,7 +8,7 @@
                 <message>Я дастаю из широких штанин ...</message>
             </reply>
             <reply botname="Akhmatova" pause="1500">
-                <message>Ну и полож его обратно...</message>
+                <message>Ну и полож его обратно...   :wink:.</message>
             </reply>
         </replies>
     </scene>
