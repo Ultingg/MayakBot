@@ -3,10 +3,7 @@ package ru.kumkuat.application.GameModule.Commands.MarshakCommands;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.extensions.bots.commandbot.commands.BotCommand;
-import org.telegram.telegrambots.meta.api.methods.groupadministration.ExportChatInviteLink;
 import org.telegram.telegrambots.meta.api.methods.groupadministration.GetChat;
-import org.telegram.telegrambots.meta.api.methods.send.SendChatAction;
-import org.telegram.telegrambots.meta.api.methods.send.SendInvoice;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.User;
@@ -31,8 +28,8 @@ public class SetChatCommand extends BotCommand {
 
         GetChat getChat = new GetChat();
         getChat.setChatId(chat.getId().toString());
-
-        if (userService.IsUserExist(user.getUserName())) {
+        Long userId = Long.valueOf(user.getId());
+        if (userService.IsUserExist(userId)) {
             try {
 
             } catch (Exception e) {

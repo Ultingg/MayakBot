@@ -51,8 +51,8 @@ public class UserService {
         throw new Exception("User name is null");
     }
 
-    public User getUser(Long id) throws NullPointerException {
-        User user = userRepository.getByTelegramUserId(id);
+    public User getUser(Long telegramId) throws NullPointerException {
+        User user = userRepository.getByTelegramUserId(telegramId);
         if (user == null) {
             throw new NullPointerException("User is doesn't exist in DB. NullPointerException.");
         }
@@ -80,7 +80,7 @@ public class UserService {
         try {
             User userToUpdate = getUser(userId);
             Long sceneId = userToUpdate.getSceneId();
-            if (restartScenesCounter(sceneId)) {
+            if (userToUpdate.isAdmin() && restartScenesCounter(sceneId)) {
                 userToUpdate.setSceneId(0l);
             } else {
                 userToUpdate.setSceneId(sceneId + 1);

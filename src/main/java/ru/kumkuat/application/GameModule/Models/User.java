@@ -19,4 +19,5 @@ public class User {
     private String lastName;
     private Long sceneId;
     private Long telegramUserId;
+    private boolean isAdmin;
 }

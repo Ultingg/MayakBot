@@ -24,13 +24,13 @@ public class ResetCommand extends BotCommand {
         SendMessage replyMessage = new SendMessage();
         replyMessage.setChatId(chat.getId().toString());
         replyMessage.enableHtml(true);
-
-        if(userService.IsUserExist(user.getUserName())){
-                userService.setUserScene(user, 0);
-                replyMessage.setText("Ваш игровой прогресс успешно сброшен");
+        Long userId = Long.valueOf(user.getId());
+        if (userService.IsUserExist(userId) && userService.getUser(userId).isAdmin()) {
+            userService.setUserScene(user, 0);
+            replyMessage.setText("Ваш игровой прогресс успешно сброшен");
 
         } else {
-            replyMessage.setText("Вам надо сначала зарегистрироваться.");
+            replyMessage.setText("Вы не обладаете соответствующим уровнем доступа.");
         }
         execute(absSender, replyMessage, user);
     }

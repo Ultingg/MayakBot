@@ -29,7 +29,7 @@ public class NextSceneCommand extends BotCommand {
         replyMessage.setChatId(chat.getId().toString());
         replyMessage.enableHtml(true);
         Long userId = Long.valueOf(user.getId());
-        if (userService.IsUserExist(userId)) {
+        if (userService.IsUserExist(userId) && userService.getUser(userId).isAdmin()) {
             Integer oldSceneId = Math.toIntExact(userService.getUser(userId).getSceneId());
             Integer newSceneId = oldSceneId + 1;
             if (newSceneId < sceneService.count() - 1) {
@@ -41,7 +41,7 @@ public class NextSceneCommand extends BotCommand {
             }
 
         } else {
-            replyMessage.setText("Вам надо сначала зарегистрироваться.");
+            replyMessage.setText("Вы не обладаете соответствующим уровнем доступа.");
         }
         execute(absSender, replyMessage, user);
     }
