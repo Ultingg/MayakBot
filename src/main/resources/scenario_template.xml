@@ -1,0 +1,122 @@
+<scenes>
+    <scene number="0">
+        <trigger>
+            <message>Привет</message>
+        </trigger>
+        <replies>
+            <reply botname="Marshak" pause="10">
+                <message>Рад, что ты с нами! Спектакль скоро начнется,
+                    а пока я хотел бы тебе рассказать чуть больше о нем,
+                    чтобы тебе было легче ориентироваться в происходящем
+                    и ничего не мешало получать удовольствие от спектакля.</message>
+            </reply>
+            <reply botname="Marshak" pause="2500">
+                <message>Подключи в телефону наушники,
+                    через несколько секунд я скину
+                    тебе голосовое сообщение с инструкциями</message>
+            </reply>
+            <reply botname="Marshak" pause="3000">
+                <audio path="src\main\resources\voice\harms.mp3"/>
+            </reply>
+            <reply botname="Marshak" pause="8000">
+                <image path="src\main\resources\pictures\cat.jpg"/>
+            </reply>
+            <reply botname="Marshak" pause="2000">
+                <message>После перехода поверни направо и иди дальше по Лиговскому.
+                    Когда дойдешь до следующего перехода -
+                    перейди его и двигайся к месту, которое обведено на фото</message>
+            </reply>
+            <reply botname="Marshak" pause="2000">
+                <message>Иногда герои тоже будут скидывать тебе фотографии -
+                    чтобы ты был уверен куда именно тебе нужно идти дальше.
+                    А иногда - также как я только что будут просить что-то написать -
+                    они волнуются за тебя и хотят быть уверенными, что ты не потеряешься</message>
+            </reply>
+        </replies>
+    </scene>
+    <scene number="1">
+        <trigger>
+            <location>
+                <fullName>Станция метро Площадь восстания</fullName>>
+                <longitude>30.360541</longitude>
+                <latitude>59.931571</latitude>
+            </location>
+        </trigger>
+        <replies>
+            <reply botname="Mayakovsky" pause="0">
+                <message>Ну наконец ты пришел</message>
+            </reply>
+            <reply botname="Akhmatova" pause="15">
+                <image path="src\main\resources\pictures\cat.jpg"/>
+            </reply>
+            <reply botname="Brodskiy" pause="15">
+                <message>Послушай и иди дальше ...</message>
+            </reply>
+            <reply botname="Brodskiy" pause="15">
+                <audio path="src\main\resources\voice\aloe.mp3"/>
+            </reply>
+            <reply botname="Ku" pause="15">
+                <location>
+                    <fullName>Невский проспект 100</fullName>>
+                    <longitude>59.931891</longitude>
+                    <latitude>30.355651</latitude>
+                </location>
+            </reply>
+        </replies>
+    </scene>
+    <scene number="2">
+        <trigger>
+            <message>УМЛЬ</message>
+        </trigger>
+        <replies>
+            <reply botname="Mayakovsky" pause="0">
+                <message>Я дастаю из широких штанин ...</message>
+            </reply>
+            <reply botname="Akhmatova" pause="15">
+                <message>Ну и полож его обратно...</message>
+            </reply>
+        </replies>
+    </scene>
+    <scene number="3">
+        <trigger>
+            <message>ПОКА</message>
+        </trigger>
+        <replies>
+            <reply botname="Mayakovsky" pause="0">
+                <message>Я дастаю из широких штанин ...</message>
+            </reply>
+            <reply botname="Akhmatova" pause="15">
+                <message>Ну и полож его обратно...</message>
+            </reply>
+        </replies>
+    </scene>
+    <scene number="4">
+        <trigger>
+            <message>Не будь как Тыщпыщук</message>
+        </trigger>
+        <replies>
+            <reply botname="Mayakovsky" pause="0">
+                <message>Я дастаю из широких штанин ...</message>
+            </reply>
+            <reply botname="Akhmatova" pause="15">
+                <message>Ну и полож его обратно...</message>
+            </reply>
+        </replies>
+    </scene>
+    <scene number="5">
+        <trigger>
+            <message>готов</message>
+        </trigger>
+        <replies>
+            <reply botname="Marshak" pause="0">
+                <message>Вы прошли всю игру, возьмите пирожок с полки.</message>
+            </reply>
+            <reply botname="Marshak" pause="1500">
+                <message>Жуйте частельно и не топропитесь.</message>
+            </reply>
+            <reply botname="Marshak" pause="1500">
+                <message>На этом мы закончили. Спасибо за внимание.</message>
+            </reply>
+        </replies>
+    </scene>
+</scenes>

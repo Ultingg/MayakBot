@@ -8,10 +8,8 @@ import org.w3c.dom.Node;
 import ru.kumkuat.application.GameModule.Collections.Reply;
 import ru.kumkuat.application.GameModule.Collections.Scene;
 import ru.kumkuat.application.GameModule.Collections.Trigger;
-import ru.kumkuat.application.GameModule.Exceptions.RepliesEmptyException;
-import ru.kumkuat.application.GameModule.Exceptions.RepliesNotFoundException;
-import ru.kumkuat.application.GameModule.Exceptions.TriggerEmptyException;
-import ru.kumkuat.application.GameModule.Exceptions.TriggerNotFoundException;
+import ru.kumkuat.application.GameModule.Exceptions.RepliesException;
+import ru.kumkuat.application.GameModule.Exceptions.TriggerException;
 import ru.kumkuat.application.GameModule.Service.AudioService;
 import ru.kumkuat.application.GameModule.Service.GeolocationDatabaseService;
 import ru.kumkuat.application.GameModule.Service.PictureService;
@@ -51,18 +49,12 @@ public class SceneFactory {
                 scene.setReplyCollection(getReplyCollection(RepliesNode));
                 scenes.add(scene);
             }
-        } catch (TriggerNotFoundException ex) {
+        } catch (RepliesException ex) {
             ex.getMessage();
-            log.debug("trigger not found.");
-        } catch (RepliesNotFoundException ex) {
+            log.debug("Reply exception.");
+        } catch (TriggerException ex) {
             ex.getMessage();
-            log.debug("Reply not found.");
-        } catch (RepliesEmptyException ex) {
-            ex.getMessage();
-            log.debug("Reply is empty.");
-        } catch (TriggerEmptyException ex) {
-            ex.getMessage();
-            log.debug("Trigger is empty.");
+            log.debug("Trigger Exception.");
         } catch (NullPointerException ex) {
             ex.getMessage();
             log.debug("Reply collection is null.");
@@ -71,7 +63,7 @@ public class SceneFactory {
         return scenes;
     }
 
-    private Trigger getTrigger(Node triggerNode) throws TriggerEmptyException {
+    private Trigger getTrigger(Node triggerNode) throws TriggerException {
         Trigger trigger = new Trigger();
         if (triggerNode.getNodeName().equals("message")) {
             trigger.setText(triggerNode.getFirstChild().getNodeValue());
@@ -81,12 +73,12 @@ public class SceneFactory {
         } else if (triggerNode.getNodeName().equals("image")) {
             trigger.setHasPicture(true);
         } else {
-            throw new TriggerEmptyException("EXCEPTION: Trigger is empty");
+            throw new TriggerException("EXCEPTION: Trigger is empty");
         }
         return trigger;
     }
 
-    private ArrayList<Reply> getReplyCollection(ArrayList<Node> repliesNodes) throws NullPointerException, TriggerEmptyException {
+    private ArrayList<Reply> getReplyCollection(ArrayList<Node> repliesNodes) throws NullPointerException, TriggerException {
         ArrayList<Reply> replies = new ArrayList<Reply>();
         if (repliesNodes != null) {
             for (var replyNode :
@@ -114,7 +106,7 @@ public class SceneFactory {
                     long r = geolocationDatabaseService.setGeolocationIntoDB(ContentNode);
                     reply.setGeolocationId(r);
                 } else {
-                    throw new TriggerEmptyException("EXCEPTION: Reply is empty");
+                    throw new TriggerException("EXCEPTION: Reply is empty");
                 }
                 replies.add(reply);
                 log.debug("Reply Collection created.");

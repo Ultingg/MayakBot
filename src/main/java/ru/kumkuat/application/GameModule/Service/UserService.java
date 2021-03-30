@@ -22,8 +22,8 @@ public class UserService {
         this.sceneService = sceneService;
     }
 
-    public void setUserScene(org.telegram.telegrambots.meta.api.objects.User telegramUser, Integer i)   {
-        if(telegramUser.getUserName() != null) {
+    public void setUserScene(org.telegram.telegrambots.meta.api.objects.User telegramUser, Integer i) {
+        if (telegramUser.getUserName() != null) {
             try {
                 var user = userRepository.getByTelegramUserId(telegramUser.getId().longValue());
                 user.setSceneId(i.longValue());
@@ -35,13 +35,14 @@ public class UserService {
         }
     }
 
+
     public long setUserIntoDB(org.telegram.telegrambots.meta.api.objects.User telegramUser) throws Exception {
         if (telegramUser.getUserName() != null) {
             User user = new User();
             user.setName(telegramUser.getUserName());
             user.setFirstName(telegramUser.getFirstName());
             user.setLastName(telegramUser.getLastName());
-            user.setSceneId(0l);
+            user.setSceneId(0L);
             user.setTelegramUserId((long) telegramUser.getId());
             userRepository.save(user);
             return user.getId();
@@ -49,8 +50,8 @@ public class UserService {
         throw new Exception("User name is null");
     }
 
-    public User getUser(Long id) throws NullPointerException {
-        User user = userRepository.getByTelegramUserId(id);
+    public User getUser(Long telegramId) throws NullPointerException {
+        User user = userRepository.getByTelegramUserId(telegramId);
         if (user == null) {
             throw new NullPointerException("User is doesn't exist in DB. NullPointerException.");
         }
@@ -70,12 +71,21 @@ public class UserService {
         return false;
     }
 
+    public boolean IsUserExist(Long id) {
+        return userRepository.getByTelegramUserId(id) != null;
+    }
+
     public void incrementSceneId(Long userId) {
         try {
             User userToUpdate = getUser(userId);
             Long sceneId = userToUpdate.getSceneId();
+
             if (restartScenesCounter(sceneId)) {
-                userToUpdate.setSceneId(0l);
+                if (userToUpdate.isAdmin()) {
+                    userToUpdate.setSceneId(0L);
+                } else {
+                    userToUpdate.setSceneId(sceneId); //TODO: обдумать механиз завершения сценария игры
+                }
             } else {
                 userToUpdate.setSceneId(sceneId + 1);
             }
