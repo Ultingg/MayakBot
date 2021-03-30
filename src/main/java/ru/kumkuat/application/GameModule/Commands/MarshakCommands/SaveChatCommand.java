@@ -29,8 +29,9 @@ public class SaveChatCommand extends BotCommand implements AdminCommand {
         SendMessage replyMessage = new SendMessage();
         replyMessage.setChatId(chat.getId().toString());
         replyMessage.enableHtml(true);
+        Long userId = Long.valueOf(user.getId());
 
-        if (userService.IsUserExist(user.getId().longValue())) {
+        if (userService.IsUserExist(user.getId().longValue()) && userService.getUser(userId).isAdmin()) {
             try {
                 GetChat getChat = new GetChat();
                 getChat.setChatId(chat.getId().toString());
@@ -60,7 +61,7 @@ public class SaveChatCommand extends BotCommand implements AdminCommand {
                 replyMessage.setText("Чат не добавлен, возникли неполадки.");
             }
         } else {
-            replyMessage.setText("Вам надо сначала зарегистрироваться.");
+            replyMessage.setText("Вы не обладаете соответствующим уровнем доступа.");
         }
 
         execute(absSender, replyMessage, user);

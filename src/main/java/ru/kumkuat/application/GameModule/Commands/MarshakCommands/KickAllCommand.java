@@ -15,7 +15,7 @@ import ru.kumkuat.application.GameModule.Service.UserService;
 import java.time.Duration;
 
 @Service
-public class KickAllCommand extends BotCommand implements AdminCommand{
+public class KickAllCommand extends BotCommand implements AdminCommand {
     @Autowired
     private UserService userService;
     @Autowired
@@ -27,7 +27,8 @@ public class KickAllCommand extends BotCommand implements AdminCommand{
 
     @Override
     public void execute(AbsSender absSender, User user, Chat chat, String[] arguments) {
-        if (user.getId().equals(chat.getId())) {
+        Long userId = Long.valueOf(user.getId());
+        if (user.getId().equals(chat.getId()) && userService.getUser(userId).isAdmin()) {
             KickChatMember kickChatMember = new KickChatMember();
             var busyChatsList = telegramChatService.getBusyChats();
             for (var busyChat :

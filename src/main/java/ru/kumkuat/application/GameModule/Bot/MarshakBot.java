@@ -44,7 +44,8 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender 
 
     private MarshakBot(PlayCommand playCommand, PayCommand payCommand, ResetCommand resetCommand,
                        SaveChatCommand saveChatCommand, NextSceneCommand nextSceneCommand,
-                       PreviousSceneCommand previousSceneCommand, HelpCommand helpCommand, KickAllCommand kickAllCommand) {
+                       PreviousSceneCommand previousSceneCommand, HelpCommand helpCommand,
+                       KickAllCommand kickAllCommand, SupportCommand supportCommand) {
         register(playCommand);
         register(payCommand);
         register(resetCommand);
@@ -53,6 +54,7 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender 
         register(nextSceneCommand);
         register(previousSceneCommand);
         register(helpCommand);
+        register(supportCommand);
     }
 
     @Override
@@ -74,7 +76,7 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender 
     public void sendLocation(SendLocation sendLocation) {
         log.debug("{} get SendLocationMessage!", secretName);
         try {
-            executeAsync(sendLocation);
+            execute(sendLocation);
             log.debug("{} send SendLocationMessage!", secretName);
         } catch (TelegramApiException e) {
             log.debug("{} failed sending SendLocationMessage!", secretName);

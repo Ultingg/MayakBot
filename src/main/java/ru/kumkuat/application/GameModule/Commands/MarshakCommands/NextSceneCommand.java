@@ -11,7 +11,7 @@ import ru.kumkuat.application.GameModule.Service.SceneService;
 import ru.kumkuat.application.GameModule.Service.UserService;
 
 @Component
-public class NextSceneCommand extends BotCommand implements AdminCommand{
+public class NextSceneCommand extends BotCommand implements AdminCommand {
 
     private static final String COMMAND_DESCRIPTION = "Перейти к следующей сцене! Введите /next чтобы двигаться дальше.";
 

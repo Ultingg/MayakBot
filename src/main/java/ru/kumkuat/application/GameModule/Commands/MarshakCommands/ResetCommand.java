@@ -11,7 +11,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.kumkuat.application.GameModule.Service.UserService;
 
 @Service
-public class ResetCommand extends BotCommand implements AdminCommand{
+public class ResetCommand extends BotCommand implements AdminCommand {
     @Autowired
     private UserService userService;
 
@@ -24,13 +24,14 @@ public class ResetCommand extends BotCommand implements AdminCommand{
         SendMessage replyMessage = new SendMessage();
         replyMessage.setChatId(chat.getId().toString());
         replyMessage.enableHtml(true);
+        Long userId = Long.valueOf(user.getId());
 
-        if (userService.IsUserExist(user.getId().longValue())) {
+        if (userService.IsUserExist(user.getId().longValue()) && userService.getUser(userId).isAdmin()) {
             userService.setUserScene(user, 0);
             replyMessage.setText("Ваш игровой прогресс успешно сброшен");
 
         } else {
-            replyMessage.setText("Вам надо сначала зарегистрироваться.");
+            replyMessage.setText("Вы не обладаете соответствующим уровнем доступа.");
         }
         execute(absSender, replyMessage, user);
     }

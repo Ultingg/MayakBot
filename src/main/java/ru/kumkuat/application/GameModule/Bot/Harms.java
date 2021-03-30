@@ -38,7 +38,7 @@ public class Harms extends TelegramWebhookBot implements BotsSender {
 
     public void sendLocation(SendLocation sendLocation) {
         try {
-            executeAsync(sendLocation);
+            execute(sendLocation);
         } catch (TelegramApiException e) {
             e.getStackTrace();
         }
