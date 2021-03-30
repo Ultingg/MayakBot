@@ -6,12 +6,7 @@ import static java.lang.Math.*;
 
 @Service
 public class GeoLocationUtilsService {
-
-    private final GeolocationDatabaseService geolocationDatabaseService;
-
-
-    public GeoLocationUtilsService(GeolocationDatabaseService geolocationDatabaseService) {
-        this.geolocationDatabaseService = geolocationDatabaseService;
+    public GeoLocationUtilsService() {
     }
 
     public static double distanceToCurrentLocation(Double userLati, Double userLong, Double aimLati, Double aimLong) {

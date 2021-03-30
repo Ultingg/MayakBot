@@ -8,7 +8,7 @@ import java.util.List;
 
 @Service
 public class SceneService {
-    private List<Scene> sceneCollection;
+    private final List<Scene> sceneCollection;
 
     public SceneService(SceneFactory sceneFactory) {
         sceneCollection = sceneFactory.getSceneCollection();
