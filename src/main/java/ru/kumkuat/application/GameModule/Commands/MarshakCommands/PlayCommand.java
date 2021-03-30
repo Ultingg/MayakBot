@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.extensions.bots.commandbot.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.methods.groupadministration.ExportChatInviteLink;
+import org.telegram.telegrambots.meta.api.methods.groupadministration.GetChat;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.User;
@@ -57,16 +58,16 @@ public class PlayCommand extends BotCommand {
                         try {
                             var freeChat = telegramChatService.getFreeChat();
                             freeChat.setBusy(true);
-                            freeChat.setStartPlayTime(new Date());
+                            //freeChat.setStartPlayTime(new Date());
                             freeChat.setUserId(user.getId().longValue());
                             telegramChatService.saveChatIntoDB(freeChat);
 
-                            ExportChatInviteLink exportChatInviteLink = new ExportChatInviteLink();
-                            exportChatInviteLink.setChatId(freeChat.getChatId().toString());
+                            ExportChatInviteLink exportChatInviteLink = new ExportChatInviteLink(freeChat.getChatId().toString());
                             var inviteLink = absSender.execute(exportChatInviteLink);
+
                             replyMessage.setText("Присоединяйся!");
                             execute(absSender, replyMessage, user);
-                            replyMessage.setText(inviteLink /*freeChat.getInviteLink()*/);
+                            replyMessage.setText(inviteLink);
                             execute(absSender, replyMessage, user);
                             //нужно сделать проверку что пользователь играет в беседке, которая зарезирвирована. Что он вошел в беседку.
                         } catch (Exception e) {

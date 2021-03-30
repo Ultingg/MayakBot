@@ -17,6 +17,7 @@ public class TelegramChat {
     private String name;
     private Long chatId;
     private boolean isBusy;
+    private boolean isStarting;
     private Date startPlayTime;
     private Long userId;
 }

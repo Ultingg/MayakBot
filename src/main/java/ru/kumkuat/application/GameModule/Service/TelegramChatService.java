@@ -42,7 +42,7 @@ public class TelegramChatService {
     }
 
     public TelegramChat getChatById(Long id) throws Exception {
-        var telegramChat = getAll().stream().filter(chat -> chat.getId() == id).findFirst();
+        var telegramChat = getAll().stream().filter(chat -> chat.getChatId().equals(id) ).findFirst();
         return telegramChat.orElseThrow(Exception::new);
     }
 
@@ -56,7 +56,6 @@ public class TelegramChatService {
         } else {
             return getAll().stream().anyMatch(chat -> chat.getChatId().equals(telegramChat.getChatId()));
         }
-        //Надо отслеживать изменение ссылок
     }
 
     public boolean isUserAlreadyPlaying(User user) {
@@ -67,7 +66,6 @@ public class TelegramChatService {
         if (chat.getInviteLink() != null && !chat.getTitle().isEmpty()) {
             TelegramChat telegramChat = new TelegramChat();
             telegramChat.setBusy(false);
-            telegramChat.setInviteLink(chat.getInviteLink());
             telegramChat.setName(chat.getTitle());
             telegramChat.setChatId(chat.getId());
             if (!isTelegramChatExist(telegramChat)) {
