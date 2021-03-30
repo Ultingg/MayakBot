@@ -37,7 +37,7 @@ public class PayCommand extends BotCommand {
         sendInvoice.setTitle("Веселые старты");
         sendInvoice.setDescription("Побегаем, попрыгаем, ножками подрыгаем");
         sendInvoice.setPayload("Payload");
-        sendInvoice.setProviderToken("381764678:TEST:23269");
+        sendInvoice.setProviderToken("284685063:TEST:N2UwNWQ3MzcxMzVh");
         sendInvoice.setCurrency("RUB");
         sendInvoice.setStartParameter("StartParameter");
         List<LabeledPrice> labeledPrices = new ArrayList<>();
@@ -53,10 +53,5 @@ public class PayCommand extends BotCommand {
         }
     }
 
-    void execute(AbsSender sender, SendMessage message, User user) {
-        try {
-            sender.execute(message);
-        } catch (TelegramApiException e) {
-        }
-    }
+
 }
