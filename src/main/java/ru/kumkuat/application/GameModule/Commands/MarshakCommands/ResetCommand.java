@@ -25,9 +25,9 @@ public class ResetCommand extends BotCommand {
         replyMessage.setChatId(chat.getId().toString());
         replyMessage.enableHtml(true);
 
-        if(userService.IsUserExist(user.getId().longValue())){
-                userService.setUserScene(user, 0);
-                replyMessage.setText("Ваш игровой прогресс успешно сброшен");
+        if (userService.IsUserExist(user.getId().longValue())) {
+            userService.setUserScene(user, 0);
+            replyMessage.setText("Ваш игровой прогресс успешно сброшен");
 
         } else {
             replyMessage.setText("Вам надо сначала зарегистрироваться.");

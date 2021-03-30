@@ -30,7 +30,7 @@ public class PlayCommand extends BotCommand {
 
     @Override
     public void execute(AbsSender absSender, User user, Chat chat, String[] arguments) {
-        if(user.getId().longValue() == chat.getId()){
+        if (user.getId().longValue() == chat.getId()) {
 
             log.debug("Marshak ");
             SendMessage replyMessage = new SendMessage();
@@ -51,9 +51,9 @@ public class PlayCommand extends BotCommand {
             }
             execute(absSender, replyMessage, user);
 
-            if( userService.IsUserExist(user.getId().longValue())){
-                if(!telegramChatService.isUserAlreadyPlaying(user)){
-                    if(telegramChatService.isFreeChatHas() ){
+            if (userService.IsUserExist(user.getId().longValue())) {
+                if (!telegramChatService.isUserAlreadyPlaying(user)) {
+                    if (telegramChatService.isFreeChatHas()) {
                         try {
                             var freeChat = telegramChatService.getFreeChat();
                             freeChat.setBusy(true);
@@ -72,12 +72,11 @@ public class PlayCommand extends BotCommand {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                    }
-                    else{
+                    } else {
                         replyMessage.setText("Нет свободных чатов, попробуйте позже");
                         execute(absSender, replyMessage, user);
                     }
-                } else{
+                } else {
                     replyMessage.setText("Вы уже начали игру. Чтобы начать заново, нужно ее закончить.");
                     execute(absSender, replyMessage, user);
                 }

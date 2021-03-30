@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.AnswerPreCheckoutQuery;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendLocation;
-import org.telegram.telegrambots.meta.api.methods.groupadministration.KickChatMember;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.send.SendVoice;
@@ -44,8 +43,8 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender 
 //    private SaveChatCommand saveChatCommand;
 
     private MarshakBot(PlayCommand playCommand, PayCommand payCommand, ResetCommand resetCommand,
-                                SaveChatCommand saveChatCommand, NextSceneCommand nextSceneCommand,
-                       PreviousSceneCommand previousSceneCommand, HelpCommand helpCommand) {
+                       SaveChatCommand saveChatCommand, NextSceneCommand nextSceneCommand,
+                       PreviousSceneCommand previousSceneCommand, HelpCommand helpCommand, KickAllCommand kickAllCommand) {
         register(playCommand);
         register(payCommand);
         register(resetCommand);
@@ -58,7 +57,7 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender 
 
     @Override
     public BotApiMethod processNonCommandUpdate(Update update) {
-        if(update.hasPreCheckoutQuery()){
+        if (update.hasPreCheckoutQuery()) {
             AnswerPreCheckoutQuery answerPreCheckoutQuery = new AnswerPreCheckoutQuery();
             answerPreCheckoutQuery.setPreCheckoutQueryId(update.getPreCheckoutQuery().getId());
             answerPreCheckoutQuery.setOk(true);
