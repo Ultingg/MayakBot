@@ -10,7 +10,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.kumkuat.application.GameModule.Service.UserService;
 
 @Component
-public class PreviousSceneCommand extends BotCommand {
+public class PreviousSceneCommand extends BotCommand implements AdminCommand {
     private static final String COMMAND_DESCRIPTION = "Перейти к предыдущей сцене! Введите /previous чтобы вернуться назад.";
 
     private final UserService userService;

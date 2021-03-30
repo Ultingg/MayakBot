@@ -48,7 +48,7 @@ public class AkhmatovaBot extends TelegramWebhookBot implements BotsSender {
     public void sendLocation(SendLocation sendLocation) {
         log.debug("{} get SendLocationMessage!", secretName);
         try {
-            executeAsync(sendLocation);
+            execute(sendLocation);
             log.debug("{} send SendLocationMessage!", secretName);
         } catch (TelegramApiException e) {
             log.debug("{} failed sending SendLocationMessage!", secretName);

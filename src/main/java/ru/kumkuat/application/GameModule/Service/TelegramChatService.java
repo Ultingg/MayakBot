@@ -56,6 +56,7 @@ public class TelegramChatService {
         } else {
             return getAll().stream().anyMatch(chat -> chat.getChatId().equals(telegramChat.getChatId()));
         }
+        //Надо отслеживать изменение ссылок
     }
 
     public boolean isUserAlreadyPlaying(User user) {

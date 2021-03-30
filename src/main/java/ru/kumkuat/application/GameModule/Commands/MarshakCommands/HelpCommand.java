@@ -47,10 +47,18 @@ public class HelpCommand extends ManCommand {
      * @param botCommands the Commands that should be included in the String
      * @return a formatted String containing command and description for all supplied commands
      */
-    public static String getHelpText(IBotCommand... botCommands) {
+    public static String getHelpText(boolean adminFlag, IBotCommand... botCommands) {
         StringBuilder reply = new StringBuilder();
+
         for (IBotCommand com : botCommands) {
-            reply.append(com.toString()).append(System.lineSeparator()).append(System.lineSeparator());
+            if (!adminFlag) {
+                if (!(com instanceof AdminCommand)) {
+                    reply.append(com.toString()).append(System.lineSeparator()).append(System.lineSeparator());
+                }
+            } else {
+                reply.append(com.toString()).append(System.lineSeparator()).append(System.lineSeparator());
+            }
+
         }
         return reply.toString();
     }
@@ -61,8 +69,8 @@ public class HelpCommand extends ManCommand {
      * @param botCommands a collection of commands that should be included in the String
      * @return a formatted String containing command and description for all supplied commands
      */
-    public static String getHelpText(Collection<IBotCommand> botCommands) {
-        return getHelpText(botCommands.toArray(new IBotCommand[botCommands.size()]));
+    public static String getHelpText(Collection<IBotCommand> botCommands, boolean adminFlag) {
+        return getHelpText(adminFlag, botCommands.toArray(new IBotCommand[botCommands.size()]));
     }
 
     /**
@@ -71,8 +79,8 @@ public class HelpCommand extends ManCommand {
      * @param registry a commandRegistry which commands are formatted into the String
      * @return a formatted String containing command and description for all supplied commands
      */
-    public static String getHelpText(ICommandRegistry registry) {
-        return getHelpText(registry.getRegisteredCommands());
+    public static String getHelpText(ICommandRegistry registry, boolean adminFlag) {
+        return getHelpText(registry.getRegisteredCommands(), adminFlag);
     }
 
     /**
@@ -99,17 +107,14 @@ public class HelpCommand extends ManCommand {
     public void execute(AbsSender absSender, User user, Chat chat, String[] arguments) {
         String reply;
         ru.kumkuat.application.GameModule.Models.User userFromDB = userService.getUser(Long.valueOf(user.getId()));
+        boolean adminFlag = userFromDB.isAdmin();
         if (ICommandRegistry.class.isInstance(absSender)) {
             ICommandRegistry registry = (ICommandRegistry) absSender;
-            if (userFromDB.isAdmin()) {
-                if (arguments.length > 0) {
-                    IBotCommand command = registry.getRegisteredCommand(arguments[0]);
-                    reply = getManText(command);
-                } else {
-                    reply = getHelpText(registry);
-                }
+            if (arguments.length > 0) {
+                IBotCommand command = registry.getRegisteredCommand(arguments[0]);
+                reply = getManText(command);
             } else {
-                reply = "Вы не обладаете соответствующим уровнем доступа.";
+                reply = getHelpText(registry, adminFlag);
             }
             try {
                 absSender.execute(SendMessage.builder().chatId(chat.getId().toString()).text(reply).parseMode("HTML").build());
