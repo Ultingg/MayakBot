@@ -1,5 +1,6 @@
 package ru.kumkuat.application.GameModule.Commands.MarshakCommands;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.extensions.bots.commandbot.commands.IBotCommand;
 import org.telegram.telegrambots.extensions.bots.commandbot.commands.ICommandRegistry;
@@ -10,14 +11,17 @@ import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import ru.kumkuat.application.GameModule.Service.UserService;
 
 import java.util.Collection;
 
 @Component
 public class HelpCommand extends ManCommand {
     private static final String COMMAND_IDENTIFIER = "help";
-    private static final String COMMAND_DESCRIPTION = "shows all commands. Use /help [command] for more info";
-    private static final String EXTENDED_DESCRIPTION = "This command displays all commands the bot has to offer.\n /help [command] can display deeper information";
+    private static final String COMMAND_DESCRIPTION = "Показывает все команды. Введите /help для вывода списка команд.";
+    private static final String EXTENDED_DESCRIPTION = "This command displays all commands the bot has to offer.\n /help can display deeper information";
+    @Autowired
+    private UserService userService;
 
     /**
      * Create a Help command with the standard Arguments.
@@ -28,8 +32,9 @@ public class HelpCommand extends ManCommand {
 
     /**
      * Creates a Help Command with custom identifier, description and extended Description
-     * @param commandIdentifier the unique identifier of this command (e.g. the command string to enter into chat)
-     * @param description the description of this command
+     *
+     * @param commandIdentifier   the unique identifier of this command (e.g. the command string to enter into chat)
+     * @param description         the description of this command
      * @param extendedDescription The extended Description for the Command, should provide detailed information about arguments and possible options
      */
     public HelpCommand(String commandIdentifier, String description, String extendedDescription) {
@@ -38,10 +43,11 @@ public class HelpCommand extends ManCommand {
 
     /**
      * Returns the command and description of all supplied commands as a formatted String
+     *
      * @param botCommands the Commands that should be included in the String
      * @return a formatted String containing command and description for all supplied commands
      */
-    public static String getHelpText(IBotCommand...botCommands) {
+    public static String getHelpText(IBotCommand... botCommands) {
         StringBuilder reply = new StringBuilder();
         for (IBotCommand com : botCommands) {
             reply.append(com.toString()).append(System.lineSeparator()).append(System.lineSeparator());
@@ -51,6 +57,7 @@ public class HelpCommand extends ManCommand {
 
     /**
      * Returns the command and description of all supplied commands as a formatted String
+     *
      * @param botCommands a collection of commands that should be included in the String
      * @return a formatted String containing command and description for all supplied commands
      */
@@ -60,6 +67,7 @@ public class HelpCommand extends ManCommand {
 
     /**
      * Returns the command and description of all supplied commands as a formatted String
+     *
      * @param registry a commandRegistry which commands are formatted into the String
      * @return a formatted String containing command and description for all supplied commands
      */
@@ -69,6 +77,7 @@ public class HelpCommand extends ManCommand {
 
     /**
      * Reads the extended Description from a BotCommand. If the Command is not of Type {@link IManCommand}, it calls toString();
+     *
      * @param command a command the extended Descriptions is read from
      * @return the extended Description or the toString() if IManCommand is not implemented
      */
@@ -78,32 +87,34 @@ public class HelpCommand extends ManCommand {
 
     /**
      * Reads the extended Description from a BotCommand;
+     *
      * @param command a command the extended Descriptions is read from
      * @return the extended Description
      */
     public static String getManText(IManCommand command) {
         return command.toMan();
     }
+
     @Override
     public void execute(AbsSender absSender, User user, Chat chat, String[] arguments) {
+        String reply;
+        ru.kumkuat.application.GameModule.Models.User userFromDB = userService.getUser(Long.valueOf(user.getId()));
         if (ICommandRegistry.class.isInstance(absSender)) {
             ICommandRegistry registry = (ICommandRegistry) absSender;
-
-            if (arguments.length > 0) {
-                IBotCommand command = registry.getRegisteredCommand(arguments[0]);
-                String reply = getManText(command);
-                try {
-                    absSender.execute(SendMessage.builder().chatId(chat.getId().toString()).text(reply).parseMode("HTML").build());
-                } catch (TelegramApiException e) {
-                    e.printStackTrace();
+            if (userFromDB.isAdmin()) {
+                if (arguments.length > 0) {
+                    IBotCommand command = registry.getRegisteredCommand(arguments[0]);
+                    reply = getManText(command);
+                } else {
+                    reply = getHelpText(registry);
                 }
             } else {
-                String reply = getHelpText(registry);
-                try {
-                    absSender.execute(SendMessage.builder().chatId(chat.getId().toString()).text(reply).parseMode("HTML").build());
-                } catch (TelegramApiException e) {
-                    e.printStackTrace();
-                }
+                reply = "Вы не обладаете соответствующим уровнем доступа.";
+            }
+            try {
+                absSender.execute(SendMessage.builder().chatId(chat.getId().toString()).text(reply).parseMode("HTML").build());
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
             }
         }
     }

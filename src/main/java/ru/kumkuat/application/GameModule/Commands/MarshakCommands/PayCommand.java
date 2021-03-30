@@ -19,9 +19,10 @@ import java.util.List;
 public class PayCommand extends BotCommand {
     @Autowired
     private UserService userService;
+    private static final String COMMAND_DESCRIPTION = "Оплатить прогулку! Введите /pay чтобы произвести оплату.";
 
     public PayCommand() {
-        super("/pay", "You can try payment system!\n");
+        super("/pay", COMMAND_DESCRIPTION);
     }
 
     @Override

@@ -7,20 +7,17 @@ import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import ru.kumkuat.application.GameModule.Service.SceneService;
 import ru.kumkuat.application.GameModule.Service.UserService;
 
 @Component
 public class PreviousSceneCommand extends BotCommand {
-
+    private static final String COMMAND_DESCRIPTION = "Перейти к предыдущей сцене! Введите /previous чтобы вернуться назад.";
 
     private final UserService userService;
-    private final SceneService sceneService;
 
-    public PreviousSceneCommand(UserService userService, SceneService sceneService) {
-        super("/previous", "Back to previous scene!\n");
+    public PreviousSceneCommand(UserService userService) {
+        super("/previous", COMMAND_DESCRIPTION);
         this.userService = userService;
-        this.sceneService = sceneService;
     }
 
     @Override
@@ -40,7 +37,6 @@ public class PreviousSceneCommand extends BotCommand {
                 userService.setUserScene(user, 0);
                 replyMessage.setText("Вот вы и вернулись в начало, всегда возвращайтесь к Началу!");
             }
-
         } else {
             replyMessage.setText("Вы не обладаете соответствующим уровнем доступа.");
         }

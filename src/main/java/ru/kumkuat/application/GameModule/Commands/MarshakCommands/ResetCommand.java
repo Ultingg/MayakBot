@@ -14,9 +14,11 @@ import ru.kumkuat.application.GameModule.Service.UserService;
 public class ResetCommand extends BotCommand {
     @Autowired
     private UserService userService;
+    private static final String COMMAND_DESCRIPTION = "Перезапустить сценарий сцен! Введите /reset чтобы снова прогулятся.";
+
 
     public ResetCommand() {
-        super("/reset", "Reset your scene count!\n");
+        super("/reset", COMMAND_DESCRIPTION);
     }
 
     @Override

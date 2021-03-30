@@ -15,9 +15,10 @@ import ru.kumkuat.application.GameModule.Service.UserService;
 public class PlayCommand extends BotCommand {
 
     private final UserService userService;
+    private static final String COMMAND_DESCRIPTION = "Начать прогулку! Введите /play чтобы начать замечательную прогулку по Петербургу.";
 
     public PlayCommand(UserService userService) {
-        super("/play", "Write that command and lets get to play!\n");
+        super("/play", COMMAND_DESCRIPTION);
         this.userService = userService;
     }
 
@@ -32,7 +33,6 @@ public class PlayCommand extends BotCommand {
         if (user.getUserName().equals("GroupAnonymousBot")) {
             replyMessage.setText("Нужно выключить ананонимность. Ты не бэтмэн! Сними маску -_-");
         } else if (!userService.IsUserExist(userId)) {
-
             try {
                 userService.setUserIntoDB(user);
             } catch (Exception e) {
