@@ -55,21 +55,9 @@ public class UserService {
         if (user == null) {
             throw new NullPointerException("User is doesn't exist in DB. NullPointerException.");
         }
-
         return user;
-
     }
 
-
-    public boolean IsUserExist(Long userId) {
-        for (User user :
-                userRepository.findAll()) {
-            if (user.getId().equals(userId)) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     public boolean IsUserExist(Long id) {
         return userRepository.getByTelegramUserId(id) != null;
