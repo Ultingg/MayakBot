@@ -2,15 +2,12 @@ package ru.kumkuat.application.GameModule.Bot;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.AnswerPreCheckoutQuery;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
-import org.telegram.telegrambots.meta.api.methods.send.SendInvoice;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.methods.updates.SetWebhook;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.kumkuat.application.GameModule.Abstract.TelegramWebhookCommandBot;
@@ -51,7 +48,7 @@ public class MarshakBot extends TelegramWebhookCommandBot {
 
     @Override
     public BotApiMethod processNonCommandUpdate(Update update) {
-        if(update.hasPreCheckoutQuery()){
+        if (update.hasPreCheckoutQuery()) {
             AnswerPreCheckoutQuery answerPreCheckoutQuery = new AnswerPreCheckoutQuery();
             answerPreCheckoutQuery.setPreCheckoutQueryId(update.getPreCheckoutQuery().getId());
             answerPreCheckoutQuery.setOk(true);

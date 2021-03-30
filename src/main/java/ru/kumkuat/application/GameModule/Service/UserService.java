@@ -22,8 +22,8 @@ public class UserService {
         this.sceneService = sceneService;
     }
 
-    public void setUserScene(org.telegram.telegrambots.meta.api.objects.User telegramUser, Integer i)   {
-        if(telegramUser.getUserName() != null) {
+    public void setUserScene(org.telegram.telegrambots.meta.api.objects.User telegramUser, Integer i) {
+        if (telegramUser.getUserName() != null) {
             try {
                 var user = userRepository.getByTelegramUserId(telegramUser.getId().longValue());
                 user.setSceneId(i.longValue());

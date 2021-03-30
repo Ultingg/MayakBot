@@ -2,10 +2,10 @@ package ru.kumkuat.application.GameModule.Service;
 
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Chat;
+import org.telegram.telegrambots.meta.api.objects.User;
 import ru.kumkuat.application.GameModule.Exceptions.TelegramChatServiceException;
 import ru.kumkuat.application.GameModule.Models.TelegramChat;
 import ru.kumkuat.application.GameModule.Repository.TelegramChatRepository;
-import org.telegram.telegrambots.meta.api.objects.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +53,7 @@ public class TelegramChatService {
     }
 
     public boolean isUserAlreadyPlaying(User user) {
-        return getAll().stream().anyMatch(chat ->chat.getUserId() != null && chat.getUserId() == user.getId().longValue());
+        return getAll().stream().anyMatch(chat -> chat.getUserId() != null && chat.getUserId() == user.getId().longValue());
     }
 
     public long setChatIntoDB(Chat chat) throws Exception {
