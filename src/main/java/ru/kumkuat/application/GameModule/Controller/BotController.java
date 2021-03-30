@@ -58,9 +58,13 @@ public class BotController {
             sendResponseToUser(responseContainer, brodskiy);
             log.debug("BotController processed reply of {}.", "Brodskiy");
         }
-        if (botName.equals("Ku")) {
+        if (botName.equals("Harms")) {
             sendResponseToUser(responseContainer, harms);
             log.debug("BotController processed reply of {}.", "Harms");
+        }
+        if (botName.equals("Marshak")) {
+            sendResponseToUser(responseContainer, marshakBot);
+            log.debug("BotController processed reply of {}.", "Marshak");
         }
 
     }

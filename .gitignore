@@ -1,7 +1,8 @@
-*.yml
-*.iml
 .idea/
 classes/
+log/
 META-INF/
 target/
-src/main/resources/
+secret.yml
+src/main/resources/pictures/
+src/main/resources/voice/

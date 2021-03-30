@@ -7,9 +7,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import ru.kumkuat.application.GameModule.Collections.Scene;
-import ru.kumkuat.application.GameModule.Exceptions.RepliesEmptyException;
-import ru.kumkuat.application.GameModule.Exceptions.RepliesNotFoundException;
-import ru.kumkuat.application.GameModule.Exceptions.TriggerNotFoundException;
+import ru.kumkuat.application.GameModule.Exceptions.RepliesException;
+import ru.kumkuat.application.GameModule.Exceptions.TriggerException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -50,17 +49,17 @@ public class XMLService {
 
     }
 
-    public Node getTriggerNode(Node scene) throws TriggerNotFoundException {
+    public Node getTriggerNode(Node scene) throws TriggerException {
         var nodes = scene.getChildNodes();
         for (int i = 0; i < nodes.getLength(); i++) {
             if (nodes.item(i).getNodeName().equals("trigger")) {
                 return nodes.item(i).getChildNodes().item(1);
             }
         }
-        throw new TriggerNotFoundException("EXCEPTION: Trigger is not found");
+        throw new TriggerException("EXCEPTION: Trigger is not found");
     }
 
-    public ArrayList<Node> getRepliesNodes(Node scene) throws RepliesEmptyException, RepliesNotFoundException {
+    public ArrayList<Node> getRepliesNodes(Node scene) throws RepliesException {
         var nodes = scene.getChildNodes();
         for (int i = 0; i < nodes.getLength(); i++) {
             if (nodes.item(i).getNodeName().equals("replies")) {
@@ -72,12 +71,12 @@ public class XMLService {
                     }
                 }
                 if (replies.size() == 0) {
-                    throw new RepliesEmptyException("EXCEPTION: Replies are empty");
+                    throw new RepliesException("EXCEPTION: Replies are empty");
                 }
                 return replies;
             }
         }
-        throw new RepliesNotFoundException("EXCEPTION: Replies are not found");
+        throw new RepliesException("EXCEPTION: Replies are not found");
     }
 
     public ArrayList<Node> getSceneNodes() {

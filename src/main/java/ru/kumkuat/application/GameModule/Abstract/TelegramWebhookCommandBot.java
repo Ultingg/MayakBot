@@ -49,6 +49,7 @@ public abstract class TelegramWebhookCommandBot extends TelegramWebhookBot imple
         this.commandRegistry = new CommandRegistry(allowCommandsWithUsername, this::getBotUsername);
     }
 
+
     @Override
     public final BotApiMethod onWebhookUpdateReceived(Update update) {
         if (update.hasMessage()) {
