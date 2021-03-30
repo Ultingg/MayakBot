@@ -15,7 +15,7 @@ import ru.kumkuat.application.GameModule.Service.UserService;
 import java.time.Duration;
 
 @Service
-public class KickAllCommand extends BotCommand {
+public class KickAllCommand extends BotCommand implements AdminCommand{
     @Autowired
     private UserService userService;
     @Autowired

@@ -14,7 +14,7 @@ import ru.kumkuat.application.GameModule.Service.TelegramChatService;
 import ru.kumkuat.application.GameModule.Service.UserService;
 
 @Service
-public class SaveChatCommand extends BotCommand {
+public class SaveChatCommand extends BotCommand implements AdminCommand {
     @Autowired
     private UserService userService;
     @Autowired

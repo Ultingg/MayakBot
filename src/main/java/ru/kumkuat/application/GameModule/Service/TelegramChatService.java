@@ -67,7 +67,7 @@ public class TelegramChatService {
         if (chat.getInviteLink() != null && !chat.getTitle().isEmpty()) {
             TelegramChat telegramChat = new TelegramChat();
             telegramChat.setBusy(false);
-            telegramChat.setInviteLink(chat.getInviteLink());
+//            telegramChat.setInviteLink(chat.getInviteLink());
             telegramChat.setName(chat.getTitle());
             telegramChat.setChatId(chat.getId());
             if (!isTelegramChatExist(telegramChat)) {

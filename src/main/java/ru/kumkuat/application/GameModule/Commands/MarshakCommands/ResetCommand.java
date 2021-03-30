@@ -11,7 +11,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.kumkuat.application.GameModule.Service.UserService;
 
 @Service
-public class ResetCommand extends BotCommand {
+public class ResetCommand extends BotCommand implements AdminCommand{
     @Autowired
     private UserService userService;
 
