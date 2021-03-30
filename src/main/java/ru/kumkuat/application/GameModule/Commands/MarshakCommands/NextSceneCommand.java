@@ -13,12 +13,15 @@ import ru.kumkuat.application.GameModule.Service.UserService;
 @Component
 public class NextSceneCommand extends BotCommand {
 
+    private static final String COMMAND_DESCRIPTION = "Go to next scene!. Use /next [command] for more info";
+    private static final String EXTENDED_DESCRIPTION = "This command displays all commands the bot has to offer.\n /help [command] can display deeper information";
+
 
     private final UserService userService;
     private final SceneService sceneService;
 
     public NextSceneCommand(UserService userService, SceneService sceneService) {
-        super("/next", "Go to next scene!\n");
+        super("/next", COMMAND_DESCRIPTION);
         this.userService = userService;
         this.sceneService = sceneService;
     }

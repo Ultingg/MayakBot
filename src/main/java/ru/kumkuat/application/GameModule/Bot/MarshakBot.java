@@ -42,13 +42,15 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender 
 //    private SetChatCommand setChatCommand;
 
     private MarshakBot(PlayCommand playCommand, PayCommand payCommand, ResetCommand resetCommand,
-                       SetChatCommand setChatCommand, NextSceneCommand nextSceneCommand, PreviousSceneCommand previousSceneCommand) {
+                       SetChatCommand setChatCommand, NextSceneCommand nextSceneCommand,
+                       PreviousSceneCommand previousSceneCommand, HelpCommand helpCommand) {
         register(playCommand);
         register(payCommand);
         register(resetCommand);
         register(setChatCommand);
         register(nextSceneCommand);
         register(previousSceneCommand);
+        register(helpCommand);
     }
 
     @Override
