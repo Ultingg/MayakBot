@@ -16,7 +16,7 @@ import ru.kumkuat.application.GameModule.Service.UserService;
 import java.time.Duration;
 
 @Service
-public class KickAllCommand extends BotCommand {
+public class KickAllCommand extends BotCommand implements AdminCommand {
     @Autowired
     private UserService userService;
     @Autowired
@@ -28,64 +28,71 @@ public class KickAllCommand extends BotCommand {
 
     @Override
     public void execute(AbsSender absSender, User user, Chat chat, String[] arguments) {
-        //if (user.getId().equals(chat.getId())) {
         KickChatMember kickChatMember = new KickChatMember();
-        var busyChatsList = telegramChatService.getBusyChats();
-        for (var busyChat :
-                busyChatsList) {
-            kickChatMember.setChatId(busyChat.getChatId().toString());
-            kickChatMember.setUserId(busyChat.getUserId().intValue());
-            Duration duration = Duration.ofSeconds(60);
-            kickChatMember.forTimePeriodDuration(duration);
-            try {
-                var player = userService.getUser(busyChat.getUserId());
+        Long userId = Long.valueOf(user.getId());
+        if (userService.getUser(userId).isAdmin()) {
+            var busyChatsList = telegramChatService.getBusyChats();
+            for (var busyChat :
+                    busyChatsList) {
+                kickChatMember.setChatId(busyChat.getChatId().toString());
+                kickChatMember.setUserId(busyChat.getUserId().intValue());
+                Duration duration = Duration.ofSeconds(60);
+                kickChatMember.forTimePeriodDuration(duration);
+                try {
+                    var player = userService.getUser(busyChat.getUserId());
 
-                busyChat.setBusy(false);
-                busyChat.setUserId(null);
-                busyChat.setStartPlayTime(null);
-                telegramChatService.saveChatIntoDB(busyChat);
+                    busyChat.setBusy(false);
+                    busyChat.setUserId(null);
+                    busyChat.setStartPlayTime(null);
+                    telegramChatService.saveChatIntoDB(busyChat);
 
-                if (absSender.execute(kickChatMember)) {
-                    SendMessage sendMessage = new SendMessage();
+                    if (absSender.execute(kickChatMember)) {
+                        SendMessage sendMessage = new SendMessage();
 
-                    var name = player.getName();
-                    if (name == null) {
-                        name = "";
-                        if (user.getLastName() != null) {
-                            name += player.getLastName();
+                        var name = player.getName();
+                        if (name == null) {
+                            name = "";
+                            if (user.getLastName() != null) {
+                                name += player.getLastName();
+                            }
+                            if (user.getFirstName() != null) {
+                                name += player.getFirstName();
+                            }
                         }
-                        if (user.getFirstName() != null) {
-                            name += player.getFirstName();
-                        }
+                        sendMessage.setText("Пользователь: @" + name + " успешно удален из чата");
+                        sendMessage.setChatId(chat.getId().toString());
+                        sendMessage.enableHtml(true);
+                        absSender.execute(sendMessage);
                     }
-                    sendMessage.setText("Пользователь: @" + name + " успешно удален из чата");
+                } catch (TelegramApiException e) {
+                    e.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            for (var busyChat :
+                    telegramChatService.getAll()) {
+                ExportChatInviteLink exportChatInviteLink = new ExportChatInviteLink(busyChat.getChatId().toString());
+                try {
+                    var inviteLink = absSender.execute(exportChatInviteLink);
+                    SendMessage sendMessage = new SendMessage();
+                    sendMessage.setText(inviteLink);
                     sendMessage.setChatId(chat.getId().toString());
                     sendMessage.enableHtml(true);
                     absSender.execute(sendMessage);
+                } catch (TelegramApiException e) {
+                    e.printStackTrace();
                 }
-            } catch (TelegramApiException e) {
-                e.printStackTrace();
-            } catch (Exception e) {
-                e.printStackTrace();
             }
+        } else {
+            SendMessage replyMessage = new SendMessage();
+            replyMessage.setChatId(chat.getId().toString());
+            replyMessage.enableHtml(true);
+            replyMessage.setText("Вы не обладаете соответствующим уровнем доступа.");
+            execute(absSender, replyMessage, user);
         }
 
-        for (var busyChat:
-        telegramChatService.getAll()){
-            ExportChatInviteLink exportChatInviteLink = new ExportChatInviteLink(busyChat.getChatId().toString());
-            try {
-                var inviteLink = absSender.execute(exportChatInviteLink);
-                SendMessage sendMessage = new SendMessage();
-                sendMessage.setText(inviteLink);
-                sendMessage.setChatId(chat.getId().toString());
-                sendMessage.enableHtml(true);
-                absSender.execute(sendMessage);
-            } catch (TelegramApiException e) {
-                e.printStackTrace();
-            }
-        }
-
-        //}
     }
 
     void execute(AbsSender sender, SendMessage message, User user) {

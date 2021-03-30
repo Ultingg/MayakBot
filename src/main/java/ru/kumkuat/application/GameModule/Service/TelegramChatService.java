@@ -42,7 +42,7 @@ public class TelegramChatService {
     }
 
     public TelegramChat getChatById(Long id) throws Exception {
-        var telegramChat = getAll().stream().filter(chat -> chat.getChatId().equals(id) ).findFirst();
+        var telegramChat = getAll().stream().filter(chat -> chat.getChatId().equals(id)).findFirst();
         return telegramChat.orElseThrow(Exception::new);
     }
 
