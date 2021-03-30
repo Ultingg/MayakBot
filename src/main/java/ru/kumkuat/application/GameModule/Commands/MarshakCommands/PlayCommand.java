@@ -29,8 +29,8 @@ public class PlayCommand extends BotCommand {
         replyMessage.enableHtml(true);
         Long userId = Long.valueOf(user.getId());
 
-        if(user.getUserName().equals("GroupAnonymousBot")) {
-                     replyMessage.setText("Нужно выключить ананонимность. Ты не бэтмэн! Сними маску -_-");
+        if (user.getUserName().equals("GroupAnonymousBot")) {
+            replyMessage.setText("Нужно выключить ананонимность. Ты не бэтмэн! Сними маску -_-");
         } else if (!userService.IsUserExist(userId)) {
 
             try {

@@ -9,6 +9,7 @@ import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.kumkuat.application.GameModule.Service.SceneService;
 import ru.kumkuat.application.GameModule.Service.UserService;
+
 @Component
 public class PreviousSceneCommand extends BotCommand {
 

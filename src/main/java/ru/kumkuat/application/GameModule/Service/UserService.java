@@ -36,14 +36,13 @@ public class UserService {
     }
 
 
-
     public long setUserIntoDB(org.telegram.telegrambots.meta.api.objects.User telegramUser) throws Exception {
         if (telegramUser.getUserName() != null) {
             User user = new User();
             user.setName(telegramUser.getUserName());
             user.setFirstName(telegramUser.getFirstName());
             user.setLastName(telegramUser.getLastName());
-            user.setSceneId(0l);
+            user.setSceneId(0L);
             user.setTelegramUserId((long) telegramUser.getId());
             userRepository.save(user);
             return user.getId();
@@ -80,8 +79,13 @@ public class UserService {
         try {
             User userToUpdate = getUser(userId);
             Long sceneId = userToUpdate.getSceneId();
-            if (userToUpdate.isAdmin() && restartScenesCounter(sceneId)) {
-                userToUpdate.setSceneId(0l);
+
+            if (restartScenesCounter(sceneId)) {
+                if (userToUpdate.isAdmin()) {
+                    userToUpdate.setSceneId(0L);
+                } else {
+                    userToUpdate.setSceneId(sceneId); //TODO: обдумать механиз завершения сценария игры
+                }
             } else {
                 userToUpdate.setSceneId(sceneId + 1);
             }

@@ -69,16 +69,14 @@ public class ResponseService {
     }
 
     public void messageReceiver(Message message) {
-        if (userService.IsUserExist(message.getFrom().getUserName())) {
-
+        Long userId = Long.valueOf(message.getFrom().getId());
+        if (userService.IsUserExist(userId)) {
             Long sceneId = getSceneId(message);
             Scene scene = sceneCollection.get(sceneId);
             Trigger sceneTrigger = scene.getTrigger();
-
             try {
                 if (checkIncomingMessage(message, sceneTrigger)) {
                     ReplyResolver(message, scene);
-                    Long userId = Long.valueOf(message.getFrom().getId());
                     userService.incrementSceneId(userId);
                 } else {
                     ResponseContainer wrongAnswerResponse = configureWrongTriggerMessage(message, scene);

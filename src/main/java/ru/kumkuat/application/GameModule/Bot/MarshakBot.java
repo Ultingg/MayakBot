@@ -21,7 +21,7 @@ import ru.kumkuat.application.GameModule.Commands.MarshakCommands.*;
 @Getter
 @Component
 @PropertySource(name = "secret.yml", value = "secret.yml")
-public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender{
+public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender {
 
     private String secretName = "Marshak";
 

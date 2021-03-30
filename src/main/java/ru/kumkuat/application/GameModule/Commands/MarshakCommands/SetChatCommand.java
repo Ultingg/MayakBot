@@ -47,6 +47,7 @@ public class SetChatCommand extends BotCommand {
         } catch (TelegramApiException e) {
         }
     }
+
     void execute(AbsSender sender, GetChat getChat) {
         try {
             sender.execute(getChat);

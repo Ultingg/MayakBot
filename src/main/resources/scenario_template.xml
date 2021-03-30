@@ -81,4 +81,20 @@
             </reply>
         </replies>
     </scene>
+    <scene number="5">
+        <trigger>
+            <message>готов</message>
+        </trigger>
+        <replies>
+            <reply botname="Marshak" pause="0">
+                <message>Вы прошли всю игру, возьмите пирожок с полки.</message>
+            </reply>
+            <reply botname="Marshak" pause="1500">
+                <message>Жуйте частельно и не топропитесь.</message>
+            </reply>
+            <reply botname="Marshak" pause="1500">
+                <message>На этом мы закончили. Спасибо за внимание.</message>
+            </reply>
+        </replies>
+    </scene>
 </scenes>

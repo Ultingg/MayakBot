@@ -20,7 +20,7 @@ public class UpdateController {
     private final Brodskiy brodskiy; // бот слушатель
     private final ResponseService responseService;
 
-    public UpdateController(MarshakBot marshakBot, Brodskiy brodskiy, ResponseService responseService ) {
+    public UpdateController(MarshakBot marshakBot, Brodskiy brodskiy, ResponseService responseService) {
         this.marshakBot = marshakBot;
         this.brodskiy = brodskiy;
         this.responseService = responseService;
