@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.extensions.bots.commandbot.commands.BotCommand;
-import org.telegram.telegrambots.meta.api.methods.groupadministration.KickChatMember;
+import org.telegram.telegrambots.meta.api.methods.groupadministration.ExportChatInviteLink;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.User;
@@ -37,13 +37,11 @@ public class PlayCommand extends BotCommand {
             replyMessage.setChatId(chat.getId().toString());
             replyMessage.enableHtml(true);
 
-
-
             if (user.getUserName() == null) {
                 replyMessage.setText("Ты человек без имени. С тобой играть не получится. Разберись в себе для начала...");
             } else if (user.getUserName().equals("GroupAnonymousBot")) {
                 replyMessage.setText("Нужно выключить ананонимность. Ты не бэтмэн! Сними маску -_-");
-            } else if (!userService.IsUserExist(user.getUserName())) {
+            } else if (!userService.IsUserExist(user.getId().longValue())) {
                 try {
                     userService.setUserIntoDB(user);
                 } catch (Exception e) {
@@ -52,7 +50,8 @@ public class PlayCommand extends BotCommand {
                 replyMessage.setText("Вы успешно зарегистрировались!");
             }
             execute(absSender, replyMessage, user);
-            if( userService.IsUserExist(user.getUserName())){
+
+            if( userService.IsUserExist(user.getId().longValue())){
                 if(!telegramChatService.isUserAlreadyPlaying(user)){
                     if(telegramChatService.isFreeChatHas() ){
                         try {
@@ -61,13 +60,15 @@ public class PlayCommand extends BotCommand {
                             freeChat.setStartPlayTime(new Date());
                             freeChat.setUserId(user.getId().longValue());
                             telegramChatService.saveChatIntoDB(freeChat);
-                            replyMessage.setText(freeChat.getInviteLink());
-                            execute(absSender, replyMessage, user);
+
+                            ExportChatInviteLink exportChatInviteLink = new ExportChatInviteLink();
+                            exportChatInviteLink.setChatId(freeChat.getChatId().toString());
+                            var inviteLink = absSender.execute(exportChatInviteLink);
                             replyMessage.setText("Присоединяйся!");
                             execute(absSender, replyMessage, user);
-                            replyMessage.setText(freeChat.getInviteLink());
+                            replyMessage.setText(inviteLink /*freeChat.getInviteLink()*/);
                             execute(absSender, replyMessage, user);
-                            //нужно сделать проверку что пользователь играет в беседке, которая зарезирвирована
+                            //нужно сделать проверку что пользователь играет в беседке, которая зарезирвирована. Что он вошел в беседку.
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

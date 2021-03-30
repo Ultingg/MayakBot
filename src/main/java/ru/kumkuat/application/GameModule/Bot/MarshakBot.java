@@ -2,22 +2,17 @@ package ru.kumkuat.application.GameModule.Bot;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.AnswerPreCheckoutQuery;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
-import org.telegram.telegrambots.meta.api.methods.send.SendInvoice;
+import org.telegram.telegrambots.meta.api.methods.groupadministration.KickChatMember;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.methods.updates.SetWebhook;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.kumkuat.application.GameModule.Abstract.TelegramWebhookCommandBot;
-import ru.kumkuat.application.GameModule.Commands.MarshakCommands.PayCommand;
-import ru.kumkuat.application.GameModule.Commands.MarshakCommands.PlayCommand;
-import ru.kumkuat.application.GameModule.Commands.MarshakCommands.ResetCommand;
-import ru.kumkuat.application.GameModule.Commands.MarshakCommands.SetChatCommand;
+import ru.kumkuat.application.GameModule.Commands.MarshakCommands.*;
 
 
 @Setter
@@ -40,13 +35,14 @@ public class MarshakBot extends TelegramWebhookCommandBot {
 //    @Autowired
 //    private ResetCommand resetCommand;
 //    @Autowired
-//    private SetChatCommand setChatCommand;
+//    private SaveChatCommand saveChatCommand;
 
-    private MarshakBot(PlayCommand playCommand, PayCommand payCommand, ResetCommand resetCommand, SetChatCommand setChatCommand) {
+    private MarshakBot(PlayCommand playCommand, PayCommand payCommand, ResetCommand resetCommand, SaveChatCommand saveChatCommand, KickAllCommand kickAllCommand) {
         register(playCommand);
         register(payCommand);
         register(resetCommand);
-        register(setChatCommand);
+        register(saveChatCommand);
+        register(kickAllCommand);
     }
 
     @Override

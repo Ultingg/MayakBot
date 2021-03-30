@@ -17,7 +17,7 @@ public class TelegramChat {
     //@GeneratedValue
     private Long id;
     private String name;
-    private String inviteLink;
+    private Long chatId;
     private boolean isBusy;
     private Date startPlayTime;
     private Long userId;

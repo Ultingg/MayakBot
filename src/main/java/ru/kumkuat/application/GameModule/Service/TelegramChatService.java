@@ -9,6 +9,7 @@ import org.telegram.telegrambots.meta.api.objects.User;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TelegramChatService {
@@ -34,6 +35,12 @@ public class TelegramChatService {
         return freeChat.orElseThrow(Exception::new);
     }
 
+    public ArrayList<TelegramChat> getBusyChats() {
+        var busyChats = getAll().stream().filter(chat -> chat.isBusy());
+        List<TelegramChat> busyChatsList = busyChats.collect(Collectors.toList());
+        return new ArrayList<TelegramChat>(busyChatsList);
+    }
+
     public TelegramChat getChatById(Long id) throws Exception {
         var telegramChat = getAll().stream().filter(chat -> chat.getId() == id).findFirst();
         return telegramChat.orElseThrow(Exception::new);
@@ -47,7 +54,7 @@ public class TelegramChatService {
         if (telegramChat.getId() != null) {
             return getAll().stream().anyMatch(chat -> chat.getId().equals(telegramChat.getId()));
         } else {
-            return getAll().stream().anyMatch(chat -> chat.getName().equals(telegramChat.getName()) && chat.getInviteLink().equals(telegramChat.getInviteLink()));
+            return getAll().stream().anyMatch(chat -> chat.getChatId().equals(telegramChat.getChatId()));
         }
         //Надо отслеживать изменение ссылок
     }
@@ -62,6 +69,7 @@ public class TelegramChatService {
             telegramChat.setBusy(false);
             telegramChat.setInviteLink(chat.getInviteLink());
             telegramChat.setName(chat.getTitle());
+            telegramChat.setChatId(chat.getId());
             if (!isTelegramChatExist(telegramChat)) {
                 Long ChatId = Long.valueOf(getAll().size()) + 1;
                 telegramChat.setId(ChatId);

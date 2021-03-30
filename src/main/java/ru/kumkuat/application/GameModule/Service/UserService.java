@@ -60,10 +60,10 @@ public class UserService {
     }
 
 
-    public boolean IsUserExist(String name) {
+    public boolean IsUserExist(Long userId) {
         for (User user :
                 userRepository.findAll()) {
-            if (user.getName().equals(name)) {
+            if (user.getId().equals(userId)) {
                 return true;
             }
         }

@@ -18,14 +18,14 @@ import ru.kumkuat.application.GameModule.Service.TelegramChatService;
 import ru.kumkuat.application.GameModule.Service.UserService;
 
 @Service
-public class SetChatCommand extends BotCommand {
+public class SaveChatCommand extends BotCommand {
     @Autowired
     private UserService userService;
     @Autowired
     private TelegramChatService telegramChatService;
 
-    public SetChatCommand() {
-        super("/setchat", "Save chat into DB\n");
+    public SaveChatCommand() {
+        super("/savechat", "Save chat into DB\n");
     }
 
     @Override
@@ -34,12 +34,15 @@ public class SetChatCommand extends BotCommand {
         replyMessage.setChatId(chat.getId().toString());
         replyMessage.enableHtml(true);
 
-        if (userService.IsUserExist(user.getUserName())) {
+        if (userService.IsUserExist(user.getId().longValue())) {
             try {
                 GetChat getChat = new GetChat();
                 getChat.setChatId(chat.getId().toString());
+
+
                 try {
                     var chatInfo = absSender.execute(getChat);
+
                     var tittle = chatInfo.getTitle();
                     var inviteLink = chatInfo.getInviteLink();
 
