@@ -57,22 +57,6 @@ public class KickAllCommand extends BotCommand implements AdminCommand {
                     execute(absSender, sendMessage, user);
                 }
             }
-
-//            for (var busyChat :
-//                    telegramChatService.getAll()) {
-//                ExportChatInviteLink exportChatInviteLink = new ExportChatInviteLink(busyChat.getChatId().toString());
-//                String inviteLink = null;
-//                try {
-//                    inviteLink = absSender.execute(exportChatInviteLink);
-//                } catch (TelegramApiException e) {
-//                    e.printStackTrace();
-//                }
-//                SendMessage sendMessage = new SendMessage();
-//                sendMessage.setText(inviteLink);
-//                sendMessage.setChatId(chat.getId().toString());
-//                sendMessage.enableHtml(true);
-//                execute(absSender, sendMessage, user);
-//            }
         } else {
             SendMessage replyMessage = new SendMessage();
             replyMessage.setChatId(chat.getId().toString());
