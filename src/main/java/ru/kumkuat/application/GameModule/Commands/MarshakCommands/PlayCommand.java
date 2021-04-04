@@ -10,6 +10,10 @@ import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import ru.kumkuat.application.GameModule.Bot.AkhmatovaBot;
+import ru.kumkuat.application.GameModule.Bot.Brodskiy;
+import ru.kumkuat.application.GameModule.Bot.Harms;
+import ru.kumkuat.application.GameModule.Bot.MayakBot;
 import ru.kumkuat.application.GameModule.Service.TelegramChatService;
 import ru.kumkuat.application.GameModule.Service.UserService;
 
@@ -20,9 +24,17 @@ public class PlayCommand extends BotCommand {
     private final UserService userService;
     @Autowired
     private TelegramChatService telegramChatService;
+    @Autowired
+    private Harms harms;
+    @Autowired
+    private AkhmatovaBot akhmatovaBot;
+    @Autowired
+    private Brodskiy brodskiy;
+    @Autowired
+    private MayakBot mayakBot;
 
     public PlayCommand(UserService userService) {
-        super("/play", "Write that command and lets get to play!\n");
+        super("/play", "После этой команды начнется игра");
         this.userService = userService;
     }
 
@@ -48,36 +60,83 @@ public class PlayCommand extends BotCommand {
                 replyMessage.setText("Вы успешно зарегистрировались!");
             }
             execute(absSender, replyMessage, user);
-
-            if (userService.IsUserExist(user.getId().longValue())) {
-                if (!telegramChatService.isUserAlreadyPlaying(user)) {
-                    if (telegramChatService.isFreeChatHas()) {
-                        try {
-                            var freeChat = telegramChatService.getFreeChat();
-                            freeChat.setBusy(true);
-                            //freeChat.setStartPlayTime(new Date());
-                            freeChat.setUserId(user.getId().longValue());
-                            telegramChatService.saveChatIntoDB(freeChat);
-
-                            ExportChatInviteLink exportChatInviteLink = new ExportChatInviteLink(freeChat.getChatId().toString());
-                            var inviteLink = absSender.execute(exportChatInviteLink);
-
-                            replyMessage.setText("Присоединяйся!");
-                            execute(absSender, replyMessage, user);
-                            replyMessage.setText(inviteLink);
-                            execute(absSender, replyMessage, user);
-                            //нужно сделать проверку что пользователь играет в беседке, которая зарезирвирована. Что он вошел в беседку.
-                        } catch (Exception e) {
-                            e.printStackTrace();
+            try {
+                if (userService.IsUserExist(user.getId().longValue())) {
+                    if (userService.IsUserHasPayment(user.getId().longValue())) {
+                        if (isBotsStarting(absSender, user, chat)) {
+                            SendFreeChat(absSender, user, chat);
                         }
-                    } else {
-                        replyMessage.setText("Нет свободных чатов, попробуйте позже");
+                    }
+                    else{
+                        replyMessage.setText("Необходимо внести оплату!");
                         execute(absSender, replyMessage, user);
                     }
-                } else {
-                    replyMessage.setText("Вы уже начали игру. Чтобы начать заново, нужно ее закончить.");
-                    execute(absSender, replyMessage, user);
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    boolean isBotsStarting(AbsSender absSender, User user, Chat chat) throws TelegramApiException {
+        SendMessage replyMessage = new SendMessage();
+        replyMessage.setChatId(chat.getId().toString());
+        replyMessage.enableHtml(true);
+        boolean result = true;
+        String reply = "";
+        if (!harms.isBotsStarting(user.getId().toString())) {
+            reply += "\n@" + harms.getBotUsername() + " не активирован";
+            result = false;
+        }
+        if (!akhmatovaBot.isBotsStarting(user.getId().toString())) {
+            reply += "\n@" + akhmatovaBot.getBotUsername() + " не активирован";
+            result = false;
+        }
+        if (!brodskiy.isBotsStarting(user.getId().toString())) {
+            reply += "\n@" + brodskiy.getBotUsername() + " не активирован";
+            result = false;
+        }
+        if (!mayakBot.isBotsStarting(user.getId().toString())) {
+            reply += "\n@" + mayakBot.getBotUsername() + " не активирован";
+            result = false;
+        }
+        if(!result){
+            replyMessage.setText(reply);
+            absSender.execute(replyMessage);
+        }
+        return result;
+    }
+
+    void SendFreeChat(AbsSender absSender, User user, Chat chat) throws Exception {
+        SendMessage replyMessage = new SendMessage();
+        replyMessage.setChatId(chat.getId().toString());
+        replyMessage.enableHtml(true);
+        if (userService.IsUserExist(user.getId().longValue())) {
+            if (!telegramChatService.isUserAlreadyPlaying(user)) {
+                if (telegramChatService.isFreeChatHas()) {
+
+                    var freeChat = telegramChatService.getFreeChat();
+                    freeChat.setBusy(true);
+                    //freeChat.setStartPlayTime(new Date());
+                    freeChat.setUserId(user.getId().longValue());
+                    telegramChatService.saveChatIntoDB(freeChat);
+
+                    ExportChatInviteLink exportChatInviteLink = new ExportChatInviteLink(freeChat.getChatId().toString());
+                    var inviteLink = absSender.execute(exportChatInviteLink);
+
+                    replyMessage.setText("Присоединяйся! Для старта напиши \"Привет\"");
+                    absSender.execute(replyMessage);
+                    replyMessage.setText(inviteLink);
+                    absSender.execute(replyMessage);
+                    //нужно сделать проверку что пользователь играет в беседке, которая зарезирвирована. Что он вошел в беседку.
+
+                } else {
+                    replyMessage.setText("Нет свободных чатов, попробуйте позже");
+                    absSender.execute(replyMessage);
+                }
+            } else {
+                replyMessage.setText("Вы уже начали игру. Чтобы начать заново, нужно ее закончить.");
+                absSender.execute(replyMessage);
             }
         }
     }

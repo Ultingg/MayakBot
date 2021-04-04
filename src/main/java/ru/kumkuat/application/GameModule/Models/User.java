@@ -20,4 +20,5 @@ public class User {
     private Long sceneId;
     private Long telegramUserId;
     private boolean isAdmin;
+    private boolean hasPay;
 }

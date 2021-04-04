@@ -67,4 +67,16 @@ public class Harms extends TelegramWebhookBot implements BotsSender {
             e.getStackTrace();
         }
     }
+    public boolean isBotsStarting(String UserId){
+        SendMessage checkMessage = new SendMessage();
+        checkMessage.setText("Проверка");
+        checkMessage.setChatId(UserId);
+        try {
+            this.execute(checkMessage);
+            return true;
+        } catch (TelegramApiException e) {
+            //e.printStackTrace();
+            return false;
+        }
+    }
 }

@@ -19,7 +19,7 @@ import java.util.List;
 public class PayCommand extends BotCommand {
     @Autowired
     private UserService userService;
-    private static final String COMMAND_DESCRIPTION = "Оплатить прогулку! Введите /pay чтобы произвести оплату.";
+    private static final String COMMAND_DESCRIPTION = "Так Вы можете оплатить прогулку";
 
     public PayCommand() {
         super("/pay", COMMAND_DESCRIPTION);
@@ -30,14 +30,13 @@ public class PayCommand extends BotCommand {
         SendMessage replyMessage = new SendMessage();
         replyMessage.setChatId(chat.getId().toString());
         replyMessage.enableHtml(true);
-        replyMessage.setText("Плати давай ...");
 
         SendInvoice sendInvoice = new SendInvoice();
         sendInvoice.setChatId(chat.getId().intValue());
         sendInvoice.setTitle("Веселые старты");
         sendInvoice.setDescription("Побегаем, попрыгаем, ножками подрыгаем");
         sendInvoice.setPayload("Payload");
-        sendInvoice.setProviderToken("284685063:TEST:N2UwNWQ3MzcxMzVh");
+        sendInvoice.setProviderToken("381764678:TEST:23269");
         sendInvoice.setCurrency("RUB");
         sendInvoice.setStartParameter("StartParameter");
         List<LabeledPrice> labeledPrices = new ArrayList<>();
@@ -47,7 +46,6 @@ public class PayCommand extends BotCommand {
         labeledPrices.add(labeledPrice);
         sendInvoice.setPrices(labeledPrices);
         try {
-            absSender.execute(replyMessage);
             var result = absSender.execute(sendInvoice);
             System.out.println(result.getText());
         } catch (TelegramApiException e) {

@@ -76,5 +76,16 @@ public class Brodskiy extends TelegramWebhookBot implements BotsSender {
             log.debug("{} failed sending SendTextMessage!", secretName);
         }
     }
-
+    public boolean isBotsStarting(String UserId){
+        SendMessage checkMessage = new SendMessage();
+        checkMessage.setText("Проверка");
+        checkMessage.setChatId(UserId);
+        try {
+            this.execute(checkMessage);
+            return true;
+        } catch (TelegramApiException e) {
+            //e.printStackTrace();
+            return false;
+        }
+    }
 }

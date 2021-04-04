@@ -1,5 +1,6 @@
 package ru.kumkuat.application.GameModule.Service;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.User;
@@ -14,11 +15,18 @@ import java.util.stream.Collectors;
 @Service
 public class TelegramChatService {
 
+    @Value("${admin.chat.id}")
+    private  String AdminChatId;
+
     private final TelegramChatRepository telegramChatRepository;
 
     public TelegramChatService(TelegramChatRepository telegramChatRepository) {
         this.telegramChatRepository = telegramChatRepository;
         //cleanAll();
+    }
+
+    public String getAdminChatId() {
+        return AdminChatId;
     }
 
     public List<TelegramChat> getAll() {
@@ -92,5 +100,10 @@ public class TelegramChatService {
 
     public void cleanAll() {
         telegramChatRepository.deleteAll();
+    }
+
+    public TelegramChat getChatByUserTelegramId(Long telegramUserId) throws Exception {
+        var userchat = getAll().stream().filter(chat -> chat.getUserId().equals(telegramUserId)).findFirst();
+        return userchat.orElseThrow(Exception::new);
     }
 }

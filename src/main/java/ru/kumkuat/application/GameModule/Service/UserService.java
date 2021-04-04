@@ -1,13 +1,18 @@
 package ru.kumkuat.application.GameModule.Service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.kumkuat.application.GameModule.Bot.MarshakBot;
+import ru.kumkuat.application.GameModule.Commands.MarshakCommands.KickAllCommand;
+import ru.kumkuat.application.GameModule.Models.TelegramChat;
 import ru.kumkuat.application.GameModule.Models.User;
 import ru.kumkuat.application.GameModule.Repository.UserRepository;
 
 @Slf4j
 @Service
 public class UserService {
+
     private final UserRepository userRepository;
     private final SceneService sceneService;
 
@@ -72,7 +77,7 @@ public class UserService {
                 if (userToUpdate.isAdmin()) {
                     userToUpdate.setSceneId(0L);
                 } else {
-                    userToUpdate.setSceneId(sceneId); //TODO: обдумать механиз завершения сценария игры
+                    userToUpdate.setSceneId(0L);
                 }
             } else {
                 userToUpdate.setSceneId(sceneId + 1);
@@ -97,5 +102,22 @@ public class UserService {
 
     }
 
+    public boolean IsUserHasPayment(long TelegramId) {
+        User user = getUserByTelegramId(TelegramId);
+        if (user != null) {
+            return user.isHasPay();
 
+        }
+        throw new NullPointerException("User is null");
+    }
+
+    public void setUserPayment(long TelegramId, boolean isPay) {
+        User user = getUserByTelegramId(TelegramId);
+        if (user != null) {
+            user.setHasPay(isPay);
+            userRepository.save(user);
+        } else {
+            throw new NullPointerException("User is null");
+        }
+    }
 }

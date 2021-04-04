@@ -2,6 +2,7 @@ package ru.kumkuat.application.GameModule.Service;
 
 import com.vdurmont.emoji.EmojiParser;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendLocation;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -10,10 +11,12 @@ import org.telegram.telegrambots.meta.api.methods.send.SendVoice;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Location;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import ru.kumkuat.application.GameModule.Bot.MarshakBot;
 import ru.kumkuat.application.GameModule.Collections.Reply;
 import ru.kumkuat.application.GameModule.Collections.ResponseContainer;
 import ru.kumkuat.application.GameModule.Collections.Scene;
 import ru.kumkuat.application.GameModule.Collections.Trigger;
+import ru.kumkuat.application.GameModule.Commands.MarshakCommands.KickAllCommand;
 import ru.kumkuat.application.GameModule.Controller.BotController;
 import ru.kumkuat.application.GameModule.Exceptions.IncomingMessageException;
 import ru.kumkuat.application.GameModule.Models.Geolocation;
@@ -27,6 +30,14 @@ import java.util.List;
 @Service
 public class ResponseService {
 
+    @Autowired
+    private MarshakBot marshakBot;
+    @Autowired
+    private SceneService sceneService;
+    @Autowired
+    private KickAllCommand kickAllCommand;
+    @Autowired
+    private TelegramChatService telegramChatService;
     private final SceneCollection sceneCollection;
     private final PictureService pictureService;
     private final AudioService audioService;
@@ -77,6 +88,10 @@ public class ResponseService {
             try {
                 if (checkIncomingMessage(message, sceneTrigger)) {
                     ReplyResolver(message, scene);
+                    var user = userService.getUser(userId);
+                    if(user.getSceneId() >= sceneService.count() - 1){
+                        kickAllCommand.kickChatMember(marshakBot, telegramChatService.getChatByUserTelegramId(user.getTelegramUserId()));
+                    }
                     userService.incrementSceneId(userId);
                 } else {
                     ResponseContainer wrongAnswerResponse = configureWrongTriggerMessage(message, scene);
@@ -85,6 +100,8 @@ public class ResponseService {
             } catch (IncomingMessageException exception) {
                 exception.printStackTrace();
                 log.debug("Incoming message Exception!");
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }

@@ -2,6 +2,7 @@ package ru.kumkuat.application.GameModule.Controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updates.SetWebhook;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.kumkuat.application.GameModule.Bot.*;
@@ -34,6 +35,12 @@ public class BotController {
             e.printStackTrace();
         }
     }
+
+//    public boolean IsBotsStarting(String UserId){
+//        SendMessage checkMessage = new SendMessage();
+//        checkMessage.setText("Проверка");
+//        harms.execute();
+//    }
 
     public void responseResolver(ResponseContainer responseContainer) {
         String botName = responseContainer.getBotName();

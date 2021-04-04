@@ -13,12 +13,14 @@ import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.kumkuat.application.GameModule.Service.UserService;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Component
 public class HelpCommand extends ManCommand {
     private static final String COMMAND_IDENTIFIER = "help";
-    private static final String COMMAND_DESCRIPTION = "Показывает все команды. Введите /help для вывода списка команд.";
+    private static final String COMMAND_DESCRIPTION = "Вывести список доступных команд";
     private static final String EXTENDED_DESCRIPTION = "This command displays all commands the bot has to offer.\n /help can display deeper information";
     @Autowired
     private UserService userService;
@@ -28,6 +30,8 @@ public class HelpCommand extends ManCommand {
      */
     public HelpCommand() {
         super(COMMAND_IDENTIFIER, COMMAND_DESCRIPTION, EXTENDED_DESCRIPTION);
+        ignorCommandList.add("start");
+        ignorCommandList.add("support");
     }
 
     /**
@@ -52,7 +56,7 @@ public class HelpCommand extends ManCommand {
 
         for (IBotCommand com : botCommands) {
             if (!adminFlag) {
-                if (!(com instanceof AdminCommand)) {
+                if (!(com instanceof AdminCommand) &&  !ignorCommandList.contains(com.getCommandIdentifier())) {
                     reply.append(com.toString()).append(System.lineSeparator()).append(System.lineSeparator());
                 }
             } else {
@@ -62,7 +66,7 @@ public class HelpCommand extends ManCommand {
         }
         return reply.toString();
     }
-
+    private static ArrayList<String> ignorCommandList = new ArrayList<String>();
     /**
      * Returns the command and description of all supplied commands as a formatted String
      *
