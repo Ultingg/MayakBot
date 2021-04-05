@@ -40,10 +40,10 @@ public class PreviousSceneCommand extends BotCommand implements AdminCommand {
         } else {
             replyMessage.setText("Вы не обладаете соответствующим уровнем доступа.");
         }
-        execute(absSender, replyMessage, user);
+        execute(absSender, replyMessage);
     }
 
-    void execute(AbsSender sender, SendMessage message, User user) {
+    void execute(AbsSender sender, SendMessage message) {
         try {
             sender.execute(message);
         } catch (TelegramApiException e) {

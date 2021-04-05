@@ -2,7 +2,6 @@ package ru.kumkuat.application.GameModule.Service;
 
 import com.vdurmont.emoji.EmojiParser;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendLocation;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -11,12 +10,10 @@ import org.telegram.telegrambots.meta.api.methods.send.SendVoice;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Location;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import ru.kumkuat.application.GameModule.Bot.MarshakBot;
 import ru.kumkuat.application.GameModule.Collections.Reply;
 import ru.kumkuat.application.GameModule.Collections.ResponseContainer;
 import ru.kumkuat.application.GameModule.Collections.Scene;
 import ru.kumkuat.application.GameModule.Collections.Trigger;
-import ru.kumkuat.application.GameModule.Commands.MarshakCommands.KickAllCommand;
 import ru.kumkuat.application.GameModule.Controller.BotController;
 import ru.kumkuat.application.GameModule.Exceptions.IncomingMessageException;
 import ru.kumkuat.application.GameModule.Models.Geolocation;
@@ -30,14 +27,6 @@ import java.util.List;
 @Service
 public class ResponseService {
 
-    @Autowired
-    private MarshakBot marshakBot;
-    @Autowired
-    private SceneService sceneService;
-    @Autowired
-    private KickAllCommand kickAllCommand;
-    @Autowired
-    private TelegramChatService telegramChatService;
     private final SceneCollection sceneCollection;
     private final PictureService pictureService;
     private final AudioService audioService;
@@ -60,6 +49,31 @@ public class ResponseService {
         this.userService = userService;
     }
 
+    public void messageReceiver(Message message, boolean isNavigationCommand) {
+        Long userId = Long.valueOf(message.getFrom().getId());
+        if (userService.IsUserExist(userId)) {
+            Long sceneId = getSceneId(message);
+            Scene scene = sceneCollection.get(sceneId);
+            Trigger sceneTrigger = scene.getTrigger();
+            String chatId = message.getChatId().toString();
+            try {
+                if(isNavigationCommand) {    //сделал отдельно чтобы не проводить проверку checkIncomingMessage лишний раз
+                    ReplyResolver(chatId, scene);
+                    userService.incrementSceneId(userId);
+                } else {
+                if (checkIncomingMessage(message, sceneTrigger)) {
+                    ReplyResolver(chatId, scene);
+                    userService.incrementSceneId(userId);
+                } else {
+                    ResponseContainer wrongAnswerResponse = configureWrongTriggerMessage(chatId);
+                    botController.responseResolver(wrongAnswerResponse);
+                } }
+            } catch (IncomingMessageException exception) {
+                exception.printStackTrace();
+                log.debug("Incoming message Exception!");
+            }
+        }
+    }
 
     private boolean checkIncomingMessage(Message message, Trigger sceneTrigger) throws IncomingMessageException {
 
@@ -79,57 +93,29 @@ public class ResponseService {
         throw new IncomingMessageException("checkIncomingMessage didn't happened!");
     }
 
-    public void messageReceiver(Message message) {
-        Long userId = Long.valueOf(message.getFrom().getId());
-        if (userService.IsUserExist(userId)) {
-            Long sceneId = getSceneId(message);
-            Scene scene = sceneCollection.get(sceneId);
-            Trigger sceneTrigger = scene.getTrigger();
-            try {
-                if (checkIncomingMessage(message, sceneTrigger)) {
-                    ReplyResolver(message, scene);
-                    var user = userService.getUser(userId);
-                    if(user.getSceneId() >= sceneService.count() - 1){
-                        kickAllCommand.KickChatMember(marshakBot, telegramChatService.getChatByUserTelegramId(user.getTelegramUserId()));
-                    }
-                    userService.incrementSceneId(userId);
-                } else {
-                    ResponseContainer wrongAnswerResponse = configureWrongTriggerMessage(message, scene);
-                    botController.responseResolver(wrongAnswerResponse);
-                }
-            } catch (IncomingMessageException exception) {
-                exception.printStackTrace();
-                log.debug("Incoming message Exception!");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
-    private void ReplyResolver(Message message, Scene scene) {
+    private void ReplyResolver(String chatId, Scene scene) {
         List<Reply> replyList = scene.getReplyCollection();
         ResponseContainer responseContainer;
         for (Reply reply : replyList) {
-            responseContainer = configureMessage(reply, message);
+            responseContainer = configureMessage(reply, chatId);
             botController.responseResolver(responseContainer);
         }
     }
 
-    private ResponseContainer configureWrongTriggerMessage(Message message, Scene scene) {
-        //пока Message и Scene не используются но при реализации индивидуальных ответов для каждого триггера они понадобятся
+    private ResponseContainer configureWrongTriggerMessage(String chatId) {
         String wrongAnswerMessage = "Друг подумай еще разок над тем что сказал";
         ResponseContainer responseContainer = new ResponseContainer();
         SendMessage sendMessage = new SendMessage();
         sendMessage.setText(wrongAnswerMessage);
-        sendMessage.setChatId(message.getChatId().toString());
+        sendMessage.setChatId(chatId);
         responseContainer.setSendMessage(sendMessage);
         responseContainer.setBotName("Mayakovsky"); //дежурный по стране
         responseContainer.setTimingOfReply(100);
         return responseContainer;
     }
 
-    private synchronized ResponseContainer configureMessage(Reply reply, Message message) {
-        String chatId = message.getChatId().toString();
+    private synchronized ResponseContainer configureMessage(Reply reply, String chatId) {
         ResponseContainer responseContainer = new ResponseContainer();
         responseContainer.setTimingOfReply(reply.getTiming());
         responseContainer.setBotName(reply.getBotName());
