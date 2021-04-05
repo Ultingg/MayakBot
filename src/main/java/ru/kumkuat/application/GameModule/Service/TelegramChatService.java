@@ -1,6 +1,7 @@
 package ru.kumkuat.application.GameModule.Service;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.User;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@PropertySource(name = "secret.yml", value = "secret.yml")
 public class TelegramChatService {
 
     @Value("${admin.chat.id}")

@@ -18,7 +18,6 @@ import ru.kumkuat.application.GameModule.Service.UserService;
 import java.time.Duration;
 
 @Service
-@PropertySource(name = "secret.yml", value = "secret.yml")
 public class KickAllCommand extends BotCommand implements AdminCommand {
     @Autowired
     private UserService userService;

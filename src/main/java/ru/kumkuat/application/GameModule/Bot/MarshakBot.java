@@ -34,6 +34,14 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender 
     private TelegramChatService telegramChatService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private Harms harms;
+    @Autowired
+    private AkhmatovaBot akhmatovaBot;
+    @Autowired
+    private Brodskiy brodskiy;
+    @Autowired
+    private MayakBot mayakBot;
 
     private String secretName = "Marshak";
 
@@ -53,11 +61,11 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender 
 //    @Autowired
 //    private SaveChatCommand saveChatCommand;
 
-    private MarshakBot(PlayCommand playCommand, PayCommand payCommand, ResetCommand resetCommand,
+    private MarshakBot(PayCommand payCommand, ResetCommand resetCommand,
                        SaveChatCommand saveChatCommand, NextSceneCommand nextSceneCommand,
                        PreviousSceneCommand previousSceneCommand, HelpCommand helpCommand,
                        KickAllCommand kickAllCommand, SupportCommand supportCommand,
-                       StartCommand startCommand) {
+                       StartCommand startCommand, PlayCommand playCommand ) {
         register(playCommand);
         register(payCommand);
         register(resetCommand);
@@ -96,10 +104,10 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender 
                 userService.setUserPayment(user.getId(),true);
                 replyMessage.setText("Вcе готово, чтобы начать!\n" +
                         "Осталось активировать ботов:\n" +
-                        "@VlVlMayakovskiyTestBot\n" +
-                        "@AnAnAkhmatovaTestBot\n" +
-                        "@IABrodskiyTestBot\n" +
-                        "@DaIvHarmsTestBot\n" +
+                        "@" + mayakBot.getBotUsername() + "\n" +
+                        "@" + akhmatovaBot.getBotUsername() + "\n" +
+                        "@" + brodskiy.getBotUsername() + "\n" +
+                        "@" + harms.getBotUsername() + "\n" +
                         "и нажать /play"
                 );
                 execute(replyMessage);

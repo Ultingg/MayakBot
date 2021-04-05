@@ -42,17 +42,30 @@ public class UserService {
 
 
     public long setUserIntoDB(org.telegram.telegrambots.meta.api.objects.User telegramUser) throws Exception {
-        if (telegramUser.getUserName() != null) {
-            User user = new User();
+        User user = new User();
+        if(telegramUser.getUserName() != null){
             user.setName(telegramUser.getUserName());
-            user.setFirstName(telegramUser.getFirstName());
-            user.setLastName(telegramUser.getLastName());
-            user.setSceneId(0L);
-            user.setTelegramUserId((long) telegramUser.getId());
-            userRepository.save(user);
-            return user.getId();
         }
-        throw new Exception("User name is null");
+        else{
+            user.setName("");
+        }
+        if(telegramUser.getFirstName() != null){
+            user.setFirstName(telegramUser.getFirstName());
+        }
+        else{
+            user.setFirstName("");
+        }
+        if(telegramUser.getLastName() != null){
+            user.setLastName(telegramUser.getLastName());
+        }
+        else{
+            user.setLastName("");
+        }
+        user.setSceneId(0L);
+        user.setTelegramUserId((long) telegramUser.getId());
+        userRepository.save(user);
+        return user.getId();
+        //throw new Exception("User name is null");
     }
 
     public User getUser(Long telegramId) throws NullPointerException {

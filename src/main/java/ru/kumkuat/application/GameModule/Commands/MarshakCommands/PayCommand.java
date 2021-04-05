@@ -1,6 +1,8 @@
 package ru.kumkuat.application.GameModule.Commands.MarshakCommands;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.extensions.bots.commandbot.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.methods.send.SendInvoice;
@@ -16,9 +18,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@PropertySource(name = "secret.yml", value = "secret.yml")
 public class PayCommand extends BotCommand {
     @Autowired
     private UserService userService;
+    @Value("${marshak.payment.provider.token}")
+    private String paymentProviderToken;
     private static final String COMMAND_DESCRIPTION = "Так Вы можете оплатить прогулку";
 
     public PayCommand() {
@@ -36,7 +41,7 @@ public class PayCommand extends BotCommand {
         sendInvoice.setTitle("Веселые старты");
         sendInvoice.setDescription("Побегаем, попрыгаем, ножками подрыгаем");
         sendInvoice.setPayload("Payload");
-        sendInvoice.setProviderToken("381764678:TEST:23269");
+        sendInvoice.setProviderToken(paymentProviderToken);
         sendInvoice.setCurrency("RUB");
         sendInvoice.setStartParameter("StartParameter");
         List<LabeledPrice> labeledPrices = new ArrayList<>();

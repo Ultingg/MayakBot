@@ -84,10 +84,10 @@ public class PlayCommand extends BotCommand {
         replyMessage.enableHtml(true);
         boolean result = true;
         String reply = "";
-        if (!harms.isBotsStarting(user.getId().toString())) {
-            reply += "\n@" + harms.getBotUsername() + " не активирован";
-            result = false;
-        }
+//        if (!harms.isBotsStarting(user.getId().toString())) {
+//            reply += "\n@" + harms.getBotUsername() + " не активирован";
+//            result = false;
+//        }
         if (!akhmatovaBot.isBotsStarting(user.getId().toString())) {
             reply += "\n@" + akhmatovaBot.getBotUsername() + " не активирован";
             result = false;

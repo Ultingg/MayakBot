@@ -34,11 +34,12 @@ public class StartCommand extends BotCommand {
 
             log.debug("Marshak ");
 
-            if (user.getUserName() == null) {
+            /*if (user.getUserName() == null) {
                 //replyMessage.setText("Ты человек без имени. С тобой играть не получится. Разберись в себе для начала...");
             } else if (user.getUserName().equals("GroupAnonymousBot")) {
                 //replyMessage.setText("Нужно выключить ананонимность. Ты не бэтмэн! Сними маску -_-");
-            } else if (!userService.IsUserExist(user.getId().longValue())) {
+            } else */
+            if (!userService.IsUserExist(user.getId().longValue())) {
                 try {
                     userService.setUserIntoDB(user);
                 } catch (Exception e) {
