@@ -1,12 +1,13 @@
 package ru.kumkuat.application.GameModule.Service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-import ru.kumkuat.application.GameModule.Collections.Scene;
 import ru.kumkuat.application.GameModule.Exceptions.RepliesException;
 import ru.kumkuat.application.GameModule.Exceptions.TriggerException;
 
@@ -18,23 +19,28 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 @Slf4j
-@Component
+
+@Service
+@PropertySource(value = "file:../resources/externalsecret.yml")
 public class XMLService {
     private DocumentBuilderFactory builderFactory;
     private XPathFactory xpathFactory = null;
     private DocumentBuilder builder = null;
     private XPath xpath = null;
     private Document doc = null;
+    @Value("${xml.pathToScenario2}")
+    private String path;
 
-    public XMLService(Scene scene) {
+    public XMLService() {
         builderFactory = DocumentBuilderFactory.newInstance();
         builderFactory.setNamespaceAware(true);
-
+        System.out.println(path);
+        System.out.println("Я родился!");
         try {
             xpathFactory = XPathFactory.newInstance();
             xpath = xpathFactory.newXPath();
             builder = builderFactory.newDocumentBuilder();
-            doc = builder.parse("src/main/resources/scenario_template.xml" /*"classes/scenario_template.xml"*/);
+            doc = builder.parse("../resources/scenario_template.xml" /*"classes/scenario_template.xml"*/);
         } catch (SAXException e) {
             e.printStackTrace();
             log.debug("XMLService:SAX exception with XMLService.");

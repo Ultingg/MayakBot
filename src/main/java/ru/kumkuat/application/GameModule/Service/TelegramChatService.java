@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@PropertySource(name = "secret.yml", value = "secret.yml")
+@PropertySource(value = "file:../resources/externalsecret.yml")
 public class TelegramChatService {
 
     @Value("${admin.chat.id}")

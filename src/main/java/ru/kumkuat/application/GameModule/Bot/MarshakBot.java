@@ -9,12 +9,10 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.AnswerPreCheckoutQuery;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
-import org.telegram.telegrambots.meta.api.methods.groupadministration.ExportChatInviteLink;
 import org.telegram.telegrambots.meta.api.methods.send.SendLocation;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.send.SendVoice;
-import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -27,9 +25,8 @@ import ru.kumkuat.application.GameModule.Service.UserService;
 @Setter
 @Getter
 @Component
-@PropertySource(name = "secret.yml", value = "secret.yml")
+@PropertySource(value = "file:../resources/externalsecret.yml")
 public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender {
-
     @Autowired
     private TelegramChatService telegramChatService;
     @Autowired
@@ -52,14 +49,6 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender 
     @Value("${marshak.path}")
     private String botPath;
 
-//    @Autowired
-//    private PlayCommand playCommand;
-//    @Autowired
-//    private PayCommand payCommand;
-//    @Autowired
-//    private ResetCommand resetCommand;
-//    @Autowired
-//    private SaveChatCommand saveChatCommand;
 
     private MarshakBot(PayCommand payCommand, ResetCommand resetCommand,
                        SaveChatCommand saveChatCommand, NextSceneCommand nextSceneCommand,

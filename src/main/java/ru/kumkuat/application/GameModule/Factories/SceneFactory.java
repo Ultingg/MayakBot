@@ -3,6 +3,7 @@ package ru.kumkuat.application.GameModule.Factories;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Node;
 import ru.kumkuat.application.GameModule.Collections.Reply;
@@ -23,6 +24,7 @@ import java.util.List;
 @Getter
 @Component
 public class SceneFactory {
+
     private final XMLService xmlService;
     private final GeolocationDatabaseService geolocationDatabaseService;
     private final PictureService pictureService;

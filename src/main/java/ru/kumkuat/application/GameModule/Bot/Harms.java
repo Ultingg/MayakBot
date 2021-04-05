@@ -1,7 +1,6 @@
 package ru.kumkuat.application.GameModule.Bot;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,8 +19,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 @Setter
 @Getter
 @Component
-@NoArgsConstructor
-@PropertySource(name = "secret.yml", value = "secret.yml")
+@PropertySource(value = "file:../resources/externalsecret.yml")
 public class Harms extends TelegramWebhookBot implements BotsSender {
 
     @Value("${harms.name}")

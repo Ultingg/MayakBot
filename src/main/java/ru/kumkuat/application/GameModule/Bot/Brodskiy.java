@@ -17,7 +17,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 @Data
 @Slf4j
 @Component
-@PropertySource(name = "secret.yml", value = "secret.yml")
+@PropertySource(value = "file:../resources/externalsecret.yml")
 public class Brodskiy extends TelegramWebhookBot implements BotsSender {
     private final String secretName = "Brodskiy";
     @Value("${brodskiy.name}")

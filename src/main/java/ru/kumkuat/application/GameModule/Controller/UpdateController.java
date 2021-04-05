@@ -24,6 +24,7 @@ public class UpdateController {
         this.marshakBot = marshakBot;
         this.brodskiy = brodskiy;
         this.responseService = responseService;
+
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST)

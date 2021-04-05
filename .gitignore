@@ -3,6 +3,6 @@ classes/
 log/
 META-INF/
 target/
-secret.yml
+secret.properties
 src/main/resources/pictures/
 src/main/resources/voice/

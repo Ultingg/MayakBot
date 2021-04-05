@@ -13,6 +13,7 @@ import java.io.InputStreamReader;
 
 @SpringBootApplication
 public class Application implements CommandLineRunner {
+
     @Autowired
     private ApplicationContextProvider applicationContextProvider;
 

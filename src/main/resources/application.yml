@@ -1,7 +1,7 @@
 spring:
   datasource:
     username: root
-    password: 1720Maximnn
+    password: 9999
     url: jdbc:mysql://localhost:3306/promenad?serverTimezone=UTC
     driver-class-name: com.mysql.cj.jdbc.Driver
     initialization-mode: never
@@ -21,6 +21,16 @@ spring:
 jdbc:
   driverClassName: com.mysql.cj.jdbc.Driver
 
+admin:
+  chat:
+    id: 396005041
 
 
 text.path: src\\main\\resources\\voice\\
+
+
+
+
+
+
+

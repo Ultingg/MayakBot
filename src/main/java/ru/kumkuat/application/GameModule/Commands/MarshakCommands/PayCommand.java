@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@PropertySource(name = "secret.yml", value = "secret.yml")
+@PropertySource(value = "file:../resources/externalsecret.yml")
 public class PayCommand extends BotCommand {
     @Autowired
     private UserService userService;
