@@ -48,6 +48,7 @@ public class StartCommand extends BotCommand {
                 //replyMessage.setText("Вы успешно зарегистрировались!");
             }
 
+
             SendMessage replyMessage = new SendMessage();
             replyMessage.setChatId(chat.getId().toString());
             replyMessage.enableHtml(true);
