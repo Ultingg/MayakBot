@@ -47,11 +47,6 @@ public class PlayCommand extends BotCommand {
             replyMessage.setChatId(chat.getId().toString());
             replyMessage.enableHtml(true);
 
-            /*if (user.getUserName() == null) {
-                replyMessage.setText("Ты человек без имени. С тобой играть не получится. Разберись в себе для начала...");
-            } else if (user.getUserName().equals("GroupAnonymousBot")) {
-                replyMessage.setText("Нужно выключить ананонимность. Ты не бэтмэн! Сними маску -_-");
-            } else */
             if (!userService.IsUserExist(user.getId().longValue())) {
                 try {
                     userService.setUserIntoDB(user);
@@ -85,10 +80,10 @@ public class PlayCommand extends BotCommand {
         replyMessage.enableHtml(true);
         boolean result = true;
         String reply = "";
-//        if (!harms.isBotsStarting(user.getId().toString())) {
-//            reply += "\n@" + harms.getBotUsername() + " не активирован";
-//            result = false;
-//        }
+        if (!harms.isBotsStarting(user.getId().toString())) {
+            reply += "\n@" + harms.getBotUsername() + " не активирован";
+            result = false;
+        }
         if (!akhmatovaBot.isBotsStarting(user.getId().toString())) {
             reply += "\n@" + akhmatovaBot.getBotUsername() + " не активирован";
             result = false;
