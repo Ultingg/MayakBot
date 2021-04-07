@@ -2,7 +2,6 @@ package ru.kumkuat.application.GameModule.Controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updates.SetWebhook;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.kumkuat.application.GameModule.Bot.*;
@@ -53,25 +52,26 @@ public class BotController {
             log.debug("Thread was Interrupted while waiting timing of reply.");
             e.getStackTrace();
         }
-        if (botName.equals("Mayakovsky")) {
-            sendResponseToUser(responseContainer, mayakBot);
-            log.debug("BotController processed reply of {}.", "Myakovskiy");
-        }
-        if (botName.equals("Akhmatova")) {
-            sendResponseToUser(responseContainer, akhmatovaBot);
-            log.debug("BotController processed reply of {}.", "Akhmatova");
-        }
-        if (botName.equals("Brodskiy")) {
-            sendResponseToUser(responseContainer, brodskiy);
-            log.debug("BotController processed reply of {}.", "Brodskiy");
-        }
-        if (botName.equals("Harms")) {
-            sendResponseToUser(responseContainer, harms);
-            log.debug("BotController processed reply of {}.", "Harms");
-        }
         if (botName.equals("Marshak")) {
             sendResponseToUser(responseContainer, marshakBot);
             log.debug("BotController processed reply of {}.", "Marshak");
+        } else {
+            if (botName.equals("Mayakovsky")) {
+                sendResponseToUser(responseContainer, mayakBot);
+                log.debug("BotController processed reply of {}.", "Myakovskiy");
+            }
+            if (botName.equals("Akhmatova")) {
+                sendResponseToUser(responseContainer, akhmatovaBot);
+                log.debug("BotController processed reply of {}.", "Akhmatova");
+            }
+            if (botName.equals("Brodskiy")) {
+                sendResponseToUser(responseContainer, brodskiy);
+                log.debug("BotController processed reply of {}.", "Brodskiy");
+            }
+            if (botName.equals("Harms")) {
+                sendResponseToUser(responseContainer, harms);
+                log.debug("BotController processed reply of {}.", "Harms");
+            }
         }
 
     }
