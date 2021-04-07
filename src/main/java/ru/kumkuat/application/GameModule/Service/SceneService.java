@@ -20,4 +20,8 @@ public class SceneService {
     public int count() {
         return sceneCollection.size();
     }
+
+    public Scene getScene (Long id) {
+      return   sceneCollection.get(Math.toIntExact(id));
+    }
 }

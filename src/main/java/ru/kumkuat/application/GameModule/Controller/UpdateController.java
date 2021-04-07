@@ -33,9 +33,10 @@ public class UpdateController {
             Message incomingMessage = update.getMessage();
             if (commandChecker(incomingMessage)) {
                 log.debug("Received throw to Marshak.");
+                responseService.messageReceiver(incomingMessage, navigationCommandCheck(incomingMessage));
             } else {
                 log.debug("Received message.");
-                responseService.messageReceiver(incomingMessage);
+                responseService.messageReceiver(incomingMessage, false);
             }
         }
         //Тут вся механия распределения сообщений
@@ -53,6 +54,17 @@ public class UpdateController {
         if (message.hasText()) {
             String textToCheck = message.getText();
             if (textToCheck.contains("/")) {
+                result = true;
+            }
+        }
+        return result;
+    }
+
+    private boolean navigationCommandCheck(Message message) {
+        boolean result = false;
+        if (message.hasText()) {
+            String textToCheck = message.getText();
+            if (textToCheck.contains("/next") || textToCheck.contains("/previous")) {
                 result = true;
             }
         }
