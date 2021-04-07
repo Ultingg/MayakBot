@@ -34,8 +34,6 @@ public class XMLService {
     public XMLService() {
         builderFactory = DocumentBuilderFactory.newInstance();
         builderFactory.setNamespaceAware(true);
-        System.out.println(path);
-        System.out.println("Я родился!");
         try {
             xpathFactory = XPathFactory.newInstance();
             xpath = xpathFactory.newXPath();
