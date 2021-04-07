@@ -1,7 +1,6 @@
 package ru.kumkuat.application.GameModule.Commands.MarshakCommands;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.extensions.bots.commandbot.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.methods.groupadministration.ExportChatInviteLink;
@@ -25,7 +24,7 @@ public class KickAllCommand extends BotCommand implements AdminCommand {
     private TelegramChatService telegramChatService;
 
     public KickAllCommand() {
-        super("/kickall", "Kick all into all playing chats\n");
+        super("/kickall", "Kick all from all playing chats\n");
     }
 
     @Override
@@ -68,14 +67,16 @@ public class KickAllCommand extends BotCommand implements AdminCommand {
 
     public boolean kickChatMember(AbsSender absSender, TelegramChat busyChat) {
         KickChatMember kickChatMember = new KickChatMember();
+        Long userId = busyChat.getUserId();
         kickChatMember.setChatId(busyChat.getChatId().toString());
-        kickChatMember.setUserId(busyChat.getUserId().intValue());
-        Duration duration = Duration.ofSeconds(60);
+        kickChatMember.setUserId(userId.intValue());
+        Duration duration = Duration.ofSeconds(600);
         kickChatMember.forTimePeriodDuration(duration);
         try {
             busyChat.setBusy(false);
             busyChat.setUserId(null);
             busyChat.setStartPlayTime(null);
+            userService.setUserPayment(userId, false);
             telegramChatService.saveChatIntoDB(busyChat);
             if(absSender.execute(kickChatMember)){
                 ExportChatInviteLink exportChatInviteLink = new ExportChatInviteLink(busyChat.getChatId().toString());
