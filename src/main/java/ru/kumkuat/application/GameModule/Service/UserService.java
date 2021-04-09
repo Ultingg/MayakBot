@@ -1,11 +1,7 @@
 package ru.kumkuat.application.GameModule.Service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.kumkuat.application.GameModule.Bot.MarshakBot;
-import ru.kumkuat.application.GameModule.Commands.MarshakCommands.KickAllCommand;
-import ru.kumkuat.application.GameModule.Models.TelegramChat;
 import ru.kumkuat.application.GameModule.Models.User;
 import ru.kumkuat.application.GameModule.Repository.UserRepository;
 
@@ -40,7 +36,8 @@ public class UserService {
         }
     }
 
-
+/*возможно стоит сделать этот метод синхронизированным,
+ т.к. возможны проблемы при одновременной записи двух и более юзеров под одним id(не telegramID) в бд */
     public long setUserIntoDB(org.telegram.telegrambots.meta.api.objects.User telegramUser) throws Exception {
         User user = new User();
         if(telegramUser.getUserName() != null){
