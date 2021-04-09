@@ -41,6 +41,15 @@ public class AudioService {
         return audio.getId();
     }
 
+    public long setAudioIntoDB(String audioPath) {
+        Audio audio = new Audio();
+        audio.setPath(audioPath);
+        Long audioId = Long.valueOf(getAll().size()) + 1;
+        audio.setId(audioId);
+        audioRepository.save(audio);
+        return audio.getId();
+    }
+
     public void cleanAll() {
         audioRepository.deleteAll();
     }

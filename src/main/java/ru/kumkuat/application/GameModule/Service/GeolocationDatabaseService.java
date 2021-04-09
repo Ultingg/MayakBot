@@ -43,9 +43,14 @@ public class GeolocationDatabaseService {
             }
             Long id = Long.valueOf(getAll().size() + 1); //костыль
             geolocation.setId(id);
-
-
         }
+        geolocationRepository.save(geolocation);
+        return geolocation.getId();
+    }
+
+    public long setGeolocationIntoDB(Geolocation geolocation) {
+        Long id = Long.valueOf(getAll().size() + 1); //костыль
+        geolocation.setId(id);
         geolocationRepository.save(geolocation);
         return geolocation.getId();
     }
