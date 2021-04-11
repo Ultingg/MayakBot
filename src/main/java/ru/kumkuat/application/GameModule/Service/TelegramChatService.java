@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 public class TelegramChatService {
 
     @Value("${admin.chat.id}")
-    private  String AdminChatId;
+    private  String adminChatId;
 
     private final TelegramChatRepository telegramChatRepository;
 
@@ -28,7 +28,7 @@ public class TelegramChatService {
     }
 
     public String getAdminChatId() {
-        return AdminChatId;
+        return adminChatId;
     }
 
     public List<TelegramChat> getAll() {

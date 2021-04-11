@@ -90,7 +90,7 @@ public class ResponseService {
                     ReplyResolver(message, scene);
                     var user = userService.getUser(userId);
                     if(user.getSceneId() >= sceneService.count() - 1){
-                        kickAllCommand.kickChatMember(marshakBot, telegramChatService.getChatByUserTelegramId(user.getTelegramUserId()));
+                        kickAllCommand.KickChatMember(marshakBot, telegramChatService.getChatByUserTelegramId(user.getTelegramUserId()));
                     }
                     userService.incrementSceneId(userId);
                 } else {

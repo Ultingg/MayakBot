@@ -15,6 +15,7 @@ import ru.kumkuat.application.GameModule.Bot.Brodskiy;
 import ru.kumkuat.application.GameModule.Bot.Harms;
 import ru.kumkuat.application.GameModule.Bot.MayakBot;
 import ru.kumkuat.application.GameModule.Service.TelegramChatService;
+import ru.kumkuat.application.GameModule.Service.TimerService;
 import ru.kumkuat.application.GameModule.Service.UserService;
 
 @Slf4j
@@ -32,6 +33,7 @@ public class PlayCommand extends BotCommand {
     private Brodskiy brodskiy;
     @Autowired
     private MayakBot mayakBot;
+
 
     public PlayCommand(UserService userService) {
         super("/play", "После этой команды начнется игра");

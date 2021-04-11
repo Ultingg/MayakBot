@@ -1,7 +1,6 @@
 package ru.kumkuat.application.GameModule.Commands.MarshakCommands;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.extensions.bots.commandbot.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.methods.groupadministration.ExportChatInviteLink;
@@ -33,29 +32,7 @@ public class KickAllCommand extends BotCommand implements AdminCommand {
 
         Long userId = Long.valueOf(user.getId());
         if (userService.getUser(userId).isAdmin()) {
-            var busyChatsList = telegramChatService.getBusyChats();
-            for (var busyChat :
-                    busyChatsList) {
-                var player = userService.getUser(busyChat.getUserId());
-                if (kickChatMember(absSender, busyChat)) {
-                    SendMessage sendMessage = new SendMessage();
-
-                    var name = player.getName();
-                    if (name == null) {
-                        name = "";
-                        if (player.getLastName() != null) {
-                            name += player.getLastName();
-                        }
-                        if (player.getFirstName() != null) {
-                            name += player.getFirstName();
-                        }
-                    }
-                    sendMessage.setText("Пользователь: @" + name + " успешно удален из чата");
-                    sendMessage.setChatId(chat.getId().toString());
-                    sendMessage.enableHtml(true);
-                    execute(absSender, sendMessage, user);
-                }
-            }
+            KickAllChatMember(absSender, chat.getId().toString());
         } else {
             SendMessage replyMessage = new SendMessage();
             replyMessage.setChatId(chat.getId().toString());
@@ -66,7 +43,37 @@ public class KickAllCommand extends BotCommand implements AdminCommand {
 
     }
 
-    public boolean kickChatMember(AbsSender absSender, TelegramChat busyChat) {
+    public void KickAllChatMember(AbsSender absSender, String teleramChatId){
+        var busyChatsList = telegramChatService.getBusyChats();
+        for (var busyChat :
+                busyChatsList) {
+            var player = userService.getUser(busyChat.getUserId());
+            if (KickChatMember(absSender, busyChat)) {
+                SendMessage sendMessage = new SendMessage();
+
+                var name = player.getName();
+                if (name == null) {
+                    name = "";
+                    if (player.getLastName() != null) {
+                        name += player.getLastName();
+                    }
+                    if (player.getFirstName() != null) {
+                        name += player.getFirstName();
+                    }
+                }
+                sendMessage.setText("Пользователь: @" + name + " успешно удален из чата");
+                sendMessage.setChatId(teleramChatId.toString());
+                sendMessage.enableHtml(true);
+                try {
+                    absSender.execute(sendMessage);
+                } catch (TelegramApiException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public boolean KickChatMember(AbsSender absSender, TelegramChat busyChat) {
         KickChatMember kickChatMember = new KickChatMember();
         kickChatMember.setChatId(busyChat.getChatId().toString());
         kickChatMember.setUserId(busyChat.getUserId().intValue());

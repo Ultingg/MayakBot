@@ -28,13 +28,13 @@ public class XMLService {
     private DocumentBuilder builder = null;
     private XPath xpath = null;
     private Document doc = null;
-    @Value("${xml.pathToScenario2}")
-    private String path;
+    //@Value("${xml.pathToScenario2}")
+    //private String path;
 
-    public XMLService() {
+    public XMLService(){
         builderFactory = DocumentBuilderFactory.newInstance();
         builderFactory.setNamespaceAware(true);
-        System.out.println(path);
+        //System.out.println(path);
         System.out.println("Я родился!");
         try {
             xpathFactory = XPathFactory.newInstance();
@@ -51,8 +51,6 @@ public class XMLService {
             e.printStackTrace();
             log.debug("XMLService: Parser config wrong.");
         }
-
-
     }
 
     public Node getTriggerNode(Node scene) throws TriggerException {
