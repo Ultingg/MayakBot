@@ -28,8 +28,8 @@ public class XMLService {
     private DocumentBuilder builder = null;
     private XPath xpath = null;
     private Document doc = null;
-    @Value("${xml.pathToScenario2}")
-    private String path;
+    //@Value("${xml.pathToScenario2}")
+    //private String path;
 
     public XMLService() {
         builderFactory = DocumentBuilderFactory.newInstance();
