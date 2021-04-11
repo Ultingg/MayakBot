@@ -23,6 +23,7 @@ public class NextSceneCommand extends BotCommand implements AdminCommand {
         super("/next", COMMAND_DESCRIPTION);
         this.userService = userService;
         this.sceneService = sceneService;
+
     }
 
     @Override
@@ -36,7 +37,7 @@ public class NextSceneCommand extends BotCommand implements AdminCommand {
             Integer newSceneId = oldSceneId + 1;
             if (newSceneId < sceneService.count() - 1) {
                 userService.setUserScene(user, newSceneId);
-                replyMessage.setText("Вы продвинулись на сцену вперед! Номер сцены: " + newSceneId);
+            //    replyMessage.setText("Вы продвинулись на сцену вперед! Номер сцены: " + newSceneId);
             } else {
                 userService.setUserScene(user, 0);
                 replyMessage.setText("Вы зашли слишком далеко, начинайте заново!");
@@ -45,10 +46,10 @@ public class NextSceneCommand extends BotCommand implements AdminCommand {
         } else {
             replyMessage.setText("Вы не обладаете соответствующим уровнем доступа.");
         }
-        execute(absSender, replyMessage, user);
+        execute(absSender, replyMessage);
     }
 
-    void execute(AbsSender sender, SendMessage message, User user) {
+    void execute(AbsSender sender, SendMessage message) {
         try {
             sender.execute(message);
         } catch (TelegramApiException e) {

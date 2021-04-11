@@ -32,7 +32,7 @@ public class PreviousSceneCommand extends BotCommand implements AdminCommand {
             Integer newSceneId = oldSceneId - 1;
             if (newSceneId > 0) {
                 userService.setUserScene(user, newSceneId);
-                replyMessage.setText("Вы вернулись на предыдущую сцену! Номер сцены: " + newSceneId);
+            //    replyMessage.setText("Вы вернулись на предыдущую сцену! Номер сцены: " + newSceneId);
             } else {
                 userService.setUserScene(user, 0);
                 replyMessage.setText("Вот вы и вернулись в начало, всегда возвращайтесь к Началу!");
@@ -40,10 +40,10 @@ public class PreviousSceneCommand extends BotCommand implements AdminCommand {
         } else {
             replyMessage.setText("Вы не обладаете соответствующим уровнем доступа.");
         }
-        execute(absSender, replyMessage, user);
+        execute(absSender, replyMessage);
     }
 
-    void execute(AbsSender sender, SendMessage message, User user) {
+    void execute(AbsSender sender, SendMessage message) {
         try {
             sender.execute(message);
         } catch (TelegramApiException e) {
