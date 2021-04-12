@@ -24,7 +24,7 @@ public class XLSXReaderService {
     private final PictureService pictureService;
     private final GeolocationDatabaseService geolocationDatabaseService;
     private final AudioService audioService;
-    @Value("${excle.path}")
+    //@Value("${excle.path}")
     private String path = "..\\resources\\input.xlsx";
 
     private FileInputStream file;
