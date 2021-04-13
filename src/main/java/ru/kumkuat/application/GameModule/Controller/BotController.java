@@ -44,9 +44,8 @@ public class BotController {
     public void responseResolver(ResponseContainer responseContainer) {
         String botName = responseContainer.getBotName();
         int time = responseContainer.getTimingOfReply();
-        Thread oneThread = new Thread();
         try {
-            oneThread.sleep(time);
+            Thread.currentThread().sleep(time);
         } // тут какая-то ахенея
         catch (InterruptedException e) {
             log.debug("Thread was Interrupted while waiting timing of reply.");
