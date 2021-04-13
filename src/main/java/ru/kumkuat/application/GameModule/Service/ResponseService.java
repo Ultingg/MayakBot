@@ -4,10 +4,7 @@ import com.vdurmont.emoji.EmojiParser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.telegram.telegrambots.meta.api.methods.send.SendLocation;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
-import org.telegram.telegrambots.meta.api.methods.send.SendVoice;
+import org.telegram.telegrambots.meta.api.methods.send.*;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Location;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -42,11 +39,12 @@ public class ResponseService {
     private final GeolocationDatabaseService geolocationDatabaseService;
     private final TriggerService triggerService;
     private final UserService userService;
+    private final StickerService stickerService;
 
     public ResponseService(SceneService sceneService, TelegramChatService telegramChatService, PictureService pictureService,
                            AudioService audioService, BotController botController,
                            GeolocationDatabaseService geolocationDatabaseService,
-                           TriggerService triggerService, UserService userService) {
+                           TriggerService triggerService, UserService userService, StickerService stickerService) {
         this.sceneService = sceneService;
         this.telegramChatService = telegramChatService;
         this.pictureService = pictureService;
@@ -56,6 +54,7 @@ public class ResponseService {
         this.triggerService = triggerService;
 
         this.userService = userService;
+        this.stickerService = stickerService;
     }
 
     public void messageReceiver(Message message, boolean isNavigationCommand) {
@@ -137,6 +136,7 @@ public class ResponseService {
         responseContainer.setBotName(reply.getBotName());
 
 
+
         if (reply.hasPicture()) {
             log.debug("Reply has picture.");
             Long pictureId = reply.getPictureId();
@@ -183,6 +183,18 @@ public class ResponseService {
             sendMessage.setText(textToSend);
             sendMessage.setChatId(chatId);
             responseContainer.setSendMessage(sendMessage);
+        }
+        if (reply.hasSticker()) {
+            log.debug("Reply has sticker.");
+            Long stickerId = reply.getStickerId();
+            String pathToSticker = stickerService.getPathToSticker(stickerId);
+            File fileFromDb = new File(pathToSticker);
+            InputFile stickerFile = new InputFile(fileFromDb);
+
+            SendSticker sendSticker = new SendSticker();
+            sendSticker.setSticker(stickerFile);
+            sendSticker.setChatId(chatId);
+            responseContainer.setSendSticker(sendSticker);
         }
         log.debug("Response container created.");
         return responseContainer;

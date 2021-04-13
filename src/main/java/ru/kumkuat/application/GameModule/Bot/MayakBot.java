@@ -8,10 +8,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramWebhookBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
-import org.telegram.telegrambots.meta.api.methods.send.SendLocation;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
-import org.telegram.telegrambots.meta.api.methods.send.SendVoice;
+import org.telegram.telegrambots.meta.api.methods.send.*;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
@@ -78,6 +75,17 @@ public class MayakBot extends TelegramWebhookBot implements BotsSender {
             log.debug("{} failed sending SendTextMessage!", secretName);
         }
     }
+    @Override
+    public void sendSticker(SendSticker sendSticker) {
+        log.debug("{} get SendTextMessage!", secretName);
+        try {
+            execute(sendSticker);
+            log.debug("{} send SendTextMessage!", secretName);
+        } catch (TelegramApiException e) {
+            e.getStackTrace();
+            log.debug("{} failed sending SendTextMessage!", secretName);
+        }
+    }
 
     public boolean isBotsStarting(String UserId){
         SendMessage checkMessage = new SendMessage();
@@ -87,7 +95,7 @@ public class MayakBot extends TelegramWebhookBot implements BotsSender {
             this.execute(checkMessage);
             return true;
         } catch (TelegramApiException e) {
-            //e.printStackTrace();
+            e.printStackTrace();
             return false;
         }
     }

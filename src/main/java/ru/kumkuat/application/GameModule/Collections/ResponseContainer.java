@@ -4,10 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
-import org.telegram.telegrambots.meta.api.methods.send.SendLocation;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
-import org.telegram.telegrambots.meta.api.methods.send.SendVoice;
+import org.telegram.telegrambots.meta.api.methods.send.*;
 
 
 @Setter
@@ -21,6 +18,7 @@ public class ResponseContainer {
     private SendLocation sendLocation;
     private SendPhoto sendPhoto;
     private SendVoice sendVoice;
+    private SendSticker sendSticker;
     private String botName;
 
     public boolean hasPicture() {
@@ -38,4 +36,6 @@ public class ResponseContainer {
     public boolean hasText() {
         return sendMessage != null;
     }
+
+    public boolean hasSticker() { return sendSticker != null;}
 }
