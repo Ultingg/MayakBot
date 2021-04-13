@@ -21,4 +21,5 @@ public class User {
     private Long telegramUserId;
     private boolean isAdmin;
     private boolean hasPay;
+    private String nickName;
 }
