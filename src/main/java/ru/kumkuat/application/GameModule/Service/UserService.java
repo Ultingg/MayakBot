@@ -36,26 +36,23 @@ public class UserService {
         }
     }
 
-/*возможно стоит сделать этот метод синхронизированным,
- т.к. возможны проблемы при одновременной записи двух и более юзеров под одним id(не telegramID) в бд */
+    /*возможно стоит сделать этот метод синхронизированным,
+     т.к. возможны проблемы при одновременной записи двух и более юзеров под одним id(не telegramID) в бд */
     public long setUserIntoDB(org.telegram.telegrambots.meta.api.objects.User telegramUser) throws Exception {
         User user = new User();
-        if(telegramUser.getUserName() != null){
+        if (telegramUser.getUserName() != null) {
             user.setName(telegramUser.getUserName());
-        }
-        else{
+        } else {
             user.setName("");
         }
-        if(telegramUser.getFirstName() != null){
+        if (telegramUser.getFirstName() != null) {
             user.setFirstName(telegramUser.getFirstName());
-        }
-        else{
+        } else {
             user.setFirstName("");
         }
-        if(telegramUser.getLastName() != null){
+        if (telegramUser.getLastName() != null) {
             user.setLastName(telegramUser.getLastName());
-        }
-        else{
+        } else {
             user.setLastName("");
         }
         user.setSceneId(0L);
@@ -64,6 +61,7 @@ public class UserService {
         return user.getId();
         //throw new Exception("User name is null");
     }
+
 
     public User getUser(Long telegramId) throws NullPointerException {
         User user = userRepository.getByTelegramUserId(telegramId);
@@ -129,5 +127,11 @@ public class UserService {
         } else {
             throw new NullPointerException("User is null");
         }
+    }
+
+    public boolean setUserNickName(Long id, String nickName) {
+        User user = userRepository.getByTelegramUserId(id);
+        user.setNickName(nickName);
+        return nickName.equals(userRepository.getById(id).getNickName());
     }
 }
