@@ -88,5 +88,8 @@ public class BotController {
         if (responseContainer.hasText()) {
             botsSender.sendMessage(responseContainer.getSendMessage());
         }
+        if(responseContainer.hasSticker()) {
+            botsSender.sendSticker(responseContainer.getSendSticker());
+        }
     }
 }

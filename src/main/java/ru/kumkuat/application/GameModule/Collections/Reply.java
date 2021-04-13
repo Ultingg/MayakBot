@@ -18,6 +18,7 @@ public class Reply {
     private Long pictureId;
     private int timing;
     private String botName;
+    private Long stickerId;
 
 
     public boolean hasPicture() {
@@ -35,5 +36,7 @@ public class Reply {
     public boolean hasText() {
         return textMessage != null;
     }
+
+    public boolean hasSticker() {return stickerId != null;}
 
 }

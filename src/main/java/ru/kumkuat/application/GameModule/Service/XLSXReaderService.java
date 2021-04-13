@@ -2,7 +2,6 @@ package ru.kumkuat.application.GameModule.Service;
 
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 import ru.kumkuat.application.GameModule.Collections.Reply;
@@ -24,6 +23,7 @@ public class XLSXReaderService {
     private final PictureService pictureService;
     private final GeolocationDatabaseService geolocationDatabaseService;
     private final AudioService audioService;
+    private final StickerService stickerService;
     //@Value("${excle.path}")
     private String path = "..\\resources\\input.xlsx";
 
@@ -31,10 +31,11 @@ public class XLSXReaderService {
     private Workbook workbook;
 
     public XLSXReaderService(PictureService pictureService, GeolocationDatabaseService geolocationDatabaseService,
-                             AudioService audioService) throws IOException {
+                             AudioService audioService, StickerService stickerService) throws IOException {
         this.pictureService = pictureService;
         this.geolocationDatabaseService = geolocationDatabaseService;
         this.audioService = audioService;
+        this.stickerService = stickerService;
         this.file = new FileInputStream(new File(path));
         this.workbook = new XSSFWorkbook(file);
     }
@@ -100,6 +101,11 @@ public class XLSXReaderService {
                                 String audioPath = cell.getStringCellValue();
                                 long audioId = audioService.setAudioIntoDB(audioPath);
                                 tempReply.setAudioId(audioId);
+                            }
+                            if (type.equals("sticker")) {
+                                String stickerPath = cell.getStringCellValue();
+                                long stickerId = stickerService.setStickerToDB(stickerPath);
+                                tempReply.setStickerId(stickerId);
                             }
                             break;
                         case 5:
