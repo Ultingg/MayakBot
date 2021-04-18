@@ -15,6 +15,7 @@ public class TriggerService {
 
     public boolean triggerCheck(Trigger trigger, String textToCheck) {
         boolean flag = false;
+        textToCheck = eReplacing(textToCheck);
         if (trigger.getText() != null) {
             String[] stringsFromTrigger = trigger.getText().split(",");
             for (String string : stringsFromTrigger) {
@@ -38,5 +39,9 @@ public class TriggerService {
         }
         return false;
 
+    }
+
+    private String eReplacing(String text) {
+        return text.replace("ё", "е");
     }
 }
