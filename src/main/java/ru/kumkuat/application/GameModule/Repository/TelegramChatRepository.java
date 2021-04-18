@@ -7,4 +7,6 @@ import ru.kumkuat.application.GameModule.Models.TelegramChat;
 @Repository
 public interface TelegramChatRepository extends CrudRepository<TelegramChat, Long> {
     TelegramChat getById(Long id);
+
+    TelegramChat getTelegramChatByChatId(Long id);
 }

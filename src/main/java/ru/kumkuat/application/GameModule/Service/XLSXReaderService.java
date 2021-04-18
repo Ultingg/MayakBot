@@ -45,7 +45,7 @@ public class XLSXReaderService {
         boolean header = true;
         Sheet sheet = workbook.getSheetAt(0);
         ArrayList<Scene> scenes = new ArrayList<>();
-        double numberOfScene = 1;
+        double numberOfScene = 0;
         Scene tempScene = new Scene();
         Reply tempReply = new Reply();
         String type = "";

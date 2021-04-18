@@ -108,4 +108,8 @@ public class TelegramChatService {
         var userchat = getAll().stream().filter(chat -> chat.getUserId().equals(telegramUserId)).findFirst();
         return userchat.orElseThrow(Exception::new);
     }
+
+    public Long getUserTelegramIdByChatId(Long chatId) {
+        return telegramChatRepository.getTelegramChatByChatId(chatId).getUserId();
+    }
 }
