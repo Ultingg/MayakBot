@@ -132,6 +132,7 @@ public class UserService {
     public boolean setUserNickName(Long id, String nickName) {
         User user = userRepository.getByTelegramUserId(id);
         user.setNickName(nickName);
-        return nickName.equals(userRepository.getById(id).getNickName());
+        userRepository.save(user);
+        return nickName.equals(userRepository.getByTelegramUserId(id).getNickName());
     }
 }
