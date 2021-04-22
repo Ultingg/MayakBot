@@ -70,7 +70,11 @@ public class XLSXReaderService {
                                     (cell.getCellType() == CellType.NUMERIC && cell.getNumericCellValue() != 0.0)) {
                                 Trigger newTrigger = new Trigger();
                                 if (cell.getCellType() == CellType.STRING)
-                                    newTrigger.setText(cell.getStringCellValue());
+                                    if (cell.getStringCellValue().equals("picture")) {
+                                        newTrigger.setHasPicture(true);
+                                    } else {
+                                        newTrigger.setText(cell.getStringCellValue());
+                                    }
                                 if (cell.getCellType() == CellType.NUMERIC)
                                     newTrigger.setText(String.valueOf(cell.getNumericCellValue()));
                                 tempScene.setTrigger(newTrigger);

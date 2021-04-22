@@ -17,7 +17,7 @@ public class TriggerService {
         boolean flag = false;
         textToCheck = eReplacing(textToCheck);
         if (trigger.getText() != null) {
-            String[] stringsFromTrigger = trigger.getText().split(",");
+            String[] stringsFromTrigger = trigger.getText().split(", ");
             for (String string : stringsFromTrigger) {
                 if (string.toLowerCase().equals(textToCheck.toLowerCase())) {
                     flag = true;
