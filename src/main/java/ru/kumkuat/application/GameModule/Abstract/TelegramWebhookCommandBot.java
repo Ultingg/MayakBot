@@ -2,6 +2,7 @@ package ru.kumkuat.application.GameModule.Abstract;
 
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.bots.TelegramWebhookBot;
+import org.telegram.telegrambots.extensions.bots.commandbot.commands.BotCommand;
 import org.telegram.telegrambots.extensions.bots.commandbot.commands.CommandRegistry;
 import org.telegram.telegrambots.extensions.bots.commandbot.commands.IBotCommand;
 import org.telegram.telegrambots.extensions.bots.commandbot.commands.ICommandRegistry;
@@ -9,8 +10,7 @@ import org.telegram.telegrambots.meta.api.methods.AnswerPreCheckoutQuery;
 import org.telegram.telegrambots.meta.api.methods.AnswerShippingQuery;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Message;
-import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.*;
 import org.telegram.telegrambots.meta.api.objects.payments.LabeledPrice;
 import org.telegram.telegrambots.meta.api.objects.payments.PreCheckoutQuery;
 import org.telegram.telegrambots.meta.api.objects.payments.ShippingOption;
@@ -101,7 +101,36 @@ public abstract class TelegramWebhookCommandBot extends TelegramWebhookBot imple
                 return null;
             }
         }
+        else if (update.hasCallbackQuery()) {
+            if (isCallbackQueryHasCommand(update.getCallbackQuery())) {
+                try {
+                    var command = getBotCommand(update.getCallbackQuery().getData());
+                    command.processMessage(this, update.getCallbackQuery().getMessage(), new String[]{});
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        }
         return processNonCommandUpdate(update);
+    }
+
+    public boolean isCallbackQueryHasCommand(CallbackQuery callbackQuery) {
+        for (var command : this.getRegisteredCommands()) {
+            if (command.getCommandIdentifier().equals(callbackQuery.getData())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public IBotCommand getBotCommand(String commandIdentifier) throws Exception {
+        for (var command : this.getRegisteredCommands()) {
+            if (command.getCommandIdentifier().equals(commandIdentifier)) {
+                return command;
+            }
+        }
+        throw new Exception("Command is not found");
     }
 
     /**
