@@ -10,12 +10,8 @@ import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import ru.kumkuat.application.GameModule.Bot.AkhmatovaBot;
-import ru.kumkuat.application.GameModule.Bot.Brodskiy;
-import ru.kumkuat.application.GameModule.Bot.Harms;
-import ru.kumkuat.application.GameModule.Bot.MayakBot;
+import ru.kumkuat.application.GameModule.Bot.*;
 import ru.kumkuat.application.GameModule.Service.TelegramChatService;
-import ru.kumkuat.application.GameModule.Service.TimerService;
 import ru.kumkuat.application.GameModule.Service.UserService;
 
 @Slf4j
@@ -25,6 +21,8 @@ public class PlayCommand extends BotCommand {
     private final UserService userService;
     @Autowired
     private TelegramChatService telegramChatService;
+    @Autowired
+    private MarshakBot marshakBot;
     @Autowired
     private Harms harms;
     @Autowired
@@ -42,30 +40,32 @@ public class PlayCommand extends BotCommand {
 
     @Override
     public void execute(AbsSender absSender, User user, Chat chat, String[] arguments) {
-        if (user.getId().longValue() == chat.getId()) {
+
+        long userId = user.getId().longValue();
+        if (userId == marshakBot.getId() && userService.IsUserExist(chat.getId())) {
+            userId = chat.getId();
+        }
+
+        if (userId == chat.getId()) {
 
             log.debug("Marshak ");
             SendMessage replyMessage = new SendMessage();
             replyMessage.setChatId(chat.getId().toString());
             replyMessage.enableHtml(true);
 
-            if (!userService.IsUserExist(user.getId().longValue())) {
-                try {
-                    userService.setUserIntoDB(user);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                replyMessage.setText("Вы успешно зарегистрировались!");
-            }
-            execute(absSender, replyMessage, user);
             try {
-                if (userService.IsUserExist(user.getId().longValue())) {
-                    if (userService.IsUserHasPayment(user.getId().longValue())) {
-                        if (isBotsStarting(absSender, user, chat)) {
-                            SendFreeChat(absSender, user, chat);
-                        }
+                if (!userService.IsUserExist(userId)) {
+                    try {
+                        userService.setUserIntoDB(user);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                    else{
+                    replyMessage.setText("Вы успешно зарегистрировались!");
+                    execute(absSender, replyMessage, user);
+                } else {
+                    if (true /*userService.IsUserHasPayment(userId)*/) {
+                        SendFreeChat(absSender, Long.valueOf(userId));
+                    } else {
                         replyMessage.setText("Необходимо внести оплату!");
                         execute(absSender, replyMessage, user);
                     }
@@ -76,61 +76,63 @@ public class PlayCommand extends BotCommand {
         }
     }
 
-    boolean isBotsStarting(AbsSender absSender, User user, Chat chat) throws TelegramApiException {
+    boolean isBotsStarting(AbsSender absSender, Long userId) throws TelegramApiException {
         SendMessage replyMessage = new SendMessage();
-        replyMessage.setChatId(chat.getId().toString());
+        replyMessage.setChatId(userId.toString());
         replyMessage.enableHtml(true);
         boolean result = true;
         String reply = "";
-        if (!harms.isBotsStarting(user.getId().toString())) {
-            reply += "\n@" + harms.getBotUsername() + " не активирован";
+        if (!harms.isBotsStarting(userId.toString())) {
+            reply += /*"\n@" + harms.getBotUsername() + */"\nХармс не активирован";
             result = false;
         }
-        if (!akhmatovaBot.isBotsStarting(user.getId().toString())) {
-            reply += "\n@" + akhmatovaBot.getBotUsername() + " не активирован";
+        if (!akhmatovaBot.isBotsStarting(userId.toString())) {
+            reply += /*"\n@" + akhmatovaBot.getBotUsername() + */"\nАхматова не активирована";
             result = false;
         }
-        if (!brodskiy.isBotsStarting(user.getId().toString())) {
-            reply += "\n@" + brodskiy.getBotUsername() + " не активирован";
+        if (!brodskiy.isBotsStarting(userId.toString())) {
+            reply += /*"\n@" + brodskiy.getBotUsername() + */"\nБродский не активирован";
             result = false;
         }
-        if (!mayakBot.isBotsStarting(user.getId().toString())) {
-            reply += "\n@" + mayakBot.getBotUsername() + " не активирован";
+        if (!mayakBot.isBotsStarting(userId.toString())) {
+            reply += /*"\n@" + mayakBot.getBotUsername() + */"\nМаяковский не активирован";
             result = false;
         }
-        if(!result){
+        if (!result) {
             replyMessage.setText(reply);
             absSender.execute(replyMessage);
         }
         return result;
     }
 
-    void SendFreeChat(AbsSender absSender, User user, Chat chat) throws Exception {
+    void SendFreeChat(AbsSender absSender, Long userId) throws Exception {
         SendMessage replyMessage = new SendMessage();
-        replyMessage.setChatId(chat.getId().toString());
+        replyMessage.setChatId(userId.toString());
         replyMessage.enableHtml(true);
-        if (userService.IsUserExist(user.getId().longValue())) {
-            if (!telegramChatService.isUserAlreadyPlaying(user)) {
-                if (telegramChatService.isFreeChatHas()) {
+        if (userService.IsUserExist(userId.longValue())) {
+            if (!telegramChatService.isUserAlreadyPlaying(userId)) {
+                if (isBotsStarting(absSender, Long.valueOf(userId))) {
+                    if (telegramChatService.isFreeChatHas()) {
 
-                    var freeChat = telegramChatService.getFreeChat();
-                    freeChat.setBusy(true);
-                    //freeChat.setStartPlayTime(new Date());
-                    freeChat.setUserId(user.getId().longValue());
-                    telegramChatService.saveChatIntoDB(freeChat);
+                        var freeChat = telegramChatService.getFreeChat();
+                        freeChat.setBusy(true);
+                        //freeChat.setStartPlayTime(new Date());
+                        freeChat.setUserId(userId.longValue());
+                        telegramChatService.saveChatIntoDB(freeChat);
 
-                    ExportChatInviteLink exportChatInviteLink = new ExportChatInviteLink(freeChat.getChatId().toString());
-                    var inviteLink = absSender.execute(exportChatInviteLink);
+                        ExportChatInviteLink exportChatInviteLink = new ExportChatInviteLink(freeChat.getChatId().toString());
+                        var inviteLink = absSender.execute(exportChatInviteLink);
 
-                    replyMessage.setText("Присоединяйся! Для старта напиши \"Привет\"");
-                    absSender.execute(replyMessage);
-                    replyMessage.setText(inviteLink);
-                    absSender.execute(replyMessage);
-                    //нужно сделать проверку что пользователь играет в беседке, которая зарезирвирована. Что он вошел в беседку.
+                        replyMessage.setText("Присоединяйся! Для старта напиши \"Привет\"");
+                        absSender.execute(replyMessage);
+                        replyMessage.setText(inviteLink);
+                        absSender.execute(replyMessage);
+                        //нужно сделать проверку что пользователь играет в беседке, которая зарезирвирована. Что он вошел в беседку.
 
-                } else {
-                    replyMessage.setText("Нет свободных чатов, попробуйте позже");
-                    absSender.execute(replyMessage);
+                    } else {
+                        replyMessage.setText("Нет свободных чатов, попробуйте позже");
+                        absSender.execute(replyMessage);
+                    }
                 }
             } else {
                 replyMessage.setText("Вы уже начали игру. Чтобы начать заново, нужно ее закончить.");
