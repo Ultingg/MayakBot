@@ -25,7 +25,7 @@ public class XLSXReaderService {
     private final AudioService audioService;
     private final StickerService stickerService;
     //@Value("${excle.path}")
-    private String path = "..\\resources\\input.xlsx";
+    private String path = "../resources/input.xlsx";
 
     private FileInputStream file;
     private Workbook workbook;
