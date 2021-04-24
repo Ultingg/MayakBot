@@ -7,10 +7,15 @@ import org.telegram.telegrambots.extensions.bots.commandbot.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.User;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.kumkuat.application.GameModule.Service.TelegramChatService;
 import ru.kumkuat.application.GameModule.Service.UserService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -49,13 +54,86 @@ public class StartCommand extends BotCommand {
             }
 
 
+            InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
+            var ListButtonCollections = new ArrayList<List<InlineKeyboardButton>>();
+
+            var InlineKeyboardButtonCollection = new ArrayList<InlineKeyboardButton>();
+            InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
+            inlineKeyboardButton.setText("Бродский");
+            inlineKeyboardButton.setUrl("https://t.me/IABrodskiyTestBot?start");
+            InlineKeyboardButtonCollection.add(inlineKeyboardButton);
+            ListButtonCollections.add(InlineKeyboardButtonCollection);
+
+            InlineKeyboardButtonCollection = new ArrayList<InlineKeyboardButton>();
+            inlineKeyboardButton = new InlineKeyboardButton();
+            inlineKeyboardButton.setText("Маяковский");
+            inlineKeyboardButton.setUrl("https://t.me/VlVlMayakovskiyTestBot?start");
+            InlineKeyboardButtonCollection.add(inlineKeyboardButton);
+            ListButtonCollections.add(InlineKeyboardButtonCollection);
+
+            InlineKeyboardButtonCollection = new ArrayList<InlineKeyboardButton>();
+            inlineKeyboardButton = new InlineKeyboardButton();
+            inlineKeyboardButton.setText("Хармс");
+            inlineKeyboardButton.setUrl("https://t.me/DaIvHarmsTestBot?start");
+            InlineKeyboardButtonCollection.add(inlineKeyboardButton);
+            ListButtonCollections.add(InlineKeyboardButtonCollection);
+
+            InlineKeyboardButtonCollection = new ArrayList<InlineKeyboardButton>();
+            inlineKeyboardButton = new InlineKeyboardButton();
+            inlineKeyboardButton.setText("Ахматова");
+            inlineKeyboardButton.setUrl("https://t.me/AnAnAkhmatovaTestBot?start");
+            InlineKeyboardButtonCollection.add(inlineKeyboardButton);
+            ListButtonCollections.add(InlineKeyboardButtonCollection);
+
+            markup.setKeyboard(ListButtonCollections);
+
             SendMessage replyMessage = new SendMessage();
             replyMessage.setChatId(chat.getId().toString());
             replyMessage.enableHtml(true);
             replyMessage.setText("Привет! Мы рады приветствовать тебя!");
             execute(absSender, replyMessage, user);
 
-            helpCommand.execute(absSender, user, chat, arguments);
+
+            replyMessage = new SendMessage();
+            replyMessage.setChatId(chat.getId().toString());
+            replyMessage.enableHtml(true);
+            replyMessage.setText("Чтобы начать тебе нужно активировать авторов!");
+            execute(absSender, replyMessage, user);
+
+            replyMessage = new SendMessage();
+            replyMessage.setChatId(chat.getId().toString());
+            replyMessage.enableHtml(true);
+            replyMessage.setText("Перейди по каждой ссылке и нажми старт");
+            replyMessage.setReplyMarkup(markup);
+            execute(absSender, replyMessage, user);
+
+
+            List<InlineKeyboardButton> keyboardButtonsRow1 = new ArrayList<>();
+            //var Button11 = new InlineKeyboardButton();
+            //Button11.setText("Поддержать проект");
+            //Button11.setCallbackData("pay");
+            //keyboardButtonsRow1.add(Button11);
+            //List<InlineKeyboardButton> keyboardButtonsRow2 = new ArrayList<>();
+            var Button21 = new InlineKeyboardButton();
+            Button21.setText("Начать прогулку");
+            Button21.setCallbackData("play");
+            keyboardButtonsRow1.add(Button21);
+
+            List<List<InlineKeyboardButton>> rowList= new ArrayList<>();
+            rowList.add(keyboardButtonsRow1);
+            //rowList.add(keyboardButtonsRow2);
+
+            InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+            inlineKeyboardMarkup.setKeyboard(rowList);
+
+            replyMessage = new SendMessage();
+            replyMessage.setChatId(chat.getId().toString());
+            replyMessage.enableHtml(true);
+            replyMessage.setText("Нажми, когда будешь готов!");
+            replyMessage.setReplyMarkup(inlineKeyboardMarkup);
+            execute(absSender, replyMessage, user);
+
+//            helpCommand.execute(absSender, user, chat, arguments);
         }
     }
 

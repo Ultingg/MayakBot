@@ -72,7 +72,8 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
     private String botToken;
     @Value("${marshak.path}")
     private String botPath;
-
+    @Value("${marshak.id}")
+    private Double Id;
 
     private MarshakBot() {
 
@@ -84,7 +85,6 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
         sendMessage.setText("Выполнено отложенное задание: " + new Date());
         this.sendMessage(sendMessage);
         kickAllCommand.KickAllChatMember(this, telegramChatService.getAdminChatId());
-
     }
 
     private void StartTimer() {
