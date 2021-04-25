@@ -11,6 +11,10 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import ru.kumkuat.application.GameModule.Bot.AkhmatovaBot;
+import ru.kumkuat.application.GameModule.Bot.Brodskiy;
+import ru.kumkuat.application.GameModule.Bot.Harms;
+import ru.kumkuat.application.GameModule.Bot.MayakBot;
 import ru.kumkuat.application.GameModule.Service.TelegramChatService;
 import ru.kumkuat.application.GameModule.Service.UserService;
 
@@ -22,6 +26,14 @@ import java.util.List;
 public class StartCommand extends BotCommand {
 
     private final UserService userService;
+    @Autowired
+    private Harms harms;
+    @Autowired
+    private AkhmatovaBot akhmatovaBot;
+    @Autowired
+    private Brodskiy brodskiy;
+    @Autowired
+    private MayakBot mayakBot;
     @Autowired
     private TelegramChatService telegramChatService;
 
@@ -60,28 +72,29 @@ public class StartCommand extends BotCommand {
             var InlineKeyboardButtonCollection = new ArrayList<InlineKeyboardButton>();
             InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
             inlineKeyboardButton.setText("Бродский");
-            inlineKeyboardButton.setUrl("https://t.me/IABrodskiyTestBot?start");
+//            inlineKeyboardButton.setUrl("https://t.me/IABrodskiyTestBot?start");
+            inlineKeyboardButton.setUrl("https://t.me/".concat(brodskiy.getBotUsername().concat("?start")));
             InlineKeyboardButtonCollection.add(inlineKeyboardButton);
             ListButtonCollections.add(InlineKeyboardButtonCollection);
 
             InlineKeyboardButtonCollection = new ArrayList<InlineKeyboardButton>();
             inlineKeyboardButton = new InlineKeyboardButton();
             inlineKeyboardButton.setText("Маяковский");
-            inlineKeyboardButton.setUrl("https://t.me/VlVlMayakovskiyTestBot?start");
+            inlineKeyboardButton.setUrl("https://t.me/".concat(mayakBot.getBotUsername().concat("?start")));
             InlineKeyboardButtonCollection.add(inlineKeyboardButton);
             ListButtonCollections.add(InlineKeyboardButtonCollection);
 
             InlineKeyboardButtonCollection = new ArrayList<InlineKeyboardButton>();
             inlineKeyboardButton = new InlineKeyboardButton();
             inlineKeyboardButton.setText("Хармс");
-            inlineKeyboardButton.setUrl("https://t.me/DaIvHarmsTestBot?start");
+            inlineKeyboardButton.setUrl("https://t.me/".concat(harms.getBotUsername().concat("?start")));
             InlineKeyboardButtonCollection.add(inlineKeyboardButton);
             ListButtonCollections.add(InlineKeyboardButtonCollection);
 
             InlineKeyboardButtonCollection = new ArrayList<InlineKeyboardButton>();
             inlineKeyboardButton = new InlineKeyboardButton();
             inlineKeyboardButton.setText("Ахматова");
-            inlineKeyboardButton.setUrl("https://t.me/AnAnAkhmatovaTestBot?start");
+            inlineKeyboardButton.setUrl("https://t.me/".concat(akhmatovaBot.getBotUsername().concat("?start")));
             InlineKeyboardButtonCollection.add(inlineKeyboardButton);
             ListButtonCollections.add(InlineKeyboardButtonCollection);
 

@@ -108,8 +108,8 @@ public class ResponseService {
 
                 result = nickNameSetter(message);
             } else {
-
-                result = triggerService.triggerCheck(sceneTrigger, userText);
+                result = true;
+               // result = triggerService.triggerCheck(sceneTrigger, userText);
             }
         }
         if (message.hasPhoto()) {
