@@ -151,6 +151,7 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
                         "@" + harms.getBotUsername() + "\n" +
                         "и нажать /play"
                 );
+
                 execute(replyMessage);
                 //SendFreeChat(user, update.getMessage().getChat());
             } catch (Exception e) {
