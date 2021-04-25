@@ -1,7 +1,7 @@
 spring:
   datasource:
     username: root
-    password: Maximnn_1720
+    password: 9999
     url: jdbc:mysql://localhost:3306/promenad?serverTimezone=UTC
     driver-class-name: com.mysql.cj.jdbc.Driver
     initialization-mode: never
