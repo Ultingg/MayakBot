@@ -22,4 +22,5 @@ public class User {
     private boolean isAdmin;
     private boolean hasPay;
     private String nickName;
+    private boolean isTriggered;
 }

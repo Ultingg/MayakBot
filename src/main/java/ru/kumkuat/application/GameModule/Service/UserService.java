@@ -135,4 +135,11 @@ public class UserService {
         userRepository.save(user);
         return nickName.equals(userRepository.getByTelegramUserId(id).getNickName());
     }
+
+    public boolean setUserTrigger(Long id, boolean trigger) {
+        User user = userRepository.getByTelegramUserId(id);
+        user.setTriggered(trigger);
+        userRepository.save(user);
+        return trigger == userRepository.getByTelegramUserId(id).isTriggered();
+    }
 }
