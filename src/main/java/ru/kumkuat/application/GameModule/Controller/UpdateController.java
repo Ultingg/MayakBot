@@ -12,9 +12,6 @@ import ru.kumkuat.application.GameModule.Bot.Brodskiy;
 import ru.kumkuat.application.GameModule.Bot.MarshakBot;
 import ru.kumkuat.application.GameModule.Service.ResponseService;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.FutureTask;
-
 @Slf4j
 @RestController
 public class UpdateController {
@@ -35,8 +32,7 @@ public class UpdateController {
 
         if (update.getMessage() != null || !update.getMessage().getFrom().getIsBot()) {
 
-            FutureTask<Boolean> task = new FutureTask<>(new CallBotResponse(update));
-            Thread myThready = new Thread(task);
+            Thread myThready = new Thread(new CallBotResponse(update));
             myThready.start();
         }
         if(update.getMessage().getFrom().getIsBot()) {
@@ -75,7 +71,7 @@ public class UpdateController {
         return result;
     }
 
-    class CallBotResponse implements Callable<Boolean> {
+    class CallBotResponse implements Runnable {
         Update update;
 
         CallBotResponse(Update update) {
@@ -83,7 +79,7 @@ public class UpdateController {
         }
 
         @Override
-        public Boolean call() throws Exception {
+        public void run()   {
             System.out.println("Привет из побочного потока!");
             Message incomingMessage = update.getMessage();
             if (commandChecker(incomingMessage)) {
@@ -93,7 +89,7 @@ public class UpdateController {
                 log.debug("Received message.");
                 responseService.messageReceiver(incomingMessage, false);
             }
-            return true;
+
         }
     }
 }
