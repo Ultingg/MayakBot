@@ -15,7 +15,6 @@ import ru.kumkuat.application.GameModule.Collections.Scene;
 import ru.kumkuat.application.GameModule.Collections.Trigger;
 import ru.kumkuat.application.GameModule.Commands.MarshakCommands.KickAllCommand;
 import ru.kumkuat.application.GameModule.Controller.BotController;
-import ru.kumkuat.application.GameModule.Exceptions.IncomingMessageException;
 import ru.kumkuat.application.GameModule.Models.Geolocation;
 import ru.kumkuat.application.GameModule.Models.User;
 
@@ -66,13 +65,13 @@ public class ResponseService {
             String chatId = message.getChatId().toString();
             try {
                 if (isNavigationCommand) {    //сделал отдельно чтобы не проводить проверку checkIncomingMessage лишний раз
-                    ReplyResolver(chatId, scene);
+                    ReplyResolver(chatId, scene, userId);
                     userService.incrementSceneId(userId);
                 } else {
                     if (checkIncomingMessage(message, sceneTrigger)) {
-                        ReplyResolver(chatId, scene);
-                        var user = userService.getUser(userId);
-                        if (user.getSceneId() >= sceneService.count() - 1) {
+                        User user = userService.getUser(userId);
+                        ReplyResolver(chatId, scene, userId);
+                        if (user.getSceneId() >= sceneService.count() - 1 && !user.isAdmin()) {
                             kickAllCommand.KickChatMember(marshakBot, telegramChatService.getChatByUserTelegramId(user.getTelegramUserId()));
                         }
                         userService.incrementSceneId(userId);
@@ -81,45 +80,62 @@ public class ResponseService {
                         botController.responseResolver(wrongAnswerResponse);
                     }
                 }
-            } catch (IncomingMessageException exception) {
-                exception.printStackTrace();
-                log.debug("Incoming message Exception!");
+//            } catch (IncomingMessageException exception) {
+//                exception.printStackTrace();
+//                log.debug("Incoming message Exception!");}
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
 
-    private boolean checkIncomingMessage(Message message, Trigger sceneTrigger) throws IncomingMessageException {
+    private boolean checkIncomingMessage(Message message, Trigger trigger) {
+        boolean result;
+        if (!isUserTriggered(message)) {
+            result = checkTriggerOfIncomingMessage( message, trigger);
+        } else {
+            result = false;
+        }
+        return result;
+
+    }
+
+    private boolean checkTriggerOfIncomingMessage(Message message, Trigger sceneTrigger) {
+        boolean result = false;
         if (message.hasText()) {
             String userText = message.getText();
             if (checkForNickNameSetting(sceneTrigger)) {
-                return nickNameSetter(message);
 
+                result = nickNameSetter(message);
             } else {
-                return triggerService.triggerCheck(sceneTrigger, userText);
+
+                result = triggerService.triggerCheck(sceneTrigger, userText);
             }
         }
         if (message.hasPhoto()) {
-            return sceneTrigger.isHasPicture();
-        }
 
+            result = sceneTrigger.isHasPicture();
+        }
         if (message.hasLocation()) {
             Location userLocation = message.getLocation();
-            return triggerService.triggerCheck(sceneTrigger, userLocation);
+            result = triggerService.triggerCheck(sceneTrigger, userLocation);
         }
-        throw new IncomingMessageException("checkIncomingMessage didn't happened!");
+        if(result) triggUser(message);
+        return result;
+
     }
 
 
-    private void ReplyResolver(String chatId, Scene scene) {
+    private void ReplyResolver(String chatId, Scene scene, Long userId) {
         List<Reply> replyList = scene.getReplyCollection();
         ResponseContainer responseContainer;
         for (Reply reply : replyList) {
             responseContainer = configureMessage(reply, chatId);
             botController.responseResolver(responseContainer);
         }
+        userService.setUserTrigger(userId, false);
     }
+
 
     private ResponseContainer configureWrongTriggerMessage(String chatId) {
         String wrongAnswerMessage = "Друг подумай еще разок над тем что сказал";
@@ -131,6 +147,21 @@ public class ResponseService {
         responseContainer.setBotName("Mayakovsky"); //дежурный по стране
         responseContainer.setTimingOfReply(100);
         return responseContainer;
+    }
+
+
+    private boolean isUserTriggered(Message message) {
+        Long userId = Long.valueOf(message.getFrom().getId());
+        User user = userService.getUser(userId);
+        return user.isTriggered();
+    }
+
+    private void triggUser(Message message) {
+        Long userId = Long.valueOf(message.getFrom().getId());
+        User user = userService.getUser(userId);
+        user.setTriggered(true);
+        userService.setUserTrigger(userId, true);
+
     }
 
     private synchronized ResponseContainer configureMessage(Reply reply, String chatId) {
@@ -181,7 +212,7 @@ public class ResponseService {
             log.debug("Reply has text.");
             String textToSend = reply.getTextMessage();
             textToSend = EmojiParser.parseToUnicode(textToSend);
-            textToSend = nickNameInserting(textToSend,Long.valueOf(chatId));
+            textToSend = nickNameInserting(textToSend, Long.valueOf(chatId));
             SendMessage sendMessage = new SendMessage();
             sendMessage.setText(textToSend);
             sendMessage.setChatId(chatId);
@@ -241,7 +272,6 @@ public class ResponseService {
         }
         return result;
     }
-
 
 
 }
