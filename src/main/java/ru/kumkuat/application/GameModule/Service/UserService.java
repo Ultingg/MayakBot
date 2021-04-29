@@ -72,8 +72,8 @@ public class UserService {
     }
 
 
-    public boolean IsUserExist(Long id) {
-        return userRepository.getByTelegramUserId(id) != null;
+    public boolean IsUserExist(Long telegramId) {
+        return userRepository.getByTelegramUserId(telegramId) != null;
     }
 
     public void incrementSceneId(Long userId) {
@@ -129,17 +129,17 @@ public class UserService {
         }
     }
 
-    public boolean setUserNickName(Long id, String nickName) {
-        User user = userRepository.getByTelegramUserId(id);
+    public boolean setUserNickName(Long telegramId, String nickName) {
+        User user = userRepository.getByTelegramUserId(telegramId);
         user.setNickName(nickName);
         userRepository.save(user);
-        return nickName.equals(userRepository.getByTelegramUserId(id).getNickName());
+        return nickName.equals(userRepository.getByTelegramUserId(telegramId).getNickName());
     }
 
-    public boolean setUserTrigger(Long id, boolean trigger) {
-        User user = userRepository.getByTelegramUserId(id);
+    public boolean setUserTrigger(Long telegramId, boolean trigger) {
+        User user = userRepository.getByTelegramUserId(telegramId);
         user.setTriggered(trigger);
         userRepository.save(user);
-        return trigger == userRepository.getByTelegramUserId(id).isTriggered();
+        return trigger == userRepository.getByTelegramUserId(telegramId).isTriggered();
     }
 }

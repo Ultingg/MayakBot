@@ -23,4 +23,5 @@ public class User {
     private boolean hasPay;
     private String nickName;
     private boolean isTriggered;
+    private boolean isPlaying;
 }

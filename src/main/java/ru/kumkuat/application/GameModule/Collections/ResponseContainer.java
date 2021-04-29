@@ -5,6 +5,7 @@ import lombok.Setter;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.*;
+import org.telegram.telegrambots.meta.api.objects.Message;
 
 
 @Setter
@@ -13,6 +14,7 @@ import org.telegram.telegrambots.meta.api.methods.send.*;
 public class ResponseContainer {
 
     private int timingOfReply;
+    private Long userId;
     private BotApiMethod botApi;
     private SendMessage sendMessage;
     private SendLocation sendLocation;
@@ -20,6 +22,7 @@ public class ResponseContainer {
     private SendVoice sendVoice;
     private SendSticker sendSticker;
     private String botName;
+    private Message message;
 
     public boolean hasPicture() {
         return sendPhoto != null;
