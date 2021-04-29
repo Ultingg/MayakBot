@@ -90,9 +90,7 @@ public class BotController {
             botsSender.sendPicture(responseContainer.getSendPhoto());
         }
         if (responseContainer.hasText()) {
-            var sendMessage = responseContainer.getSendMessage();
-            sendMessage.setChatId(responseContainer.getUserId().toString());
-            botsSender.sendMessage(sendMessage);
+            botsSender.sendMessage(responseContainer.getSendMessage());
         }
         if(responseContainer.hasSticker()) {
             botsSender.sendSticker(responseContainer.getSendSticker());

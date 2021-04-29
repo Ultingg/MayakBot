@@ -4,13 +4,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.extensions.bots.commandbot.commands.BotCommand;
-import org.telegram.telegrambots.meta.api.methods.groupadministration.ExportChatInviteLink;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.kumkuat.application.GameModule.Bot.*;
+import ru.kumkuat.application.GameModule.Service.ResponseService;
 import ru.kumkuat.application.GameModule.Service.TelegramChatService;
 import ru.kumkuat.application.GameModule.Service.UserService;
 
@@ -31,7 +31,6 @@ public class PlayCommand extends BotCommand {
     private Brodskiy brodskiy;
     @Autowired
     private MayakBot mayakBot;
-
 
     public PlayCommand(UserService userService) {
         super("/play", "После этой команды начнется игра");
@@ -112,27 +111,30 @@ public class PlayCommand extends BotCommand {
         if (userService.IsUserExist(userId.longValue())) {
             if (!telegramChatService.isUserAlreadyPlaying(userId)) {
                 if (isBotsStarting(absSender, Long.valueOf(userId))) {
-                    if (telegramChatService.isFreeChatHas()) {
-
-                        var freeChat = telegramChatService.getFreeChat();
-                        freeChat.setBusy(true);
-                        //freeChat.setStartPlayTime(new Date());
-                        freeChat.setUserId(userId.longValue());
-                        telegramChatService.saveChatIntoDB(freeChat);
-
-                        ExportChatInviteLink exportChatInviteLink = new ExportChatInviteLink(freeChat.getChatId().toString());
-                        var inviteLink = absSender.execute(exportChatInviteLink);
-
-                        replyMessage.setText("Присоединяйся! Для старта напиши \"Привет\"");
-                        absSender.execute(replyMessage);
-                        replyMessage.setText(inviteLink);
-                        absSender.execute(replyMessage);
-                        //нужно сделать проверку что пользователь играет в беседке, которая зарезирвирована. Что он вошел в беседку.
-
-                    } else {
-                        replyMessage.setText("Нет свободных чатов, попробуйте позже");
-                        absSender.execute(replyMessage);
-                    }
+                    userService.setPlaying(Long.valueOf(userId), true);
+                    replyMessage.setText("Отлично! Как я могу к тебе обращаться? ");
+                    absSender.execute(replyMessage);
+//                    if (telegramChatService.isFreeChatHas()) {
+//
+//                        var freeChat = telegramChatService.getFreeChat();
+//                        freeChat.setBusy(true);
+//                        //freeChat.setStartPlayTime(new Date());
+//                        freeChat.setUserId(userId.longValue());
+//                        telegramChatService.saveChatIntoDB(freeChat);
+//
+//                        ExportChatInviteLink exportChatInviteLink = new ExportChatInviteLink(freeChat.getChatId().toString());
+//                        var inviteLink = absSender.execute(exportChatInviteLink);
+//
+//                        replyMessage.setText("Присоединяйся! Для старта напиши \"Привет\"");
+//                        absSender.execute(replyMessage);
+//                        replyMessage.setText(inviteLink);
+//                        absSender.execute(replyMessage);
+//                        //нужно сделать проверку что пользователь играет в беседке, которая зарезирвирована. Что он вошел в беседку.
+//
+//                    } else {
+//                        replyMessage.setText("Нет свободных чатов, попробуйте позже");
+//                        absSender.execute(replyMessage);
+//                    }
                 }
             } else {
                 replyMessage.setText("Вы уже начали игру. Чтобы начать заново, нужно ее закончить.");
