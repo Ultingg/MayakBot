@@ -266,7 +266,7 @@ public class ResponseService {
 
     private boolean checkForNickNameSetting(Trigger trigger) {
         String text = trigger.getText();
-        return text.equals("имя");
+        return text != null && text.equals("имя");
     }
 
     private String nickNameInserting(String text, Long userId) {
