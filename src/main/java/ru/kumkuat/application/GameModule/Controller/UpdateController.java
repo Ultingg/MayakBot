@@ -35,31 +35,32 @@ public class UpdateController {
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
-    public BotApiMethod<?> onUpdateReceived(@RequestBody Update update) {
-        if (update.getMessage() != null || !update.getMessage().getFrom().getIsBot()) {
+    public void onUpdateReceived(@RequestBody Update update) {
+        if (update.getMessage() != null &&
+                userService.IsUserExist(update.getMessage().getFrom().getId().longValue()) &&
+                !userService.getUser(update.getMessage().getFrom().getId().longValue()).isAdmin() ) {
             Thread myThready = new Thread(new CallBotResponse(update));
             myThready.start();
         }
-        if (update.getMessage().getFrom().getIsBot()) {
-            System.out.println("Bot's id: " + update.getMessage().getFrom().getId());
-            System.out.println("Bot's username: " + update.getMessage().getFrom().getUserName());
-            System.out.println("Bot's firstname & lastname: " + update.getMessage().getFrom().getFirstName() + " " + update.getMessage().getFrom().getLastName());
-        }
-        return brodskiy.onWebhookUpdateReceived(update);
     }
 
     @RequestMapping(value = "/admin", method = RequestMethod.POST)
-    public BotApiMethod<?> onUpdateReceiver(@RequestBody Update update) {
+    public void onUpdateReceiver(@RequestBody Update update) {
         log.debug("Received by Marshak command.");
         User user = null;
         if (update.hasMessage() && userService.IsUserExist(update.getMessage().getFrom().getId().longValue())) {
             user = userService.getUser(update.getMessage().getFrom().getId().longValue());
         }
-        if (user != null && user.isPlaying() && user.getTelegramUserId().equals(update.getMessage().getChatId())) {
-            new Thread(new CallBotResponse(update)).start();
-            return null;
-        } else {
-            return marshakBot.onWebhookUpdateReceived(update);
+        else{
+            marshakBot.onWebhookUpdateReceived(update);
+        }
+
+        if (user != null && user.getTelegramUserId().equals(update.getMessage().getChatId())) {
+            if (user.isPlaying() && !telegramChatService.isUserAlreadyPlaying(user.getTelegramUserId())) {
+                new Thread(new CallBotResponse(update)).start();
+            } else {
+                marshakBot.onWebhookUpdateReceived(update);
+            }
         }
     }
 

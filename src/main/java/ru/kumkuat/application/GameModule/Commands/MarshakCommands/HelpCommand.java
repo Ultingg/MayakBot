@@ -32,6 +32,8 @@ public class HelpCommand extends ManCommand {
         super(COMMAND_IDENTIFIER, COMMAND_DESCRIPTION, EXTENDED_DESCRIPTION);
         ignorCommandList.add("start");
         ignorCommandList.add("support");
+        ignorCommandList.add("sentchat");
+        ignorCommandList.add("play");
     }
 
     /**
