@@ -129,6 +129,16 @@ public class UserService {
         }
     }
 
+    public void setPlaying(long TelegramId, boolean isPlaying) {
+        User user = getUserByTelegramId(TelegramId);
+        if (user != null) {
+            user.setPlaying(isPlaying);
+            userRepository.save(user);
+        } else {
+            throw new NullPointerException("User is null");
+        }
+    }
+
     public boolean setUserNickName(Long telegramId, String nickName) {
         User user = userRepository.getByTelegramUserId(telegramId);
         user.setNickName(nickName);
