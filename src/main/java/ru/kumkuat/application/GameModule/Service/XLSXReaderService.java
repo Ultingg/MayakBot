@@ -69,12 +69,16 @@ public class XLSXReaderService {
                             if (cell.getCellType() == CellType.STRING ||
                                     (cell.getCellType() == CellType.NUMERIC && cell.getNumericCellValue() != 0.0)) {
                                 Trigger newTrigger = new Trigger();
-                                if (cell.getCellType() == CellType.STRING)
+                                if (cell.getCellType() == CellType.STRING) {
                                     if (cell.getStringCellValue().equals("picture")) {
                                         newTrigger.setHasPicture(true);
+                                    }
+                                    if (cell.getStringCellValue().equals("geolocation")) {
+                                        newTrigger.setGeolocationId(1l);
                                     } else {
                                         newTrigger.setText(cell.getStringCellValue());
                                     }
+                                }
                                 if (cell.getCellType() == CellType.NUMERIC)
                                     newTrigger.setText(String.valueOf(cell.getNumericCellValue()));
                                 tempScene.setTrigger(newTrigger);

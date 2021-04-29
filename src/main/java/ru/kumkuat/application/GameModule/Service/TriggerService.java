@@ -35,7 +35,7 @@ public class TriggerService {
             Long geolocationId = trigger.getGeolocationId();
             Geolocation geolocation = geolocationDatabaseService.getGeolocationById(geolocationId);
             double distance = GeoLocationUtilsService.distanceToCurrentLocation(userLat, userLong, geolocation.getLatitude(), geolocation.getLongitude());
-            return distance <= 50.0;
+            return distance <= 50000.0;
         }
         return false;
 
