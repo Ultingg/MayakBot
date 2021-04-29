@@ -116,8 +116,11 @@ public abstract class TelegramWebhookCommandBot extends TelegramWebhookBot imple
     }
 
     public boolean isCallbackQueryHasCommand(CallbackQuery callbackQuery) {
+        return isCommand(callbackQuery.getData());
+    }
+    public boolean isCommand(String message) {
         for (var command : this.getRegisteredCommands()) {
-            if (command.getCommandIdentifier().equals(callbackQuery.getData())) {
+            if (command.getCommandIdentifier().equals(message)) {
                 return true;
             }
         }

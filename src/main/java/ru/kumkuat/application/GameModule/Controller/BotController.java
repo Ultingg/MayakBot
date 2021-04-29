@@ -2,8 +2,11 @@ package ru.kumkuat.application.GameModule.Controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.bots.TelegramWebhookBot;
 import org.telegram.telegrambots.meta.api.methods.updates.SetWebhook;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import ru.kumkuat.application.GameModule.Abstract.TelegramWebhookCommandBot;
 import ru.kumkuat.application.GameModule.Bot.*;
 import ru.kumkuat.application.GameModule.Collections.ResponseContainer;
 
@@ -52,7 +55,7 @@ public class BotController {
             e.getStackTrace();
         }
         if (botName.equals("Marshak")) {
-            sendResponseToUser(responseContainer, marshakBot);
+            sendResponseToUserInPrivate(responseContainer, marshakBot);
             log.debug("BotController processed reply of {}.", "Marshak");
         } else {
             if (botName.equals("Mayakovsky")) {
@@ -75,7 +78,8 @@ public class BotController {
 
     }
 
-    private void sendResponseToUser(ResponseContainer responseContainer, BotsSender botsSender) {
+    private void sendResponseToUser(ResponseContainer responseContainer, BotsSender botsSender ) {
+
         if (responseContainer.hasGeolocation()) {
             botsSender.sendLocation(responseContainer.getSendLocation());
         }
@@ -86,10 +90,48 @@ public class BotController {
             botsSender.sendPicture(responseContainer.getSendPhoto());
         }
         if (responseContainer.hasText()) {
-            botsSender.sendMessage(responseContainer.getSendMessage());
+            var sendMessage = responseContainer.getSendMessage();
+            sendMessage.setChatId(responseContainer.getUserId().toString());
+            botsSender.sendMessage(sendMessage);
         }
         if(responseContainer.hasSticker()) {
             botsSender.sendSticker(responseContainer.getSendSticker());
+        }
+    }
+
+    private void sendResponseToUserInPrivate(ResponseContainer responseContainer, TelegramWebhookCommandBot telegramWebhookBot) {
+        var botsSender = (BotsSender)telegramWebhookBot;
+        if (responseContainer.hasGeolocation()) {
+            var sendLocation = responseContainer.getSendLocation();
+            sendLocation.setChatId(responseContainer.getUserId().toString());
+            botsSender.sendLocation(sendLocation);
+        }
+        if (responseContainer.hasAudio()) {
+            var sendVoice = responseContainer.getSendVoice();
+            sendVoice.setChatId(responseContainer.getUserId().toString());
+            botsSender.sendVoice(sendVoice);
+        }
+        if (responseContainer.hasPicture()) {
+            var sendPhoto = responseContainer.getSendPhoto();
+            sendPhoto.setChatId(responseContainer.getUserId().toString());
+            botsSender.sendPicture(sendPhoto);
+        }
+        if (responseContainer.hasText()) {
+            if(telegramWebhookBot.isCommand(responseContainer.getSendMessage().getText())){
+                var command = telegramWebhookBot.getRegisteredCommand(responseContainer.getSendMessage().getText());
+                String[] arguments = new String[]{responseContainer.getMessage().getText()};
+                var message = responseContainer.getMessage();
+                message.setText(responseContainer.getSendMessage().getText());
+                command.processMessage(telegramWebhookBot, message, arguments);
+            }
+            else{
+                botsSender.sendMessage(responseContainer.getSendMessage());
+            }
+        }
+        if(responseContainer.hasSticker()) {
+            var sendSticker = responseContainer.getSendSticker();
+            sendSticker.setChatId(responseContainer.getUserId().toString());
+            botsSender.sendSticker(sendSticker);
         }
     }
 }

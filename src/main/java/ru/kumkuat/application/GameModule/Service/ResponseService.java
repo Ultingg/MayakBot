@@ -65,12 +65,12 @@ public class ResponseService {
             String chatId = message.getChatId().toString();
             try {
                 if (isNavigationCommand) {    //сделал отдельно чтобы не проводить проверку checkIncomingMessage лишний раз
-                    ReplyResolver(chatId, scene, userId);
+                    ReplyResolver(chatId, scene, userId, message);
                     userService.incrementSceneId(userId);
                 } else {
                     if (checkIncomingMessage(message, sceneTrigger)) {
                         User user = userService.getUser(userId);
-                        ReplyResolver(chatId, scene, userId);
+                        ReplyResolver(chatId, scene, userId, message);
                         if (user.getSceneId() >= sceneService.count() - 1 && !user.isAdmin()) {
                             kickAllCommand.KickChatMember(marshakBot, telegramChatService.getChatByUserTelegramId(user.getTelegramUserId()));
                         }
@@ -105,7 +105,6 @@ public class ResponseService {
         if (message.hasText()) {
             String userText = message.getText();
             if (checkForNickNameSetting(sceneTrigger)) {
-
                 result = nickNameSetter(message);
             } else {
                 result = true;
@@ -113,24 +112,24 @@ public class ResponseService {
             }
         }
         if (message.hasPhoto()) {
-
             result = sceneTrigger.isHasPicture();
         }
         if (message.hasLocation()) {
             Location userLocation = message.getLocation();
             result = triggerService.triggerCheck(sceneTrigger, userLocation);
         }
-        if(result) triggUser(message);
+        if(result) {
+            triggUser(message);
+        }
         return result;
-
     }
 
-
-    private void ReplyResolver(String chatId, Scene scene, Long userId) {
+    private void ReplyResolver(String chatId, Scene scene, Long userId, Message message) {
         List<Reply> replyList = scene.getReplyCollection();
         ResponseContainer responseContainer;
         for (Reply reply : replyList) {
-            responseContainer = configureMessage(reply, chatId);
+            responseContainer = configureMessage(reply, chatId, userId);
+            responseContainer.setMessage(message);
             botController.responseResolver(responseContainer);
         }
         userService.setUserTrigger(userId, false);
@@ -164,11 +163,11 @@ public class ResponseService {
 
     }
 
-    private synchronized ResponseContainer configureMessage(Reply reply, String chatId) {
+    private synchronized ResponseContainer configureMessage(Reply reply, String chatId, Long userId) {
         ResponseContainer responseContainer = new ResponseContainer();
         responseContainer.setTimingOfReply(reply.getTiming());
         responseContainer.setBotName(reply.getBotName());
-
+        responseContainer.setUserId(userId);
 
         if (reply.hasPicture()) {
             log.debug("Reply has picture.");
@@ -212,7 +211,7 @@ public class ResponseService {
             log.debug("Reply has text.");
             String textToSend = reply.getTextMessage();
             textToSend = EmojiParser.parseToUnicode(textToSend);
-            textToSend = nickNameInserting(textToSend, Long.valueOf(chatId));
+            textToSend = nickNameInserting(textToSend, Long.valueOf(userId));
             SendMessage sendMessage = new SendMessage();
             sendMessage.setText(textToSend);
             sendMessage.setChatId(chatId);
@@ -252,9 +251,7 @@ public class ResponseService {
 
     private boolean nickNameSetter(Message message) {
         String nickName = message.getText();
-        Long chatId = message.getChatId();
-        Long userId = telegramChatService.getUserTelegramIdByChatId(chatId);
-        userService.setUserNickName(userId, nickName);
+        userService.setUserNickName(message.getFrom().getId().longValue(), nickName);
         return true;
     }
 
@@ -263,10 +260,9 @@ public class ResponseService {
         return text.equals("имя");
     }
 
-    private String nickNameInserting(String text, Long chatId) {
+    private String nickNameInserting(String text, Long userId) {
         String result = text;
         if (text.contains("@ИмяЗрителя")) {
-            Long userId = telegramChatService.getUserTelegramIdByChatId(chatId);
             String name = userService.getUser(userId).getNickName();
             result = text.replace("@ИмяЗрителя", name);
         }

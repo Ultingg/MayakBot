@@ -196,6 +196,7 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
     public void sendMessage(SendMessage sendMessage) {
         log.debug("{} get SendTextMessage!", secretName);
         try {
+
             execute(sendMessage);
             log.debug("{} send SendTextMessage!", secretName);
         } catch (TelegramApiException e) {

@@ -114,12 +114,13 @@ public class HelpCommand extends ManCommand {
         boolean adminFlag = userFromDB.isAdmin();
         if (ICommandRegistry.class.isInstance(absSender)) {
             ICommandRegistry registry = (ICommandRegistry) absSender;
-            if (arguments.length > 0) {
-                IBotCommand command = registry.getRegisteredCommand(arguments[0]);
-                reply = getManText(command);
-            } else {
-                reply = getHelpText(registry, adminFlag);
-            }
+//            if (arguments.length > 0) {
+//                IBotCommand command = registry.getRegisteredCommand(arguments[0]);
+//                reply = getManText(command);
+//            } else {
+//                reply = getHelpText(registry, adminFlag);
+//            }
+            reply = getHelpText(registry, adminFlag);
             try {
                 absSender.execute(SendMessage.builder().chatId(chat.getId().toString()).text(reply).parseMode("HTML").build());
             } catch (TelegramApiException e) {
