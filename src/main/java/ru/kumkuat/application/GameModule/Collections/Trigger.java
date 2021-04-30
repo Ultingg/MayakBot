@@ -11,4 +11,10 @@ public class Trigger {
     private String text;
     private boolean hasPicture;
     private Long geolocationId;
+    private boolean hasGeolocation = false;
+
+    public void setGeolocationId(Long geolocationId) {
+        this.geolocationId = geolocationId;
+        this.hasGeolocation = true;
+    }
 }

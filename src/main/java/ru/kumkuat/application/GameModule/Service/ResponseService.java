@@ -111,21 +111,18 @@ public class ResponseService {
 
     private boolean checkTriggerOfIncomingMessage(Message message, Trigger sceneTrigger) {
         boolean result = false;
-        if (message.hasLocation()) {
-            Location userLocation = message.getLocation();
-            result = triggerService.triggerCheck(sceneTrigger, userLocation);
+        if (message.hasPhoto()) {
+            result = sceneTrigger.isHasPicture();
         }
         if (message.hasText()) {
-            String userText = message.getText();
             if (checkForNickNameSetting(sceneTrigger)) {
                 result = nickNameSetter(message);
+            } else if (sceneTrigger.isHasPicture()) {
+                result = false;
             } else {
                 result = true;
                 // result = triggerService.triggerCheck(sceneTrigger, userText);
             }
-        }
-        if (message.hasPhoto()) {
-            result = sceneTrigger.isHasPicture();
         }
         if (message.hasLocation()) {
             Location userLocation = message.getLocation();
