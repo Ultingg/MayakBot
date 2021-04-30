@@ -74,6 +74,7 @@ public class Harms extends TelegramWebhookBot implements BotsSender {
             log.debug("{} failed sending SendTextMessage!", secretName);
         }
     }
+
     @Override
     public void sendSticker(SendSticker sendSticker) {
         log.debug("{} get SendTextMessage!", secretName);
@@ -85,7 +86,8 @@ public class Harms extends TelegramWebhookBot implements BotsSender {
             log.debug("{} failed sending SendTextMessage!", secretName);
         }
     }
-    public boolean isBotsStarting(String UserId){
+
+    public boolean isBotsStarting(String UserId) {
         SendMessage checkMessage = new SendMessage();
         checkMessage.setText("Проверка");
         checkMessage.setChatId(UserId);

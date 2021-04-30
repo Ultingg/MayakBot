@@ -12,5 +12,5 @@ public class Sticker {
 
     @Id
     private Long id;
-    private  String path;
+    private String path;
 }

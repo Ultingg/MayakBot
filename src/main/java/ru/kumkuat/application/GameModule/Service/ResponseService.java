@@ -111,6 +111,10 @@ public class ResponseService {
 
     private boolean checkTriggerOfIncomingMessage(Message message, Trigger sceneTrigger) {
         boolean result = false;
+        if (message.hasLocation()) {
+            Location userLocation = message.getLocation();
+            result = triggerService.triggerCheck(sceneTrigger, userLocation);
+        }
         if (message.hasText()) {
             String userText = message.getText();
             if (checkForNickNameSetting(sceneTrigger)) {

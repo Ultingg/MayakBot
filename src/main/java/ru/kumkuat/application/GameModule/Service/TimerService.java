@@ -1,12 +1,9 @@
 package ru.kumkuat.application.GameModule.Service;
 
-import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
-import java.util.Timer;
 import java.util.TimerTask;
 
 @Component

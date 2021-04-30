@@ -207,6 +207,7 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
             log.debug("{} failed sending SendTextMessage!", secretName);
         }
     }
+
     @Override
     public void sendSticker(SendSticker sendSticker) {
         log.debug("{} get SendTextMessage!", secretName);

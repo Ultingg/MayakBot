@@ -132,7 +132,7 @@ public class StartCommand extends BotCommand {
             Button21.setCallbackData("play");
             keyboardButtonsRow1.add(Button21);
 
-            List<List<InlineKeyboardButton>> rowList= new ArrayList<>();
+            List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
             rowList.add(keyboardButtonsRow1);
             //rowList.add(keyboardButtonsRow2);
 

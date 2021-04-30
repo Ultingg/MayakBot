@@ -37,7 +37,7 @@ public class NextSceneCommand extends BotCommand implements AdminCommand {
             Integer newSceneId = oldSceneId + 1;
             if (newSceneId < sceneService.count() - 1) {
                 userService.setUserScene(user, newSceneId);
-            //    replyMessage.setText("Вы продвинулись на сцену вперед! Номер сцены: " + newSceneId);
+                //    replyMessage.setText("Вы продвинулись на сцену вперед! Номер сцены: " + newSceneId);
             } else {
                 userService.setUserScene(user, 0);
                 replyMessage.setText("Вы зашли слишком далеко, начинайте заново!");

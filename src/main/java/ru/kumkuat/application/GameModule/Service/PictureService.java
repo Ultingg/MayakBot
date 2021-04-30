@@ -40,7 +40,8 @@ public class PictureService {
         pictureRepository.save(picture);
         return picture.getId();
     }
-    public  long setPictureIntoDB(String picturePath) {
+
+    public long setPictureIntoDB(String picturePath) {
         Picture picture = new Picture();
         picture.setPath(picturePath);
         Long picId = Long.valueOf(getAll().size()) + 1; // костыль

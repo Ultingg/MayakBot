@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.kumkuat.application.GameModule.Bot.Brodskiy;
@@ -38,7 +37,7 @@ public class UpdateController {
     public void onUpdateReceived(@RequestBody Update update) {
         if (update.getMessage() != null &&
                 userService.IsUserExist(update.getMessage().getFrom().getId().longValue()) &&
-                !userService.getUser(update.getMessage().getFrom().getId().longValue()).isAdmin() ) {
+                !userService.getUser(update.getMessage().getFrom().getId().longValue()).isAdmin()) {
             Thread myThready = new Thread(new CallBotResponse(update));
             myThready.start();
         }
@@ -50,8 +49,7 @@ public class UpdateController {
         User user = null;
         if (update.hasMessage() && userService.IsUserExist(update.getMessage().getFrom().getId().longValue())) {
             user = userService.getUser(update.getMessage().getFrom().getId().longValue());
-        }
-        else{
+        } else {
             marshakBot.onWebhookUpdateReceived(update);
         }
 

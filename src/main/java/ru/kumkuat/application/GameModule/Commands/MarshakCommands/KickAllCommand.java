@@ -43,7 +43,7 @@ public class KickAllCommand extends BotCommand implements AdminCommand {
 
     }
 
-    public void KickAllChatMember(AbsSender absSender, String teleramChatId){
+    public void KickAllChatMember(AbsSender absSender, String teleramChatId) {
         var busyChatsList = telegramChatService.getBusyChats();
         for (var busyChat :
                 busyChatsList) {
@@ -87,7 +87,7 @@ public class KickAllCommand extends BotCommand implements AdminCommand {
             busyChat.setStartPlayTime(null);
             userService.setUserPayment(userId, false);
             telegramChatService.saveChatIntoDB(busyChat);
-            if(absSender.execute(kickChatMember)){
+            if (absSender.execute(kickChatMember)) {
                 ExportChatInviteLink exportChatInviteLink = new ExportChatInviteLink(busyChat.getChatId().toString());
                 SendMessage sendMessage = new SendMessage();
                 sendMessage.setText(absSender.execute(exportChatInviteLink));
@@ -95,8 +95,7 @@ public class KickAllCommand extends BotCommand implements AdminCommand {
                 sendMessage.enableHtml(true);
                 absSender.execute(sendMessage);
                 return true;
-            }
-            else {
+            } else {
                 return false;
             }
 

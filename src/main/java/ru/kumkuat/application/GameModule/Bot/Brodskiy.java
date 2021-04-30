@@ -25,8 +25,6 @@ public class Brodskiy extends TelegramWebhookBot implements BotsSender {
     private String BotPath;
 
 
-
-
     @Override
     public BotApiMethod onWebhookUpdateReceived(Update update) {
         return new SendMessage();
@@ -75,6 +73,7 @@ public class Brodskiy extends TelegramWebhookBot implements BotsSender {
             log.debug("{} failed sending SendTextMessage!", secretName);
         }
     }
+
     @Override
     public void sendSticker(SendSticker sendSticker) {
         log.debug("{} get SendTextMessage!", secretName);
@@ -86,7 +85,8 @@ public class Brodskiy extends TelegramWebhookBot implements BotsSender {
             log.debug("{} failed sending SendTextMessage!", secretName);
         }
     }
-    public boolean isBotsStarting(String UserId){
+
+    public boolean isBotsStarting(String UserId) {
         SendMessage checkMessage = new SendMessage();
         checkMessage.setText("Проверка");
         checkMessage.setChatId(UserId);

@@ -40,5 +40,7 @@ public class ResponseContainer {
         return sendMessage != null;
     }
 
-    public boolean hasSticker() { return sendSticker != null;}
+    public boolean hasSticker() {
+        return sendSticker != null;
+    }
 }

@@ -73,7 +73,10 @@ public class XLSXReaderService {
                                     if (cell.getStringCellValue().equals("picture")) {
                                         newTrigger.setHasPicture(true);
                                     }
-                                    if (cell.getStringCellValue().equals("geolocation")) {
+                                    if (cell.getStringCellValue().contains("geolocation")) {
+                                        String triggerToDB = cell.getStringCellValue().replace("geolocation, ", "");
+                                        Geolocation geolocationToDB = geolocationSpliterator(triggerToDB);
+                                        geolocationDatabaseService.setGeolocationIntoDB(geolocationToDB);
                                         newTrigger.setGeolocationId(1l);
                                     } else {
                                         newTrigger.setText(cell.getStringCellValue());
@@ -131,10 +134,11 @@ public class XLSXReaderService {
 
     public Geolocation geolocationSpliterator(String geolocationString) {
         Geolocation geolocation = new Geolocation();
-        String[] array = geolocationString.split("/");
+        String[] array = geolocationString.trim().split(", ");
         geolocation.setLatitude(Double.valueOf(array[1]));
         geolocation.setLongitude(Double.valueOf(array[2]));
         geolocation.setFullName(array[0]);
         return geolocation;
     }
+
 }

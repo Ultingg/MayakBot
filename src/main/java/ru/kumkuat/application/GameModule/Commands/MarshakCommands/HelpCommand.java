@@ -15,7 +15,6 @@ import ru.kumkuat.application.GameModule.Service.UserService;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 @Component
 public class HelpCommand extends ManCommand {
@@ -58,7 +57,7 @@ public class HelpCommand extends ManCommand {
 
         for (IBotCommand com : botCommands) {
             if (!adminFlag) {
-                if (!(com instanceof AdminCommand) &&  !ignorCommandList.contains(com.getCommandIdentifier())) {
+                if (!(com instanceof AdminCommand) && !ignorCommandList.contains(com.getCommandIdentifier())) {
                     reply.append(com.toString()).append(System.lineSeparator()).append(System.lineSeparator());
                 }
             } else {
@@ -68,7 +67,9 @@ public class HelpCommand extends ManCommand {
         }
         return reply.toString();
     }
+
     private static ArrayList<String> ignorCommandList = new ArrayList<String>();
+
     /**
      * Returns the command and description of all supplied commands as a formatted String
      *
