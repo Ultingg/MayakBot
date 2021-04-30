@@ -147,7 +147,7 @@ public class ResponseService {
 
 
     private ResponseContainer configureWrongTriggerMessage(String chatId) {
-        String wrongAnswerMessage = "Друг подумай еще разок над тем что сказал";
+        String wrongAnswerMessage = "Мне кажется, я вас не совсем понимаю.";
         ResponseContainer responseContainer = new ResponseContainer();
         SendMessage sendMessage = new SendMessage();
         sendMessage.setText(wrongAnswerMessage);
