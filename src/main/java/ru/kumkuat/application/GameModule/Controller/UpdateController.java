@@ -47,6 +47,7 @@ public class UpdateController {
     public void onUpdateReceiver(@RequestBody Update update) {
         log.debug("Received by Marshak command.");
         User user = null;
+
         if (update.hasMessage() && userService.IsUserExist(update.getMessage().getFrom().getId().longValue())) {
             user = userService.getUser(update.getMessage().getFrom().getId().longValue());
         } else {
@@ -54,11 +55,15 @@ public class UpdateController {
         }
 
         if (user != null && user.getTelegramUserId().equals(update.getMessage().getChatId())) {
+
+
             if (user.isPlaying() && !telegramChatService.isUserAlreadyPlaying(user.getTelegramUserId())) {
                 new Thread(new CallBotResponse(update)).start();
             } else {
                 marshakBot.onWebhookUpdateReceived(update);
             }
+        } else if (user != null && user.isAdmin()) {
+            marshakBot.onWebhookUpdateReceived(update);
         }
     }
 
