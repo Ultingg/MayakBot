@@ -90,6 +90,7 @@ public class ResponseService {
             User user = userService.getUser(userTelegramId);
             ReplyResolver(chatId, scene, userTelegramId, message);
             if (user.getSceneId() >= sceneService.count() - 1 && !user.isAdmin()) {
+                Thread.sleep(300000);
                 kickAllCommand.KickChatMember(marshakBot, telegramChatService.getChatByUserTelegramId(user.getTelegramUserId()));
             }
             userService.incrementSceneId(userTelegramId);
@@ -172,6 +173,7 @@ public class ResponseService {
         userService.setUserTrigger(userId, true);
 
     }
+
 
     private synchronized ResponseContainer configureMessage(Reply reply, String chatId, Long userId) {
         ResponseContainer responseContainer = new ResponseContainer();
