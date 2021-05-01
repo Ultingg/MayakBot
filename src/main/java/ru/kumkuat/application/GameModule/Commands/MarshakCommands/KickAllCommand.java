@@ -51,16 +51,16 @@ public class KickAllCommand extends BotCommand implements AdminCommand {
             if (KickChatMember(absSender, busyChat)) {
                 SendMessage sendMessage = new SendMessage();
 
-                var name = player.getName();
-                if (name == null) {
-                    name = "";
-                    if (player.getLastName() != null) {
-                        name += player.getLastName();
-                    }
-                    if (player.getFirstName() != null) {
-                        name += player.getFirstName();
-                    }
-                }
+                var name = player.getTelegramUserId();
+//                if (name == null) {
+//                    name = "";
+//                    if (player.getLastName() != null) {
+//                        name += player.getLastName();
+//                    }
+//                    if (player.getFirstName() != null) {
+//                        name += player.getFirstName();
+//                    }
+//                }
                 userService.setPlaying(Long.valueOf(player.getTelegramUserId()), true);
                 sendMessage.setText("Пользователь: @" + name + " успешно удален из чата");
                 sendMessage.setChatId(teleramChatId.toString());

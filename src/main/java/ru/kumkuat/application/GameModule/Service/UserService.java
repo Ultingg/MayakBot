@@ -40,21 +40,21 @@ public class UserService {
      т.к. возможны проблемы при одновременной записи двух и более юзеров под одним id(не telegramID) в бд */
     public long setUserIntoDB(org.telegram.telegrambots.meta.api.objects.User telegramUser) throws Exception {
         User user = new User();
-        if (telegramUser.getUserName() != null) {
-            user.setName(telegramUser.getUserName());
-        } else {
+//        if (telegramUser.getUserName() != null) {
+//            user.setName(telegramUser.getUserName().toString());
+//        } else {
             user.setName("");
-        }
-        if (telegramUser.getFirstName() != null) {
-            user.setFirstName(telegramUser.getFirstName());
-        } else {
+//        }
+//        if (telegramUser.getFirstName() != null) {
+//            user.setFirstName(telegramUser.getFirstName().toString());
+//        } else {
             user.setFirstName("");
-        }
-        if (telegramUser.getLastName() != null) {
-            user.setLastName(telegramUser.getLastName());
-        } else {
+//        }
+//        if (telegramUser.getLastName() != null) {
+//            user.setLastName(telegramUser.getLastName().toString());
+//        } else {
             user.setLastName("");
-        }
+//        }
         user.setSceneId(0L);
         user.setTelegramUserId((long) telegramUser.getId());
         userRepository.save(user);
