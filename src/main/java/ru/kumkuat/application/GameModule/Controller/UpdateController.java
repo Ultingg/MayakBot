@@ -35,9 +35,10 @@ public class UpdateController {
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
     public void onUpdateReceived(@RequestBody Update update) {
-        if (update.getMessage() != null &&
-                userService.IsUserExist(update.getMessage().getFrom().getId().longValue()) &&
-                !userService.getUser(update.getMessage().getFrom().getId().longValue()).isAdmin()) {
+        Message message = update.getMessage();
+        if (message != null && !commandChecker(message) &&
+                userService.IsUserExist(message.getFrom().getId().longValue()) &&
+                !userService.getUser(message.getFrom().getId().longValue()).isAdmin()) {
             Thread myThready = new Thread(new CallBotResponse(update));
             myThready.start();
         }

@@ -40,28 +40,32 @@ public class UserService {
      т.к. возможны проблемы при одновременной записи двух и более юзеров под одним id(не telegramID) в бд */
     public long setUserIntoDB(org.telegram.telegrambots.meta.api.objects.User telegramUser) throws Exception {
         User user = new User();
-//        if (telegramUser.getUserName() != null) {
-//            user.setName(telegramUser.getUserName().toString());
-//        } else {
+        if (telegramUser.getUserName() != null) {
+            user.setName(badNameConvertingToGoodName(telegramUser.getUserName()));
+        } else {
             user.setName("");
-//        }
-//        if (telegramUser.getFirstName() != null) {
-//            user.setFirstName(telegramUser.getFirstName().toString());
-//        } else {
+        }
+        if (telegramUser.getFirstName() != null) {
+            user.setFirstName(badNameConvertingToGoodName(telegramUser.getFirstName()));
+        } else {
             user.setFirstName("");
-//        }
-//        if (telegramUser.getLastName() != null) {
-//            user.setLastName(telegramUser.getLastName().toString());
-//        } else {
+        }
+        if (telegramUser.getLastName() != null) {
+            user.setLastName(badNameConvertingToGoodName(telegramUser.getLastName()));
+        } else {
             user.setLastName("");
-//        }
+        }
         user.setSceneId(0L);
         user.setTelegramUserId((long) telegramUser.getId());
         userRepository.save(user);
         return user.getId();
         //throw new Exception("User name is null");
     }
+    private String badNameConvertingToGoodName(String badName) {
+        String goodName = badName.replaceAll("\\W", "");
+        return goodName;
 
+    }
 
     public User getUser(Long telegramId) throws NullPointerException {
         User user = userRepository.getByTelegramUserId(telegramId);
