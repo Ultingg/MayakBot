@@ -93,13 +93,25 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
         Timer timer = new Timer(true);
         TimerService timerService = new TimerService();
         //Calendar calendar = new GregorianCalendar(2021, Calendar.APRIL, 11, 21, 50);
-        Calendar calendar = new GregorianCalendar();
-        calendar.add(Calendar.DAY_OF_WEEK, +1);
-        calendar.set(Calendar.HOUR, 0);
-        calendar.set(Calendar.SECOND, 0);
-        Long delay = calendar.getTimeInMillis() - new GregorianCalendar().getTimeInMillis();
+
+        Calendar calendarOut = new GregorianCalendar();
+        //calendar.add(Calendar.DAY_OF_WEEK, +1);
+        calendarOut.set(Calendar.HOUR, 12);
+        calendarOut.set(Calendar.MINUTE, 0);
+        calendarOut.set(Calendar.SECOND, 0);
+
+        Calendar calendarCurrentDate = new GregorianCalendar();
+        calendarCurrentDate.setTimeInMillis(new GregorianCalendar().getTimeInMillis());
+
+        //calendar.setTimeInMillis(calendar.getTimeInMillis() + 10800);
+        Long delay = calendarOut.getTimeInMillis() - calendarCurrentDate.getTimeInMillis();
         timerService.setTimerOperation(() -> TimerOperation());
         timer.scheduleAtFixedRate(timerService, delay, 24 * 60 * 60 * 1000);
+
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(telegramChatService.getAdminChatId());
+        sendMessage.setText("Очистка беседок в: " + calendarOut.getTime());
+        this.sendMessage(sendMessage);
     }
 
     @Override
