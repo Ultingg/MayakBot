@@ -104,6 +104,7 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
         calendarCurrentDate.setTimeInMillis(new GregorianCalendar().getTimeInMillis());
 
         //calendar.setTimeInMillis(calendar.getTimeInMillis() + 10800);
+
         Long delay = calendarOut.getTimeInMillis() - calendarCurrentDate.getTimeInMillis();
         timerService.setTimerOperation(() -> TimerOperation());
         timer.scheduleAtFixedRate(timerService, delay, 24 * 60 * 60 * 1000);
