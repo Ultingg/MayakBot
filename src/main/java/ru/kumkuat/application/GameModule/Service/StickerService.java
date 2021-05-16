@@ -14,6 +14,7 @@ public class StickerService {
 
     public StickerService(StickerRepository stickerRepository) {
         this.stickerRepository = stickerRepository;
+        cleanAll();
     }
 
 
@@ -41,6 +42,10 @@ public class StickerService {
     public String getPathToSticker(Long id) {
         Sticker sticker = stickerRepository.findById(id).orElseThrow();
         return sticker.getPath();
+    }
+
+    public void cleanAll() {
+        stickerRepository.deleteAll();
     }
 
 }

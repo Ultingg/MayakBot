@@ -87,7 +87,19 @@ public class MayakBot extends TelegramWebhookBot implements BotsSender {
         }
     }
 
-    public boolean isBotsStarting(String UserId){
+    @Override
+    public void sendSticker(SendSticker sendSticker) {
+        log.debug("{} get SendTextMessage!", secretName);
+        try {
+            execute(sendSticker);
+            log.debug("{} send SendTextMessage!", secretName);
+        } catch (TelegramApiException e) {
+            e.getStackTrace();
+            log.debug("{} failed sending SendTextMessage!", secretName);
+        }
+    }
+
+    public boolean isBotsStarting(String UserId) {
         SendMessage checkMessage = new SendMessage();
         checkMessage.setText("Проверка");
         checkMessage.setChatId(UserId);

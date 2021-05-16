@@ -49,6 +49,15 @@ public class PictureService {
         return picId;
     }
 
+    public long setPictureIntoDB(String picturePath) {
+        Picture picture = new Picture();
+        picture.setPath(picturePath);
+        Long picId = Long.valueOf(getAll().size()) + 1; // костыль
+        picture.setId(picId);
+        pictureRepository.save(picture);
+        return picId;
+    }
+
     public void cleanAll() {
         pictureRepository.deleteAll();
     }

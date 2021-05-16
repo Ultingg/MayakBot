@@ -2,25 +2,20 @@ package ru.kumkuat.application.GameModule.Abstract;
 
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.bots.TelegramWebhookBot;
-import org.telegram.telegrambots.extensions.bots.commandbot.commands.BotCommand;
 import org.telegram.telegrambots.extensions.bots.commandbot.commands.CommandRegistry;
 import org.telegram.telegrambots.extensions.bots.commandbot.commands.IBotCommand;
 import org.telegram.telegrambots.extensions.bots.commandbot.commands.ICommandRegistry;
 import org.telegram.telegrambots.meta.api.methods.AnswerPreCheckoutQuery;
-import org.telegram.telegrambots.meta.api.methods.AnswerShippingQuery;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.*;
-import org.telegram.telegrambots.meta.api.objects.payments.LabeledPrice;
+import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
+import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.payments.PreCheckoutQuery;
-import org.telegram.telegrambots.meta.api.objects.payments.ShippingOption;
-import org.telegram.telegrambots.meta.api.objects.payments.ShippingQuery;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
@@ -59,7 +54,7 @@ public abstract class TelegramWebhookCommandBot extends TelegramWebhookBot imple
         this.commandRegistry = new CommandRegistry(allowCommandsWithUsername, this::getBotUsername);
     }
 
-    public void SendAnswerPreCheckoutQuery(PreCheckoutQuery preCheckoutQuery){
+    public void SendAnswerPreCheckoutQuery(PreCheckoutQuery preCheckoutQuery) {
         AnswerPreCheckoutQuery answerPreCheckoutQuery = new AnswerPreCheckoutQuery();
         answerPreCheckoutQuery.setOk(true);
         answerPreCheckoutQuery.setPreCheckoutQueryId("1");
@@ -71,7 +66,7 @@ public abstract class TelegramWebhookCommandBot extends TelegramWebhookBot imple
         }
     }
 
-    public void DoAfterSuccessfulPayment(Update update){
+    public void DoAfterSuccessfulPayment(Update update) {
         SendMessage replyMessage = new SendMessage();
         replyMessage.setChatId(update.getMessage().getChat().getId().toString());
         replyMessage.enableHtml(true);
@@ -87,11 +82,9 @@ public abstract class TelegramWebhookCommandBot extends TelegramWebhookBot imple
     public final BotApiMethod onWebhookUpdateReceived(Update update) {
         if (update.hasPreCheckoutQuery()) {
             SendAnswerPreCheckoutQuery(update.getPreCheckoutQuery());
-        }
-        else if(update.hasMessage() && update.getMessage().hasSuccessfulPayment()){
+        } else if (update.hasMessage() && update.getMessage().hasSuccessfulPayment()) {
             DoAfterSuccessfulPayment(update);
-        }
-        else if (update.hasMessage()) {
+        } else if (update.hasMessage()) {
             Message message = update.getMessage();
             if (message.isCommand() && !filter(message)) {
                 if (!commandRegistry.executeCommand(this, message)) {
@@ -100,8 +93,7 @@ public abstract class TelegramWebhookCommandBot extends TelegramWebhookBot imple
                 }
                 return null;
             }
-        }
-        else if (update.hasCallbackQuery()) {
+        } else if (update.hasCallbackQuery()) {
             if (isCallbackQueryHasCommand(update.getCallbackQuery())) {
                 try {
                     var command = getBotCommand(update.getCallbackQuery().getData());
@@ -118,6 +110,7 @@ public abstract class TelegramWebhookCommandBot extends TelegramWebhookBot imple
     public boolean isCallbackQueryHasCommand(CallbackQuery callbackQuery) {
         return isCommand(callbackQuery.getData());
     }
+
     public boolean isCommand(String message) {
         for (var command : this.getRegisteredCommands()) {
             if (command.getCommandIdentifier().equals(message)) {

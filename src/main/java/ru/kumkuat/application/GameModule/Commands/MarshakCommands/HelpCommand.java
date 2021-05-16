@@ -15,13 +15,13 @@ import ru.kumkuat.application.GameModule.Service.UserService;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 @Component
 public class HelpCommand extends ManCommand {
     private static final String COMMAND_IDENTIFIER = "help";
     private static final String COMMAND_DESCRIPTION = "Вывести список доступных команд";
     private static final String EXTENDED_DESCRIPTION = "This command displays all commands the bot has to offer.\n /help can display deeper information";
+    private static ArrayList<String> ignorCommandList = new ArrayList<String>();
     @Autowired
     private UserService userService;
 
@@ -58,7 +58,7 @@ public class HelpCommand extends ManCommand {
 
         for (IBotCommand com : botCommands) {
             if (!adminFlag) {
-                if (!(com instanceof AdminCommand) &&  !ignorCommandList.contains(com.getCommandIdentifier())) {
+                if (!(com instanceof AdminCommand) && !ignorCommandList.contains(com.getCommandIdentifier())) {
                     reply.append(com.toString()).append(System.lineSeparator()).append(System.lineSeparator());
                 }
             } else {
@@ -68,7 +68,8 @@ public class HelpCommand extends ManCommand {
         }
         return reply.toString();
     }
-    private static ArrayList<String> ignorCommandList = new ArrayList<String>();
+
+
     /**
      * Returns the command and description of all supplied commands as a formatted String
      *
@@ -112,22 +113,28 @@ public class HelpCommand extends ManCommand {
     @Override
     public void execute(AbsSender absSender, User user, Chat chat, String[] arguments) {
         String reply;
-        ru.kumkuat.application.GameModule.Models.User userFromDB = userService.getUser(Long.valueOf(user.getId()));
-        boolean adminFlag = userFromDB.isAdmin();
-        if (ICommandRegistry.class.isInstance(absSender)) {
-            ICommandRegistry registry = (ICommandRegistry) absSender;
+        Long userId = Long.valueOf(user.getId());
+        if (userService.IsUserExist(user.getId().longValue()) && userService.getUser(userId).isAdmin()) {
+
+            ru.kumkuat.application.GameModule.Models.User userFromDB;
+            userFromDB = userService.getUser(Long.valueOf(user.getId()));
+            boolean adminFlag = userFromDB.isAdmin();
+            if (ICommandRegistry.class.isInstance(absSender)) {
+                ICommandRegistry registry = (ICommandRegistry) absSender;
 //            if (arguments.length > 0) {
 //                IBotCommand command = registry.getRegisteredCommand(arguments[0]);
 //                reply = getManText(command);
 //            } else {
 //                reply = getHelpText(registry, adminFlag);
 //            }
-            reply = getHelpText(registry, adminFlag);
-            try {
-                absSender.execute(SendMessage.builder().chatId(chat.getId().toString()).text(reply).parseMode("HTML").build());
-            } catch (TelegramApiException e) {
-                e.printStackTrace();
+                reply = getHelpText(registry, adminFlag);
+                try {
+                    absSender.execute(SendMessage.builder().chatId(chat.getId().toString()).text(reply).parseMode("HTML").build());
+                } catch (TelegramApiException e) {
+                    e.printStackTrace();
+                }
             }
         }
+
     }
 }

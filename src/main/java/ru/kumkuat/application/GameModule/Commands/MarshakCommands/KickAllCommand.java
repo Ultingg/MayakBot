@@ -43,7 +43,7 @@ public class KickAllCommand extends BotCommand implements AdminCommand {
 
     }
 
-    public void KickAllChatMember(AbsSender absSender, String teleramChatId){
+    public void KickAllChatMember(AbsSender absSender, String teleramChatId) {
         var busyChatsList = telegramChatService.getBusyChats();
         for (var busyChat :
                 busyChatsList) {
@@ -51,16 +51,16 @@ public class KickAllCommand extends BotCommand implements AdminCommand {
             if (KickChatMember(absSender, busyChat)) {
                 SendMessage sendMessage = new SendMessage();
 
-                var name = player.getName();
-                if (name == null) {
-                    name = "";
-                    if (player.getLastName() != null) {
-                        name += player.getLastName();
-                    }
-                    if (player.getFirstName() != null) {
-                        name += player.getFirstName();
-                    }
-                }
+                var name = player.getTelegramUserId();
+//                if (name == null) {
+//                    name = "";
+//                    if (player.getLastName() != null) {
+//                        name += player.getLastName();
+//                    }
+//                    if (player.getFirstName() != null) {
+//                        name += player.getFirstName();
+//                    }
+//                }
                 userService.setPlaying(Long.valueOf(player.getTelegramUserId()), true);
                 sendMessage.setText("Пользователь: @" + name + " успешно удален из чата");
                 sendMessage.setChatId(teleramChatId.toString());
@@ -87,7 +87,7 @@ public class KickAllCommand extends BotCommand implements AdminCommand {
             busyChat.setStartPlayTime(null);
             userService.setUserPayment(userId, false);
             telegramChatService.saveChatIntoDB(busyChat);
-            if(absSender.execute(kickChatMember)){
+            if (absSender.execute(kickChatMember)) {
                 ExportChatInviteLink exportChatInviteLink = new ExportChatInviteLink(busyChat.getChatId().toString());
                 SendMessage sendMessage = new SendMessage();
                 sendMessage.setText(absSender.execute(exportChatInviteLink));
@@ -95,8 +95,7 @@ public class KickAllCommand extends BotCommand implements AdminCommand {
                 sendMessage.enableHtml(true);
                 absSender.execute(sendMessage);
                 return true;
-            }
-            else {
+            } else {
                 return false;
             }
 

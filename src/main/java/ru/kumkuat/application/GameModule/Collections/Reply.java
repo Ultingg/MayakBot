@@ -37,6 +37,8 @@ public class Reply {
         return textMessage != null;
     }
 
-    public boolean hasSticker() {return stickerId != null;}
+    public boolean hasSticker() {
+        return stickerId != null;
+    }
 
 }

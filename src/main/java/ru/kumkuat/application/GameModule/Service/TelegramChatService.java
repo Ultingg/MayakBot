@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Chat;
-import org.telegram.telegrambots.meta.api.objects.User;
 import ru.kumkuat.application.GameModule.Exceptions.TelegramChatServiceException;
 import ru.kumkuat.application.GameModule.Models.TelegramChat;
 import ru.kumkuat.application.GameModule.Repository.TelegramChatRepository;
@@ -18,7 +17,7 @@ import java.util.stream.Collectors;
 public class TelegramChatService {
 
     @Value("${admin.chat.id}")
-    private  String adminChatId;
+    private String adminChatId;
 
     private final TelegramChatRepository telegramChatRepository;
 

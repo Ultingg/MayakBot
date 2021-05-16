@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.kumkuat.application.GameModule.Bot.Brodskiy;
@@ -36,9 +35,10 @@ public class UpdateController {
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
     public void onUpdateReceived(@RequestBody Update update) {
-        if (update.getMessage() != null &&
-                userService.IsUserExist(update.getMessage().getFrom().getId().longValue()) &&
-                !userService.getUser(update.getMessage().getFrom().getId().longValue()).isAdmin() ) {
+        Message message = update.getMessage();
+        if (message != null && !commandChecker(message) &&
+                userService.IsUserExist(message.getFrom().getId().longValue()) &&
+                !userService.getUser(message.getFrom().getId().longValue()).isAdmin()) {
             Thread myThready = new Thread(new CallBotResponse(update));
             myThready.start();
         }
@@ -48,19 +48,23 @@ public class UpdateController {
     public void onUpdateReceiver(@RequestBody Update update) {
         log.debug("Received by Marshak command.");
         User user = null;
+
         if (update.hasMessage() && userService.IsUserExist(update.getMessage().getFrom().getId().longValue())) {
             user = userService.getUser(update.getMessage().getFrom().getId().longValue());
-        }
-        else{
+        } else {
             marshakBot.onWebhookUpdateReceived(update);
         }
 
         if (user != null && user.getTelegramUserId().equals(update.getMessage().getChatId())) {
+
+
             if (user.isPlaying() && !telegramChatService.isUserAlreadyPlaying(user.getTelegramUserId())) {
                 new Thread(new CallBotResponse(update)).start();
             } else {
                 marshakBot.onWebhookUpdateReceived(update);
             }
+        } else if (user != null && user.isAdmin()) {
+            marshakBot.onWebhookUpdateReceived(update);
         }
     }
 

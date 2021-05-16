@@ -90,6 +90,7 @@ public class ResponseService {
             User user = userService.getUser(userTelegramId);
             ReplyResolver(chatId, scene, userTelegramId, message);
             if (user.getSceneId() >= sceneService.count() - 1 && !user.isAdmin()) {
+                Thread.sleep(300000);
                 kickAllCommand.KickChatMember(marshakBot, telegramChatService.getChatByUserTelegramId(user.getTelegramUserId()));
             }
             userService.incrementSceneId(userTelegramId);
@@ -111,17 +112,18 @@ public class ResponseService {
 
     private boolean checkTriggerOfIncomingMessage(Message message, Trigger sceneTrigger) {
         boolean result = false;
+        if (message.hasPhoto()) {
+            result = sceneTrigger.isHasPicture();
+        }
         if (message.hasText()) {
-            String userText = message.getText();
             if (checkForNickNameSetting(sceneTrigger)) {
                 result = nickNameSetter(message);
+            } else if (sceneTrigger.isHasPicture()) {
+                result = false;
             } else {
                 result = true;
                 // result = triggerService.triggerCheck(sceneTrigger, userText);
             }
-        }
-        if (message.hasPhoto()) {
-            result = sceneTrigger.isHasPicture();
         }
         if (message.hasLocation()) {
             Location userLocation = message.getLocation();
@@ -146,7 +148,7 @@ public class ResponseService {
 
 
     private ResponseContainer configureWrongTriggerMessage(String chatId) {
-        String wrongAnswerMessage = "Друг подумай еще разок над тем что сказал";
+        String wrongAnswerMessage = "Мне кажется, я вас не совсем понимаю.";
         ResponseContainer responseContainer = new ResponseContainer();
         SendMessage sendMessage = new SendMessage();
         sendMessage.setText(wrongAnswerMessage);
@@ -171,6 +173,7 @@ public class ResponseService {
         userService.setUserTrigger(userId, true);
 
     }
+
 
     private synchronized ResponseContainer configureMessage(Reply reply, String chatId, Long userId) {
         ResponseContainer responseContainer = new ResponseContainer();

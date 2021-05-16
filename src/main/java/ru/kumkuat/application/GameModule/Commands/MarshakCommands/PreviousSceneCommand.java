@@ -32,7 +32,7 @@ public class PreviousSceneCommand extends BotCommand implements AdminCommand {
             Integer newSceneId = oldSceneId - 1;
             if (newSceneId > 0) {
                 userService.setUserScene(user, newSceneId);
-            //    replyMessage.setText("Вы вернулись на предыдущую сцену! Номер сцены: " + newSceneId);
+                //    replyMessage.setText("Вы вернулись на предыдущую сцену! Номер сцены: " + newSceneId);
             } else {
                 userService.setUserScene(user, 0);
                 replyMessage.setText("Вот вы и вернулись в начало, всегда возвращайтесь к Началу!");

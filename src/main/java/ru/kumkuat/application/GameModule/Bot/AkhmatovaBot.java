@@ -98,7 +98,7 @@ public class AkhmatovaBot extends TelegramWebhookBot implements BotsSender {
         }
     }
 
-    public boolean isBotsStarting(String UserId){
+    public boolean isBotsStarting(String UserId) {
         SendMessage checkMessage = new SendMessage();
         checkMessage.setText("Проверка");
         checkMessage.setChatId(UserId);
