@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.extensions.bots.commandbot.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.methods.groupadministration.ExportChatInviteLink;
+import org.telegram.telegrambots.meta.api.methods.groupadministration.UnbanChatMember;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.User;
@@ -63,12 +64,16 @@ public class SendChatCommand extends BotCommand {
         replyMessage.setChatId(userId.toString());
         replyMessage.enableHtml(true);
         if (telegramChatService.isFreeChatHas()) {
-
             var freeChat = telegramChatService.getFreeChat();
             freeChat.setBusy(true);
             //freeChat.setStartPlayTime(new Date());
             freeChat.setUserId(userId.longValue());
             telegramChatService.saveChatIntoDB(freeChat);
+
+            UnbanChatMember unbanChatMember = new UnbanChatMember();
+            unbanChatMember.setChatId(freeChat.getChatId().toString());
+            unbanChatMember.setUserId(userId.intValue());
+            absSender.execute(unbanChatMember);
 
             ExportChatInviteLink exportChatInviteLink = new ExportChatInviteLink(freeChat.getChatId().toString());
             var inviteLink = absSender.execute(exportChatInviteLink);

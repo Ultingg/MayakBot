@@ -32,30 +32,17 @@ public class PictureService {
     }
 
     public long setPictureIntoDB(Node replyNode) {
-        Picture picture = new Picture();
         var path = replyNode.getAttributes().getNamedItem("path").getNodeValue();
+        return setPictureIntoDB(path);
+    }
+
+    public long setPictureIntoDB(String path) {
+        Picture picture = new Picture();
         picture.setPath(path);
         Long picId = Long.valueOf(getAll().size()) + 1; // костыль
         picture.setId(picId);
         pictureRepository.save(picture);
         return picture.getId();
-    }
-    public  long setPictureIntoDB(String picturePath) {
-        Picture picture = new Picture();
-        picture.setPath(picturePath);
-        Long picId = Long.valueOf(getAll().size()) + 1; // костыль
-        picture.setId(picId);
-        pictureRepository.save(picture);
-        return picId;
-    }
-
-    public long setPictureIntoDB(String picturePath) {
-        Picture picture = new Picture();
-        picture.setPath(picturePath);
-        Long picId = Long.valueOf(getAll().size()) + 1; // костыль
-        picture.setId(picId);
-        pictureRepository.save(picture);
-        return picId;
     }
 
     public void cleanAll() {

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.extensions.bots.commandbot.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.methods.groupadministration.ExportChatInviteLink;
 import org.telegram.telegrambots.meta.api.methods.groupadministration.KickChatMember;
+import org.telegram.telegrambots.meta.api.methods.groupadministration.UnbanChatMember;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.User;
@@ -79,7 +80,7 @@ public class KickAllCommand extends BotCommand implements AdminCommand {
         Long userId = busyChat.getUserId();
         kickChatMember.setChatId(busyChat.getChatId().toString());
         kickChatMember.setUserId(userId.intValue());
-        Duration duration = Duration.ofSeconds(600);
+        Duration duration = Duration.ofSeconds(30);
         kickChatMember.forTimePeriodDuration(duration);
         try {
             busyChat.setBusy(false);

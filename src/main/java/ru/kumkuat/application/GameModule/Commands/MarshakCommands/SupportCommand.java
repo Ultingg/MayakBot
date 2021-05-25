@@ -25,7 +25,7 @@ public class SupportCommand extends BotCommand {
         Long userId = Long.valueOf(user.getId());
 
 
-        replyMessage.setText("Раздел поддержки находится в разработке. Вам придется рассчитывать только на себя. Держитесь! Здоровя вам!");
+        replyMessage.setText("Раздел поддержки находится в разработке. Вам придется рассчитывать только на себя. Держитесь! Здоровья вам!");
 
         execute(absSender, replyMessage);
     }
