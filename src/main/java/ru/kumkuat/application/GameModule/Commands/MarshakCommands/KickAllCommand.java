@@ -64,7 +64,7 @@ public class KickAllCommand extends BotCommand implements AdminCommand {
 //                }
                 userService.setPlaying(Long.valueOf(player.getTelegramUserId()), true);
                 sendMessage.setText("Пользователь: @" + name + " успешно удален из чата");
-                sendMessage.setChatId(teleramChatId.toString());
+                sendMessage.setChatId(teleramChatId);
                 sendMessage.enableHtml(true);
                 try {
                     absSender.execute(sendMessage);
