@@ -67,6 +67,8 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
     private SendChatCommand sendChatCommand;
     @Autowired
     private ResetUserCommand resetUserCommand;
+    @Autowired
+    private SetSceneNumberCommand setSceneNumberCommand;
 
     private String secretName = "Marshak";
 
@@ -136,6 +138,7 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
         register(helpCommand);
         register(sendChatCommand);
         register(resetUserCommand);
+        register(setSceneNumberCommand);
     }
 
     @Override

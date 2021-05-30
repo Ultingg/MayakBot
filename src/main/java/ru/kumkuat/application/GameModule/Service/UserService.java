@@ -61,6 +61,7 @@ public class UserService {
         return user.getId();
         //throw new Exception("User name is null");
     }
+
     private String badNameConvertingToGoodName(String badName) {
         String goodName = badName.replaceAll("\\W", "");
         return goodName;
@@ -85,12 +86,8 @@ public class UserService {
             User userToUpdate = getUser(userId);
             Long sceneId = userToUpdate.getSceneId();
 
-            if (restartScenesCounter(sceneId)) {
-                if (userToUpdate.isAdmin()) {
-                    userToUpdate.setSceneId(0L);
-                } else {
-                    userToUpdate.setSceneId(0L);
-                }
+            if (isSceneHaveLastNumberOrMore(sceneId) && userToUpdate.isAdmin()) {
+                userToUpdate.setSceneId(0L);
             } else {
                 userToUpdate.setSceneId(sceneId + 1);
             }
@@ -107,7 +104,7 @@ public class UserService {
     2) отдельная таблица в БД для админов, куда ручками можно добавить админа
     обдумать а как будет происходить добавления админа и в какой момент
     */
-    private boolean restartScenesCounter(Long sceneId) { //наша халява обнуляет счетчик сцен
+    public boolean isSceneHaveLastNumberOrMore(Long sceneId) { //наша халява обнуляет счетчик сцен
         //читай коммент вверху ;)
         Long sceneSize = Long.valueOf(sceneService.count());
         return sceneId >= sceneSize - 1;

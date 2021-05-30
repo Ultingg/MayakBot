@@ -47,6 +47,7 @@ public class SetSceneNumberCommand extends BotCommand {
                     try {
                         var player = userService.getUser(userId);
                         player.setSceneId(sceneId);
+                        player.setTriggered(false);
                         userRepository.save(player);
 
                     } catch (Exception e) {

@@ -59,41 +59,64 @@ public class ResponseService {
     public void messageReceiver(Message message, boolean isNavigationCommand) {
         Long userId = Long.valueOf(message.getFrom().getId());
         if (userService.IsUserExist(userId)) {
+            User user = userService.getUser(userId);
             Long sceneId = getSceneId(message.getFrom().getId());
-            Scene scene = sceneService.getScene(sceneId);
-            Trigger sceneTrigger = scene.getTrigger();
-            String chatId = message.getChatId().toString();
-            try {
-                if (isNavigationCommand) {    //сделал отдельно чтобы не проводить проверку checkIncomingMessage лишний раз
-                    ReplyResolver(chatId, scene, userId, message);
-                    userService.incrementSceneId(userId);
-                } else {
-                    if (checkIncomingMessage(message, sceneTrigger)) {
-                        ReceiveNextReplies(chatId, userId, message);
+            if(user.getSceneId() <= sceneService.count() - 1){
+                Scene scene = sceneService.getScene(sceneId);
+                Trigger sceneTrigger = scene.getTrigger();
+                String chatId = message.getChatId().toString();
+                try {
+                    if (isNavigationCommand) {    //сделал отдельно чтобы не проводить проверку checkIncomingMessage лишний раз
+                        ReplyResolver(chatId, scene, userId, message);
+                        userService.incrementSceneId(userId);
                     } else {
-                        ResponseContainer wrongAnswerResponse = configureWrongTriggerMessage(chatId);
-                        botController.responseResolver(wrongAnswerResponse);
+                        if (checkIncomingMessage(message, sceneTrigger)) {
+                            ReceiveNextReplies(chatId, userId, message);
+                        } else {
+                            if (!isTypeIncommingMessageEqualTriggerType(message, sceneTrigger)) {
+                                ResponseContainer wrongAnswerResponse = configureWrongTriggerMessage(chatId);
+                                botController.responseResolver(wrongAnswerResponse);
+                            }
+                        }
                     }
-                }
 //            } catch (IncomingMessageException exception) {
 //                exception.printStackTrace();
 //                log.debug("Incoming message Exception!");}
-            } catch (Exception e) {
-                e.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
 
+    private boolean isTypeIncommingMessageEqualTriggerType(Message message, Trigger sceneTrigger) {
+        if (!isUserTriggered(message)) {
+            if (message.hasPhoto()) {
+                return sceneTrigger.isHasPicture();
+            }
+            if (message.hasText()) {
+                return !sceneTrigger.isHasGeolocation() && !sceneTrigger.isHasPicture();
+            }
+            if (message.hasLocation()) {
+                return sceneTrigger.isHasGeolocation();
+            }
+        }
+        return true;
+
+    }
+
     public void ReceiveNextReplies(String chatId, Long userTelegramId, Message message) {
         try {
-            Scene scene = sceneService.getScene(getSceneId(userTelegramId.intValue()));
             User user = userService.getUser(userTelegramId);
-            ReplyResolver(chatId, scene, userTelegramId, message);
-            if (user.getSceneId() >= sceneService.count() - 1 && !user.isAdmin()) {
-                Thread.sleep(300000);
-                kickAllCommand.KickChatMember(marshakBot, telegramChatService.getChatByUserTelegramId(user.getTelegramUserId()));
+            if(user.getSceneId() <= sceneService.count() - 1){
+                Scene scene = sceneService.getScene(getSceneId(userTelegramId.intValue()));
+                ReplyResolver(chatId, scene, userTelegramId, message);
+                userService.incrementSceneId(userTelegramId);
             }
-            userService.incrementSceneId(userTelegramId);
+//            if (user.getSceneId() >= sceneService.count() - 1 && !user.isAdmin()) {
+//                Thread.sleep(300000);
+//                kickAllCommand.KickChatMember(marshakBot, telegramChatService.getChatByUserTelegramId(user.getTelegramUserId()));
+//            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -107,7 +130,6 @@ public class ResponseService {
             result = false;
         }
         return result;
-
     }
 
     private boolean checkTriggerOfIncomingMessage(Message message, Trigger sceneTrigger) {
