@@ -42,6 +42,9 @@ public class UpdateController {
             Thread myThready = new Thread(new CallBotResponse(update));
             myThready.start();
         }
+        else if(commandChecker(message)){
+            marshakBot.onWebhookUpdateReceived(update);
+        }
     }
 
     @RequestMapping(value = "/admin", method = RequestMethod.POST)
@@ -58,7 +61,7 @@ public class UpdateController {
         if (user != null && user.getTelegramUserId().equals(update.getMessage().getChatId())) {
 
 
-            if (user.isPlaying() && !telegramChatService.isUserAlreadyPlaying(user.getTelegramUserId())) {
+            if (user.isPlaying() && !telegramChatService.isUserAlreadyPlaying(user.getTelegramUserId()) && !commandChecker(update.getMessage())) {
                 new Thread(new CallBotResponse(update)).start();
             } else {
                 marshakBot.onWebhookUpdateReceived(update);

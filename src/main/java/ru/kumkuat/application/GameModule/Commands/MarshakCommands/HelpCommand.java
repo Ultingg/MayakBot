@@ -34,7 +34,7 @@ public class HelpCommand extends ManCommand {
     public void execute(AbsSender absSender, User user, Chat chat, String[] arguments) {
         try {
             Long userId = Long.valueOf(user.getId());
-            if (userService.getUser(userId).isAdmin() && arguments != null && arguments.length > 1) {
+            if (userService.getUser(userId).isAdmin() && arguments != null && arguments.length > 0) {
                 var qweryuserId = Long.valueOf(arguments[0]);
                 sendUserInfoMessage(absSender, qweryuserId);
             }
@@ -61,6 +61,8 @@ public class HelpCommand extends ManCommand {
                 reply += "юзер телеграм id: " + userdb.getTelegramUserId() + "\n";
                 reply += "юзер id: " + userdb.getId() + "\n";
                 reply += "юзер sceneid: " + userdb.getSceneId() + "\n";
+                reply += "юзер isPlaying: " + userdb.isPlaying() + "\n";
+                reply += "юзер isTriggered: " + userdb.isTriggered() + "\n";
 
                 if(telegramChatService.isUserAlreadyPlaying(userTelegeramId)){
                     var chatdb = telegramChatService.getChatByUserTelegramId(userTelegeramId);

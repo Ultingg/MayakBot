@@ -12,6 +12,7 @@ import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.kumkuat.application.GameModule.Bot.MarshakBot;
+import ru.kumkuat.application.GameModule.Repository.UserRepository;
 import ru.kumkuat.application.GameModule.Service.TelegramChatService;
 import ru.kumkuat.application.GameModule.Service.UserService;
 
@@ -24,6 +25,7 @@ public class SendChatCommand extends BotCommand {
     private TelegramChatService telegramChatService;
     @Autowired
     private MarshakBot marshakBot;
+
 
     public SendChatCommand(UserService userService) {
         super("/sendchat", "После этой команды начнется игра");
@@ -40,13 +42,22 @@ public class SendChatCommand extends BotCommand {
 
         if (userId == chat.getId()) {
 
+            if(arguments != null && arguments.length > 0){
+                try {
+                    userId = Long.valueOf(arguments[0]);
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+
             log.debug("Marshak ");
             SendMessage replyMessage = new SendMessage();
             replyMessage.setChatId(chat.getId().toString());
             replyMessage.enableHtml(true);
 
             try {
-                if (userService.IsUserExist(userId)) {
+                if (userService.IsUserExist(userId) ) {
                     try {
                         SendFreeChat(absSender, Long.valueOf(userId));
                     } catch (Exception e) {

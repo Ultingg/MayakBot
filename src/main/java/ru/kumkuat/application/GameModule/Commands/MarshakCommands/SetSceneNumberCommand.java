@@ -10,6 +10,7 @@ import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.kumkuat.application.GameModule.Bot.MarshakBot;
+import ru.kumkuat.application.GameModule.Repository.UserRepository;
 import ru.kumkuat.application.GameModule.Service.TelegramChatService;
 import ru.kumkuat.application.GameModule.Service.TimerService;
 import ru.kumkuat.application.GameModule.Service.UserService;
@@ -23,9 +24,11 @@ public class SetSceneNumberCommand extends BotCommand {
     private final UserService userService;
     @Autowired
     private TelegramChatService telegramChatService;
+    @Autowired
+    private UserRepository userRepository;
 
     public SetSceneNumberCommand(UserService userService) {
-        super("/reset_user", "Перезагрузить пользователя");
+        super("/set_scene_number", "Перезагрузить пользователя");
         this.userService = userService;
     }
 
@@ -44,6 +47,8 @@ public class SetSceneNumberCommand extends BotCommand {
                     try {
                         var player = userService.getUser(userId);
                         player.setSceneId(sceneId);
+                        userRepository.save(player);
+
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

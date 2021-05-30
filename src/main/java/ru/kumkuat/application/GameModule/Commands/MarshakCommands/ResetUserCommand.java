@@ -10,6 +10,7 @@ import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.kumkuat.application.GameModule.Bot.MarshakBot;
+import ru.kumkuat.application.GameModule.Repository.UserRepository;
 import ru.kumkuat.application.GameModule.Service.TelegramChatService;
 import ru.kumkuat.application.GameModule.Service.TimerService;
 import ru.kumkuat.application.GameModule.Service.UserService;
@@ -29,6 +30,8 @@ public class ResetUserCommand extends BotCommand {
     private SendChatCommand sendChatCommand;
     @Autowired
     private KickAllCommand kickAllCommand;
+    @Autowired
+    private UserRepository userRepository;
 
     public ResetUserCommand(UserService userService) {
         super("/reset_user", "Перезагрузить пользователя");
@@ -50,6 +53,7 @@ public class ResetUserCommand extends BotCommand {
                         kickAllCommand.KickChatMember(marshakBot, telegramChatService.getChatByUserTelegramId(userId));
                         player.setTriggered(false);
                         //player.setPlaying(false);
+                        userRepository.save(player);
 
                         Timer timer = new Timer(true);
                         TimerService timerService = new TimerService();
