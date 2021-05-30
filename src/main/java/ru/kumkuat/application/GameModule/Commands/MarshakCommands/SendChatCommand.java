@@ -28,7 +28,7 @@ public class SendChatCommand extends BotCommand {
 
 
     public SendChatCommand(UserService userService) {
-        super("/sendchat", "После этой команды начнется игра");
+        super("/sendchat", "Направить пользователю ссылку на свободный чат");
         this.userService = userService;
     }
 
