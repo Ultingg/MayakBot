@@ -71,8 +71,10 @@ public class ResponseService {
                     if (checkIncomingMessage(message, sceneTrigger)) {
                         ReceiveNextReplies(chatId, userId, message);
                     } else {
-                        ResponseContainer wrongAnswerResponse = configureWrongTriggerMessage(chatId);
-                        botController.responseResolver(wrongAnswerResponse);
+                        if (!userService.getUser(userId).isTriggered()) {
+                            ResponseContainer wrongAnswerResponse = configureWrongTriggerMessage(chatId);
+                            botController.responseResolver(wrongAnswerResponse);
+                        }
                     }
                 }
 //            } catch (IncomingMessageException exception) {
@@ -137,7 +139,7 @@ public class ResponseService {
 
     private void ReplyResolver(String chatId, Scene scene, Long userId, Message message) {
         List<Reply> replyList = scene.getReplyCollection();
-        int  lastSceneId = sceneService.count()-1;
+        int lastSceneId = sceneService.count() - 1;
         Long sceneId = userService.getUser(userId).getSceneId();
         ResponseContainer responseContainer;
         for (Reply reply : replyList) {
@@ -145,8 +147,9 @@ public class ResponseService {
             responseContainer.setMessage(message);
             botController.responseResolver(responseContainer);
         }
-        if(sceneId != lastSceneId)  {
-            userService.setUserTrigger(userId, false);}
+        if (sceneId != lastSceneId) {
+            userService.setUserTrigger(userId, false);
+        }
     }
 
 
