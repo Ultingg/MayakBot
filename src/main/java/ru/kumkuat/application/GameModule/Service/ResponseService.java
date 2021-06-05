@@ -137,13 +137,16 @@ public class ResponseService {
 
     private void ReplyResolver(String chatId, Scene scene, Long userId, Message message) {
         List<Reply> replyList = scene.getReplyCollection();
+        int  lastSceneId = sceneService.count()-1;
+        Long sceneId = userService.getUser(userId).getSceneId();
         ResponseContainer responseContainer;
         for (Reply reply : replyList) {
             responseContainer = configureMessage(reply, chatId, userId);
             responseContainer.setMessage(message);
             botController.responseResolver(responseContainer);
         }
-        userService.setUserTrigger(userId, false);
+        if(sceneId != lastSceneId)  {
+            userService.setUserTrigger(userId, false);}
     }
 
 
