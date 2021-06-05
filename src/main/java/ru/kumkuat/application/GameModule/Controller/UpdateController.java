@@ -36,9 +36,10 @@ public class UpdateController {
     @RequestMapping(value = "/", method = RequestMethod.POST)
     public void onUpdateReceived(@RequestBody Update update) {
         Message message = update.getMessage();
-        if (message != null && !commandChecker(message) &&
-                userService.IsUserExist(message.getFrom().getId().longValue()) &&
-                !userService.getUser(message.getFrom().getId().longValue()).isAdmin()) {
+        if (message != null && !commandChecker(message) &&                      /**Check if the sended message wasn't a command **/
+                userService.IsUserExist(message.getFrom().getId().longValue()) &&           /**Check if the message sent from existing user **/
+                !userService.getUser(message.getFrom().getId().longValue()).isAdmin() &&  /**Check if the message sent from Admin **/
+                !message.getChat().getType().equals("private")) {                       /**Check if the message sent to private chat to bot **/
             Thread myThready = new Thread(new CallBotResponse(update));
             myThready.start();
         }
