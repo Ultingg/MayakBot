@@ -23,7 +23,7 @@ jdbc:
 
 admin:
   chat:
-    id: 396005041
+    id: -1001382290693
 
 
 text.path: src\\main\\resources\\voice\\
