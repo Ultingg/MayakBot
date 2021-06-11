@@ -113,8 +113,9 @@ public class PlayCommand extends BotCommand {
         if (userService.IsUserExist(userId.longValue())) {
             if (!telegramChatService.isUserAlreadyPlaying(userId) ) {
                 if (isBotsStarting(absSender, Long.valueOf(userId))) {
-                    userService.setPlaying(Long.valueOf(userId), true);
+
                     if(userService.getUser(userId).getSceneId() < 1) {
+                        userService.setPlaying(Long.valueOf(userId), true);
                     replyMessage.setText("Отлично! Как я могу к тебе обращаться? ");
                     absSender.execute(replyMessage); }
                     else if(userService.getUser(userId).getSceneId() == sceneService.count()) {
@@ -123,6 +124,7 @@ public class PlayCommand extends BotCommand {
                     } /* тут должна отрабатвать проверка на оплату,
                          чтобы сюда пользователь не попадал, а пока закроем дырку так.  */
                     else  {
+                        userService.setPlaying(Long.valueOf(userId), true);
                         replyMessage.setText("Понеслась душа в рай!");
                         marshakBot.getSendChatCommand().SendFreeChat(absSender, userId); /** Sending Link to chat if User didn't finish the Game **/
 
