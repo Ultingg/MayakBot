@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.extensions.bots.commandbot.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.methods.groupadministration.ExportChatInviteLink;
 import org.telegram.telegrambots.meta.api.methods.groupadministration.KickChatMember;
-import org.telegram.telegrambots.meta.api.methods.groupadministration.UnbanChatMember;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.User;
@@ -62,7 +61,7 @@ public class KickAllCommand extends BotCommand implements AdminCommand {
 //                        name += player.getFirstName();
 //                    }
 //                }
-                userService.setPlaying(Long.valueOf(player.getTelegramUserId()), true);
+                userService.setPlaying(Long.valueOf(player.getTelegramUserId()), false); /** Make isPlaying = false */
                 sendMessage.setText("Пользователь: @" + name + " успешно удален из чата");
                 sendMessage.setChatId(teleramChatId);
                 sendMessage.enableHtml(true);
@@ -86,7 +85,9 @@ public class KickAllCommand extends BotCommand implements AdminCommand {
             busyChat.setBusy(false);
             busyChat.setUserId(null);
             busyChat.setStartPlayTime(null);
-            userService.setUserPayment(userId, false);
+            if (userService.getUser(userId).getSceneId() < 19) {
+                userService.setUserPayment(userId, false);  /** Drop isPay only if User reached the end of the Game   */
+            }
             telegramChatService.saveChatIntoDB(busyChat);
             if (absSender.execute(kickChatMember)) {
                 ExportChatInviteLink exportChatInviteLink = new ExportChatInviteLink(busyChat.getChatId().toString());

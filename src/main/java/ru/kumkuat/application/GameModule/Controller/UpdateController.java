@@ -42,8 +42,7 @@ public class UpdateController {
                 !message.getChat().getType().equals("private")) {                       /**Check if the message sent to private chat to bot **/
             Thread myThready = new Thread(new CallBotResponse(update));
             myThready.start();
-        }
-        else if(commandChecker(message)){
+        } else if (message != null && commandChecker(message)) {
             marshakBot.onWebhookUpdateReceived(update);
         }
     }
@@ -62,7 +61,9 @@ public class UpdateController {
         if (user != null && user.getTelegramUserId().equals(update.getMessage().getChatId())) {
 
 
-            if (user.isPlaying() && !telegramChatService.isUserAlreadyPlaying(user.getTelegramUserId()) && !commandChecker(update.getMessage())) {
+            if (user.isPlaying() &&
+                    !telegramChatService.isUserAlreadyPlaying(user.getTelegramUserId()) &&
+                    !commandChecker(update.getMessage())) {
                 new Thread(new CallBotResponse(update)).start();
             } else {
                 marshakBot.onWebhookUpdateReceived(update);
@@ -105,7 +106,7 @@ public class UpdateController {
         public void run() {
             System.out.println("Привет из побочного потока!");
             Message incomingMessage = update.getMessage();
-            if (commandChecker(incomingMessage)) {
+            if (incomingMessage != null && commandChecker(incomingMessage)) {
                 log.debug("Received throw to Marshak.");
                 responseService.messageReceiver(incomingMessage, navigationCommandCheck(incomingMessage));
             } else {

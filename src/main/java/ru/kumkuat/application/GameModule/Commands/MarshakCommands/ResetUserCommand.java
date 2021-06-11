@@ -58,7 +58,7 @@ public class ResetUserCommand extends BotCommand {
                         Timer timer = new Timer(true);
                         TimerService timerService = new TimerService();
                         timerService.setTimerOperation(() -> TimerOperation());
-                        timer.schedule(timerService, 120 * 1000);
+                        timer.schedule(timerService, 120 * 100);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

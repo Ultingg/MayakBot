@@ -10,6 +10,7 @@ import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.kumkuat.application.GameModule.Bot.*;
+import ru.kumkuat.application.GameModule.Service.SceneService;
 import ru.kumkuat.application.GameModule.Service.TelegramChatService;
 import ru.kumkuat.application.GameModule.Service.UserService;
 
@@ -30,6 +31,8 @@ public class PlayCommand extends BotCommand {
     private Brodskiy brodskiy;
     @Autowired
     private MayakBot mayakBot;
+    @Autowired
+    private SceneService sceneService;
 
     public PlayCommand(UserService userService) {
         super("/play", "После этой команды начнется игра");
@@ -102,17 +105,28 @@ public class PlayCommand extends BotCommand {
         }
         return result;
     }
-
+/** What will happend when user end the game and press Start Prmenad, but didn't pay again? */
     void SendFreeChat(AbsSender absSender, Long userId) throws Exception {
         SendMessage replyMessage = new SendMessage();
         replyMessage.setChatId(userId.toString());
         replyMessage.enableHtml(true);
         if (userService.IsUserExist(userId.longValue())) {
-            if (!telegramChatService.isUserAlreadyPlaying(userId)) {
+            if (!telegramChatService.isUserAlreadyPlaying(userId) ) {
                 if (isBotsStarting(absSender, Long.valueOf(userId))) {
                     userService.setPlaying(Long.valueOf(userId), true);
+                    if(userService.getUser(userId).getSceneId() < 1) {
                     replyMessage.setText("Отлично! Как я могу к тебе обращаться? ");
-                    absSender.execute(replyMessage);
+                    absSender.execute(replyMessage); }
+                    else if(userService.getUser(userId).getSceneId() == sceneService.count()) {
+                        replyMessage.setText("Вы окончили прогулку, поздравляю! Чтобы начать прогулку заново обратитесь к администратору (/help)");
+                        absSender.execute(replyMessage);
+                    } /* тут должна отрабатвать проверка на оплату,
+                         чтобы сюда пользователь не попадал, а пока закроем дырку так.  */
+                    else  {
+                        replyMessage.setText("Понеслась душа в рай!");
+                        marshakBot.getSendChatCommand().SendFreeChat(absSender, userId); /** Sending Link to chat if User didn't finish the Game **/
+
+                    }
 //                    if (telegramChatService.isFreeChatHas()) {
 //
 //                        var freeChat = telegramChatService.getFreeChat();
