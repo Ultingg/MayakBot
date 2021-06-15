@@ -100,7 +100,7 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
 
         Calendar calendarOut = new GregorianCalendar();
         //calendar.add(Calendar.DAY_OF_WEEK, +1);
-        calendarOut.set(Calendar.HOUR, 12);
+        calendarOut.set(Calendar.HOUR, 24);
         calendarOut.set(Calendar.MINUTE, 0);
         calendarOut.set(Calendar.SECOND, 0);
 
