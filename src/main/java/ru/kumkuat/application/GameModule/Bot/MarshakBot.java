@@ -20,10 +20,9 @@ import ru.kumkuat.application.GameModule.Service.TelegramChatService;
 import ru.kumkuat.application.GameModule.Service.TimerService;
 import ru.kumkuat.application.GameModule.Service.UserService;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Timer;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Component
 @Slf4j
@@ -80,6 +79,8 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
     private String botPath;
     @Value("${marshak.id}")
     private Double Id;
+    @Value("${time.hour.offset}")
+    private int TimeOffset;
 
     private MarshakBot() {
 
@@ -94,28 +95,44 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
     }
 
     private void StartTimer() {
+        //http://java-online.ru/java-calendar.xhtml
+
+        final String TIMEZONE_msc = "Europe/Moscow";
+
+        //Создаем календари
+        Calendar calendar_curr = new GregorianCalendar();
+        Calendar calendar_midnight = new GregorianCalendar();
+
+        //Инициируем верменные зоны
+        TimeZone tm_curr = TimeZone.getDefault(); //Временная зона сервера
+        TimeZone tm_msk = TimeZone.getTimeZone(TIMEZONE_msc); //Временная зона Москвы
+
+        //Переводим время к москве
+        calendar_midnight.add(Calendar.SECOND, (tm_msk.getRawOffset() - tm_curr.getRawOffset()) / 1000);
+        calendar_curr.add(Calendar.SECOND, (tm_msk.getRawOffset() - tm_curr.getRawOffset()) / 1000);
+
+        //Устанавливаем полночь
+        calendar_midnight.set(Calendar.HOUR_OF_DAY, 0);
+        calendar_midnight.set(Calendar.MINUTE, 0);
+        calendar_midnight.set(Calendar.SECOND, 0);
+        calendar_midnight.add(Calendar.DAY_OF_WEEK,1);
+
+        long timeDelay = Math.abs(calendar_curr.getTime().getTime() - calendar_midnight.getTime().getTime());
+
         Timer timer = new Timer(true);
         TimerService timerService = new TimerService();
-        //Calendar calendar = new GregorianCalendar(2021, Calendar.APRIL, 11, 21, 50);
 
-        Calendar calendarOut = new GregorianCalendar();
-        //calendar.add(Calendar.DAY_OF_WEEK, +1);
-        calendarOut.set(Calendar.HOUR, 12);
-        calendarOut.set(Calendar.MINUTE, 0);
-        calendarOut.set(Calendar.SECOND, 0);
-
-        Calendar calendarCurrentDate = new GregorianCalendar();
-        calendarCurrentDate.setTimeInMillis(new GregorianCalendar().getTimeInMillis());
-
-        //calendar.setTimeInMillis(calendar.getTimeInMillis() + 10800);
-
-        Long delay = calendarOut.getTimeInMillis() - calendarCurrentDate.getTimeInMillis();
         timerService.setTimerOperation(() -> TimerOperation());
-        timer.scheduleAtFixedRate(timerService, delay, 24 * 60 * 60 * 1000);
+        timer.scheduleAtFixedRate(timerService, timeDelay, 24 * 60 * 60 * 1000);
+
+        int hours = (int)(timeDelay / 1000) / (60 * 60);
+        int minutes = (int)(((timeDelay / 1000) % (60d * 60d)) / 60);
 
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(telegramChatService.getAdminChatId());
-        sendMessage.setText("Очистка беседок в: " + calendarOut.getTime());
+        sendMessage = new SendMessage();
+        sendMessage.setChatId(telegramChatService.getAdminChatId());
+        sendMessage.setText("Очистка беседок через: " + hours + " часов " + minutes + " минут");
         this.sendMessage(sendMessage);
     }
 
