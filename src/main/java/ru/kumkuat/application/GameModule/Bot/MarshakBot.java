@@ -112,7 +112,7 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
         calendar_curr.add(Calendar.SECOND, (tm_msk.getRawOffset() - tm_curr.getRawOffset()) / 1000);
 
         //Устанавливаем полночь
-        calendar_midnight.set(Calendar.HOUR_OF_DAY, 0);
+        calendar_midnight.set(Calendar.HOUR_OF_DAY, 0 + TimeOffset);
         calendar_midnight.set(Calendar.MINUTE, 0);
         calendar_midnight.set(Calendar.SECOND, 0);
         calendar_midnight.add(Calendar.DAY_OF_WEEK,1);
