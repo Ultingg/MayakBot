@@ -21,10 +21,6 @@ spring:
 jdbc:
   driverClassName: com.mysql.cj.jdbc.Driver
 
-admin:
-  chat:
-    id: -1001382290693
-
 
 text.path: src\\main\\resources\\voice\\
 

@@ -39,7 +39,7 @@ public class PayCommand extends BotCommand {
         SendInvoice sendInvoice = new SendInvoice();
         sendInvoice.setChatId(chat.getId().intValue());
         sendInvoice.setTitle("Веселые старты");
-        sendInvoice.setDescription("Побегаем, попрыгаем, ножками подрыгаем");
+        sendInvoice.setDescription("Городской спектакль по следам петербургских поэтов");
         sendInvoice.setPayload("Payload");
         sendInvoice.setProviderToken(paymentProviderToken);
         sendInvoice.setCurrency("RUB");
@@ -47,7 +47,7 @@ public class PayCommand extends BotCommand {
         List<LabeledPrice> labeledPrices = new ArrayList<>();
         LabeledPrice labeledPrice = new LabeledPrice();
         labeledPrice.setLabel("Руб");
-        labeledPrice.setAmount(10000);
+        labeledPrice.setAmount(70000);
         labeledPrices.add(labeledPrice);
         sendInvoice.setPrices(labeledPrices);
         try {

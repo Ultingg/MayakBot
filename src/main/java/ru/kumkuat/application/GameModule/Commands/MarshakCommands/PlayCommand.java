@@ -64,7 +64,7 @@ public class PlayCommand extends BotCommand {
                     replyMessage.setText("Вы успешно зарегистрировались!");
                     execute(absSender, replyMessage, user);
                 } else {
-                    if (true /*userService.IsUserHasPayment(userId)*/) {
+                    if ( userService.IsUserHasPayment(userId)) {
                         SendFreeChat(absSender, Long.valueOf(userId));
                     } else {
                         replyMessage.setText("Необходимо внести оплату!");
