@@ -28,7 +28,7 @@ public class SetSceneNumberCommand extends BotCommand {
     private UserRepository userRepository;
 
     public SetSceneNumberCommand(UserService userService) {
-        super("/set_scene_number", "Перезагрузить пользователя");
+        super("/set_scene_number", "Установить номер сцены пользователю");
         this.userService = userService;
     }
 
@@ -43,7 +43,7 @@ public class SetSceneNumberCommand extends BotCommand {
             try {
                 userId = Long.valueOf(arguments[0]);
                 sceneId = Long.valueOf(arguments[1]);
-                if (userService.IsUserExist(userId) && telegramChatService.isUserAlreadyPlaying(userId)) {
+                if (userService.IsUserExist(userId) /*&& telegramChatService.isUserAlreadyPlaying(userId)*/) {
                     try {
                         var player = userService.getUser(userId);
                         player.setSceneId(sceneId);

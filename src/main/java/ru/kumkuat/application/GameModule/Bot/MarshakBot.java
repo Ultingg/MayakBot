@@ -16,12 +16,11 @@ import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.kumkuat.application.GameModule.Abstract.TelegramWebhookCommandBot;
 import ru.kumkuat.application.GameModule.Commands.MarshakCommands.*;
+import ru.kumkuat.application.GameModule.Repository.UserRepository;
 import ru.kumkuat.application.GameModule.Service.TelegramChatService;
 import ru.kumkuat.application.GameModule.Service.TimerService;
 import ru.kumkuat.application.GameModule.Service.UserService;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Component
@@ -55,7 +54,7 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
     @Autowired
     private PreviousSceneCommand previousSceneCommand;
     @Autowired
-    private KickAllCommand kickAllCommand;
+    private KickCommand kickAllCommand;
     @Autowired
     private SupportCommand supportCommand;
     @Autowired
@@ -68,6 +67,8 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
     private ResetUserCommand resetUserCommand;
     @Autowired
     private SetSceneNumberCommand setSceneNumberCommand;
+    @Autowired
+    private UserRepository userRepository;
 
     private String secretName = "Marshak";
 
@@ -91,7 +92,18 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
         sendMessage.setChatId(telegramChatService.getAdminChatId());
         sendMessage.setText("Выполнено отложенное задание: " + new Date());
         this.sendMessage(sendMessage);
-        kickAllCommand.KickAllChatMember(this, telegramChatService.getAdminChatId());
+        var busyChatsList = telegramChatService.getBusyChats();
+        for (var busyChat :
+                busyChatsList) {
+            var player = userService.getUser(busyChat.getUserId());
+            player.setTriggered(false);
+            player.setSceneId(0l);
+            player.setHasPay(false);
+            player.setPlaying(false);
+            userRepository.save(player);
+            //resetUserCommand.execute(this, null, null, new String[]{player.getTelegramUserId().toString()} );
+        }
+        kickAllCommand.KickAllChatMember(this);
     }
 
     private void StartTimer() {
@@ -182,14 +194,15 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
             replyMessage.enableHtml(true);
             try {
                 userService.setUserPayment(user.getId(), true);
-                replyMessage.setText("Вcе готово, чтобы начать!\n" +
-                        "Осталось активировать ботов:\n" +
-                        "@" + mayakBot.getBotUsername() + "\n" +
-                        "@" + akhmatovaBot.getBotUsername() + "\n" +
-                        "@" + brodskiy.getBotUsername() + "\n" +
-                        "@" + harms.getBotUsername() + "\n" +
-                        "и нажать /play"
-                );
+                replyMessage.setText("Отлично! Вcе готово, чтобы начать!");
+//                replyMessage.setText("Вcе готово, чтобы начать!\n" +
+//                        "Осталось активировать ботов:\n" +
+//                        "@" + mayakBot.getBotUsername() + "\n" +
+//                        "@" + akhmatovaBot.getBotUsername() + "\n" +
+//                        "@" + brodskiy.getBotUsername() + "\n" +
+//                        "@" + harms.getBotUsername() + "\n" +ss
+//                        "и нажать /play"
+//                );
 
                 execute(replyMessage);
                 //SendFreeChat(user, update.getMessage().getChat());

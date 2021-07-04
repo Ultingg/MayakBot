@@ -29,7 +29,7 @@ public class ResetUserCommand extends BotCommand {
     @Autowired
     private SendChatCommand sendChatCommand;
     @Autowired
-    private KickAllCommand kickAllCommand;
+    private KickCommand kickAllCommand;
     @Autowired
     private UserRepository userRepository;
 
@@ -50,9 +50,8 @@ public class ResetUserCommand extends BotCommand {
                 if (userService.IsUserExist(userId) && telegramChatService.isUserAlreadyPlaying(userId)) {
                     try {
                         var player = userService.getUser(userId);
-                        kickAllCommand.KickChatMember(marshakBot, telegramChatService.getChatByUserTelegramId(userId));
+                        kickAllCommand.KickChatMember(marshakBot, userId);
                         player.setTriggered(false);
-                        //player.setPlaying(false);
                         userRepository.save(player);
 
                         Timer timer = new Timer(true);

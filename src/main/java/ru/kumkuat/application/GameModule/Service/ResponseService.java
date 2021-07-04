@@ -13,7 +13,7 @@ import ru.kumkuat.application.GameModule.Collections.Reply;
 import ru.kumkuat.application.GameModule.Collections.ResponseContainer;
 import ru.kumkuat.application.GameModule.Collections.Scene;
 import ru.kumkuat.application.GameModule.Collections.Trigger;
-import ru.kumkuat.application.GameModule.Commands.MarshakCommands.KickAllCommand;
+import ru.kumkuat.application.GameModule.Commands.MarshakCommands.KickCommand;
 import ru.kumkuat.application.GameModule.Controller.BotController;
 import ru.kumkuat.application.GameModule.Models.Geolocation;
 import ru.kumkuat.application.GameModule.Models.User;
@@ -28,7 +28,7 @@ public class ResponseService {
     @Autowired
     private MarshakBot marshakBot;
     @Autowired
-    private KickAllCommand kickAllCommand;
+    private KickCommand kickAllCommand;
 
     private final SceneService sceneService;
     private final TelegramChatService telegramChatService;

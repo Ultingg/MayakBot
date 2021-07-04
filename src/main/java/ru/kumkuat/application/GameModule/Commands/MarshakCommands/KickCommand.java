@@ -10,29 +10,37 @@ import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import ru.kumkuat.application.GameModule.Bot.MarshakBot;
 import ru.kumkuat.application.GameModule.Models.TelegramChat;
 import ru.kumkuat.application.GameModule.Service.TelegramChatService;
 import ru.kumkuat.application.GameModule.Service.UserService;
 
 import java.time.Duration;
+import java.util.Objects;
 
 @Service
-public class KickAllCommand extends BotCommand implements AdminCommand {
+public class KickCommand extends BotCommand implements AdminCommand {
     @Autowired
     private UserService userService;
     @Autowired
     private TelegramChatService telegramChatService;
 
-    public KickAllCommand() {
-        super("/kickall", "Kick all from all playing chats\n");
+    public KickCommand() {
+        super("/kick", "Kick user from playing chats\n");
     }
 
     @Override
     public void execute(AbsSender absSender, User user, Chat chat, String[] arguments) {
-
         Long userId = Long.valueOf(user.getId());
         if (userService.getUser(userId).isAdmin()) {
-            KickAllChatMember(absSender, chat.getId().toString());
+            Long kickUserId = -1l;
+            if (arguments != null && arguments.length > 0) {
+                try {
+                    kickUserId = Long.parseLong(arguments[0]);
+                } catch (Exception e) {
+                }
+            }
+            KickChatMember(absSender, kickUserId);
         } else {
             SendMessage replyMessage = new SendMessage();
             replyMessage.setChatId(chat.getId().toString());
@@ -40,41 +48,23 @@ public class KickAllCommand extends BotCommand implements AdminCommand {
             replyMessage.setText("Вы не обладаете соответствующим уровнем доступа.");
             execute(absSender, replyMessage, user);
         }
-
     }
 
-    public void KickAllChatMember(AbsSender absSender, String teleramChatId) {
+    public void KickChatMember(AbsSender absSender, Long userId) {
         var busyChatsList = telegramChatService.getBusyChats();
         for (var busyChat :
                 busyChatsList) {
-            var player = userService.getUser(busyChat.getUserId());
-            if (KickChatMember(absSender, busyChat)) {
-                SendMessage sendMessage = new SendMessage();
-
-                var name = player.getTelegramUserId();
-//                if (name == null) {
-//                    name = "";
-//                    if (player.getLastName() != null) {
-//                        name += player.getLastName();
-//                    }
-//                    if (player.getFirstName() != null) {
-//                        name += player.getFirstName();
-//                    }
-//                }
-                userService.setPlaying(Long.valueOf(player.getTelegramUserId()), false); /** Make isPlaying = false */
-                sendMessage.setText("Пользователь: @" + name + " успешно удален из чата");
-                sendMessage.setChatId(teleramChatId);
-                sendMessage.enableHtml(true);
-                try {
-                    absSender.execute(sendMessage);
-                } catch (TelegramApiException e) {
-                    e.printStackTrace();
-                }
+            if (Objects.equals(busyChat.getUserId(), userId) || userId < 0) {
+                KickChatMember(absSender, busyChat);
             }
         }
     }
 
-    public boolean KickChatMember(AbsSender absSender, TelegramChat busyChat) {
+    public void KickAllChatMember(AbsSender absSender) {
+        KickChatMember(absSender, -1l);
+    }
+
+    private boolean KickChatMember(AbsSender absSender, TelegramChat busyChat) {
         KickChatMember kickChatMember = new KickChatMember();
         Long userId = busyChat.getUserId();
         kickChatMember.setChatId(busyChat.getChatId().toString());
@@ -96,6 +86,13 @@ public class KickAllCommand extends BotCommand implements AdminCommand {
                 sendMessage.setChatId(telegramChatService.getAdminChatId());
                 sendMessage.enableHtml(true);
                 absSender.execute(sendMessage);
+
+                var player = userService.getUser(busyChat.getUserId());
+                var name = player.getTelegramUserId();
+                userService.setPlaying(Long.valueOf(player.getTelegramUserId()), false); /** Make isPlaying = false */
+                sendMessage.setText("Пользователь: @" + name + " успешно удален из чата");
+                sendMessage.setChatId(telegramChatService.getAdminChatId());
+                sendMessage.enableHtml(true);
                 return true;
             } else {
                 return false;
@@ -116,4 +113,5 @@ public class KickAllCommand extends BotCommand implements AdminCommand {
         } catch (TelegramApiException e) {
         }
     }
+
 }
