@@ -131,10 +131,16 @@ public class StartCommand extends BotCommand {
             Button21.setText("Начать прогулку");
             Button21.setCallbackData("play");
             keyboardButtonsRow2.add(Button21);
+            List<InlineKeyboardButton> keyboardButtonsRow3 = new ArrayList<>();
+            var Button31 = new InlineKeyboardButton();
+            Button31.setText("Иду на спектакль 31 июля");
+            Button31.setCallbackData("play_marathon");
+            keyboardButtonsRow3.add(Button31);
 
             List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
             rowList.add(keyboardButtonsRow1);
             rowList.add(keyboardButtonsRow2);
+            rowList.add(keyboardButtonsRow3);
 
             InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
             inlineKeyboardMarkup.setKeyboard(rowList);

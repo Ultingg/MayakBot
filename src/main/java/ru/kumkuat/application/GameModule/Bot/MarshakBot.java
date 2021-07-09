@@ -62,11 +62,15 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
     @Autowired
     private PlayCommand playCommand;
     @Autowired
+    private PlayMarathonCommand playMarathonCommand;
+    @Autowired
     private SendChatCommand sendChatCommand;
     @Autowired
     private ResetUserCommand resetUserCommand;
     @Autowired
     private SetSceneNumberCommand setSceneNumberCommand;
+    @Autowired
+    private SendMailCommand sendMailCommand;
     @Autowired
     private UserRepository userRepository;
 
@@ -157,6 +161,7 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
     public void RegisterCommand() {
         register(playCommand);
         register(payCommand);
+        register(playMarathonCommand);
         register(resetCommand);
         register(saveChatCommand);
         register(kickAllCommand);
@@ -168,6 +173,7 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
         register(sendChatCommand);
         register(resetUserCommand);
         register(setSceneNumberCommand);
+        register(sendMailCommand);
     }
 
     @Override

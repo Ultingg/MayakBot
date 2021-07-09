@@ -105,7 +105,7 @@ public class PlayCommand extends BotCommand {
         }
         return result;
     }
-/** What will happend when user end the game and press Start Prmenad, but didn't pay again? */
+/** What will happend when user end the game and press Start Promenad, but didn't pay again? */
     void SendFreeChat(AbsSender absSender, Long userId) throws Exception {
         SendMessage replyMessage = new SendMessage();
         replyMessage.setChatId(userId.toString());
