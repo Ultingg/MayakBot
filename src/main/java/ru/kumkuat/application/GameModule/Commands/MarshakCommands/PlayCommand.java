@@ -114,11 +114,11 @@ public class PlayCommand extends BotCommand {
             if (!telegramChatService.isUserAlreadyPlaying(userId) ) {
                 if (isBotsStarting(absSender, Long.valueOf(userId))) {
 
-                    if(userService.getUser(userId).getSceneId() < 1) {
+                    if(userService.getUserByTelegramId(userId).getSceneId() < 1) {
                         userService.setPlaying(Long.valueOf(userId), true);
                     replyMessage.setText("Отлично! Как я могу к тебе обращаться? ");
                     absSender.execute(replyMessage); }
-                    else if(userService.getUser(userId).getSceneId() == sceneService.count()) {
+                    else if(userService.getUserByTelegramId(userId).getSceneId() == sceneService.count()) {
                         replyMessage.setText("Вы окончили прогулку, поздравляю! Чтобы начать прогулку заново обратитесь к администратору (/help)");
                         absSender.execute(replyMessage);
                     } /* тут должна отрабатвать проверка на оплату,

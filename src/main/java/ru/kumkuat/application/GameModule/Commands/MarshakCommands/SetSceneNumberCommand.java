@@ -9,13 +9,9 @@ import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import ru.kumkuat.application.GameModule.Bot.MarshakBot;
 import ru.kumkuat.application.GameModule.Repository.UserRepository;
 import ru.kumkuat.application.GameModule.Service.TelegramChatService;
-import ru.kumkuat.application.GameModule.Service.TimerService;
 import ru.kumkuat.application.GameModule.Service.UserService;
-
-import java.util.Timer;
 
 @Slf4j
 @Service
@@ -45,7 +41,7 @@ public class SetSceneNumberCommand extends BotCommand {
                 sceneId = Long.valueOf(arguments[1]);
                 if (userService.IsUserExist(userId) /*&& telegramChatService.isUserAlreadyPlaying(userId)*/) {
                     try {
-                        var player = userService.getUser(userId);
+                        var player = userService.getUserByTelegramId(userId);
                         player.setSceneId(sceneId);
                         player.setTriggered(false);
                         userRepository.save(player);

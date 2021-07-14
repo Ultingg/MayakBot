@@ -59,7 +59,7 @@ public class ResponseService {
     public void messageReceiver(Message message, boolean isNavigationCommand) {
         Long userId = Long.valueOf(message.getFrom().getId());
         if (userService.IsUserExist(userId)) {
-            User user = userService.getUser(userId);
+            User user = userService.getUserByTelegramId(userId);
             Long sceneId = getSceneId(message.getFrom().getId());
             if(user.getSceneId() <= sceneService.count() - 1){
                 Scene scene = sceneService.getScene(sceneId);
@@ -107,7 +107,7 @@ public class ResponseService {
 
     public void ReceiveNextReplies(String chatId, Long userTelegramId, Message message) {
         try {
-            User user = userService.getUser(userTelegramId);
+            User user = userService.getUserByTelegramId(userTelegramId);
             if(user.getSceneId() <= sceneService.count() - 1){
                 Scene scene = sceneService.getScene(getSceneId(userTelegramId.intValue()));
                 ReplyResolver(chatId, scene, userTelegramId, message);
@@ -184,13 +184,13 @@ public class ResponseService {
 
     private boolean isUserTriggered(Message message) {
         Long userId = Long.valueOf(message.getFrom().getId());
-        User user = userService.getUser(userId);
+        User user = userService.getUserByTelegramId(userId);
         return user.isTriggered();
     }
 
     private void triggUser(Message message) {
         Long userId = Long.valueOf(message.getFrom().getId());
-        User user = userService.getUser(userId);
+        User user = userService.getUserByTelegramId(userId);
         user.setTriggered(true);
         userService.setUserTrigger(userId, true);
 
@@ -271,7 +271,7 @@ public class ResponseService {
         Long userId = Long.valueOf(userTelegeramId);
         User user = null;
         try {
-            user = userService.getUser(userId);
+            user = userService.getUserByTelegramId(userId);
         } catch (NullPointerException e) {
             e.getMessage();
             log.debug("User is null. Is absent in DB");
@@ -297,7 +297,7 @@ public class ResponseService {
     private String nickNameInserting(String text, Long userId) {
         String result = text;
         if (text.contains("@ИмяЗрителя")) {
-            String name = userService.getUser(userId).getNickName();
+            String name = userService.getUserByTelegramId(userId).getNickName();
             result = text.replace("@ИмяЗрителя", name);
         }
         return result;

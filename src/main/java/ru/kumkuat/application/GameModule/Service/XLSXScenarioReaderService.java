@@ -18,20 +18,19 @@ import java.util.List;
 
 @Component
 @PropertySource(value = "file:../resources/externalsecret.yml")
-public class XLSXReaderService {
+public class XLSXScenarioReaderService {
 
     private final PictureService pictureService;
     private final GeolocationDatabaseService geolocationDatabaseService;
     private final AudioService audioService;
     private final StickerService stickerService;
-    //@Value("${excle.path}")
     private String path = "../resources/input.xlsx";
 
     private FileInputStream file;
     private Workbook workbook;
 
-    public XLSXReaderService(PictureService pictureService, GeolocationDatabaseService geolocationDatabaseService,
-                             AudioService audioService, StickerService stickerService) throws IOException {
+    public XLSXScenarioReaderService(PictureService pictureService, GeolocationDatabaseService geolocationDatabaseService,
+                                     AudioService audioService, StickerService stickerService) throws IOException {
         this.pictureService = pictureService;
         this.geolocationDatabaseService = geolocationDatabaseService;
         this.audioService = audioService;
@@ -77,7 +76,7 @@ public class XLSXReaderService {
                                         String triggerToDB = cell.getStringCellValue().replace("geolocation, ", "");
                                         Geolocation geolocationToDB = geolocationSpliterator(triggerToDB);
                                         geolocationDatabaseService.setGeolocationIntoDB(geolocationToDB);
-                                        newTrigger.setGeolocationId(1l);
+                                        newTrigger.setGeolocationId(1L);
                                     } else {
                                         newTrigger.setText(cell.getStringCellValue());
                                     }

@@ -34,7 +34,7 @@ public class HelpCommand extends ManCommand {
     public void execute(AbsSender absSender, User user, Chat chat, String[] arguments) {
         try {
             Long userId = Long.valueOf(user.getId());
-            if (userService.getUser(userId).isAdmin() && arguments != null && arguments.length > 0) {
+            if (userService.getUserByTelegramId(userId).isAdmin() && arguments != null && arguments.length > 0) {
                 var qweryuserId = Long.valueOf(arguments[0]);
                 sendUserInfoMessage(absSender, qweryuserId);
             }
@@ -55,7 +55,7 @@ public class HelpCommand extends ManCommand {
     public void sendUserInfoMessage(AbsSender absSender, Long userTelegeramId){
         try {
             if (userService.IsUserExist(userTelegeramId)) {
-                var userdb = userService.getUser(userTelegeramId);
+                var userdb = userService.getUserByTelegramId(userTelegeramId);
 
                 String reply = "Пользователь:\n";
                 reply += "юзер телеграм id: " + userdb.getTelegramUserId() + "\n";

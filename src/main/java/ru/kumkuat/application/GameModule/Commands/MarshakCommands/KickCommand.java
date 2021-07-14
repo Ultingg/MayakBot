@@ -10,7 +10,6 @@ import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import ru.kumkuat.application.GameModule.Bot.MarshakBot;
 import ru.kumkuat.application.GameModule.Models.TelegramChat;
 import ru.kumkuat.application.GameModule.Service.TelegramChatService;
 import ru.kumkuat.application.GameModule.Service.UserService;
@@ -32,7 +31,7 @@ public class KickCommand extends BotCommand implements AdminCommand {
     @Override
     public void execute(AbsSender absSender, User user, Chat chat, String[] arguments) {
         Long userId = Long.valueOf(user.getId());
-        if (userService.getUser(userId).isAdmin()) {
+        if (userService.getUserByTelegramId(userId).isAdmin()) {
             Long kickUserId = -1l;
             if (arguments != null && arguments.length > 0) {
                 try {
@@ -75,7 +74,7 @@ public class KickCommand extends BotCommand implements AdminCommand {
             busyChat.setBusy(false);
             busyChat.setUserId(null);
             busyChat.setStartPlayTime(null);
-            if (userService.getUser(userId).getSceneId() < 19) {
+            if (userService.getUserByTelegramId(userId).getSceneId() < 19) {
                 userService.setUserPayment(userId, false);  /** Drop isPay only if User reached the end of the Game   */
             }
             telegramChatService.saveChatIntoDB(busyChat);
@@ -87,7 +86,7 @@ public class KickCommand extends BotCommand implements AdminCommand {
                 sendMessage.enableHtml(true);
                 absSender.execute(sendMessage);
 
-                var player = userService.getUser(busyChat.getUserId());
+                var player = userService.getUserByTelegramId(busyChat.getUserId());
                 var name = player.getTelegramUserId();
                 userService.setPlaying(Long.valueOf(player.getTelegramUserId()), false); /** Make isPlaying = false */
                 sendMessage.setText("Пользователь: @" + name + " успешно удален из чата");

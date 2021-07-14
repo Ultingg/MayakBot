@@ -12,12 +12,16 @@ public class UserService {
     private final UserRepository userRepository;
     private final SceneService sceneService;
 
-    private User getUserByTelegramId(Long id) throws NullPointerException {
-        User result = userRepository.getByTelegramUserId(id);
-        if (result == null) throw new NullPointerException("User not found in DB!");
-        return result;
+    public User getUserByDBId(Long id){
+        return userRepository.getById(id);
     }
-
+    public User getUserByTelegramId(Long telegramId) throws NullPointerException {
+        User user = userRepository.getByTelegramUserId(telegramId);
+        if (user == null) {
+            throw new NullPointerException("User is doesn't exist in DB. NullPointerException.");
+        }
+        return user;
+    }
     public UserService(UserRepository userRepository, SceneService sceneService) {
         this.userRepository = userRepository;
         this.sceneService = sceneService;
@@ -38,7 +42,7 @@ public class UserService {
 
     /*возможно стоит сделать этот метод синхронизированным,
      т.к. возможны проблемы при одновременной записи двух и более юзеров под одним id(не telegramID) в бд */
-    public long setUserIntoDB(org.telegram.telegrambots.meta.api.objects.User telegramUser) throws Exception {
+    public long setUserIntoDB(org.telegram.telegrambots.meta.api.objects.User telegramUser)  {
         User user = new User();
         if (telegramUser.getUserName() != null) {
             user.setName(badNameConvertingToGoodName(telegramUser.getUserName()));
@@ -46,12 +50,12 @@ public class UserService {
             user.setName("");
         }
         if (telegramUser.getFirstName() != null) {
-            user.setFirstName(badNameConvertingToGoodName(telegramUser.getFirstName()));
+            user.setFirstName(badNameConvertingToGoodNameForLastFirstName(telegramUser.getFirstName()));
         } else {
             user.setFirstName("");
         }
         if (telegramUser.getLastName() != null) {
-            user.setLastName(badNameConvertingToGoodName(telegramUser.getLastName()));
+            user.setLastName(badNameConvertingToGoodNameForLastFirstName(telegramUser.getLastName()));
         } else {
             user.setLastName("");
         }
@@ -59,22 +63,17 @@ public class UserService {
         user.setTelegramUserId((long) telegramUser.getId());
         userRepository.save(user);
         return user.getId();
-        //throw new Exception("User name is null");
     }
 
     private String badNameConvertingToGoodName(String badName) {
-        String goodName = badName.replaceAll("\\W", "");
-        return goodName;
-
+        return badName.replaceAll("\\W", "");
+    }
+    private String badNameConvertingToGoodNameForLastFirstName(String badName){
+        return badName.replaceAll("[a-zA-zа-яА-Я]", "");
     }
 
-    public User getUser(Long telegramId) throws NullPointerException {
-        User user = userRepository.getByTelegramUserId(telegramId);
-        if (user == null) {
-            throw new NullPointerException("User is doesn't exist in DB. NullPointerException.");
-        }
-        return user;
-    }
+
+
 
 
     public boolean IsUserExist(Long telegramId) {
@@ -83,7 +82,7 @@ public class UserService {
 
     public void incrementSceneId(Long userId) {
         try {
-            User userToUpdate = getUser(userId);
+            User userToUpdate = getUserByTelegramId(userId);
             Long sceneId = userToUpdate.getSceneId();
 
             if (isSceneHaveLastNumberOrMore(sceneId) && userToUpdate.isAdmin()) {
@@ -106,7 +105,7 @@ public class UserService {
     */
     public boolean isSceneHaveLastNumberOrMore(Long sceneId) { //наша халява обнуляет счетчик сцен
         //читай коммент вверху ;)
-        Long sceneSize = Long.valueOf(sceneService.count());
+        Long sceneSize = (long) sceneService.count();
         return sceneId >= sceneSize - 1;
 
     }

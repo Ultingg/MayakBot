@@ -27,8 +27,8 @@ public class PreviousSceneCommand extends BotCommand implements AdminCommand {
         replyMessage.enableHtml(true);
         Long userId = Long.valueOf(user.getId());
 
-        if (userService.IsUserExist(userId) && userService.getUser(userId).isAdmin()) {
-            Integer oldSceneId = Math.toIntExact(userService.getUser(userId).getSceneId());
+        if (userService.IsUserExist(userId) && userService.getUserByTelegramId(userId).isAdmin()) {
+            Integer oldSceneId = Math.toIntExact(userService.getUserByTelegramId(userId).getSceneId());
             Integer newSceneId = oldSceneId - 1;
             if (newSceneId > 0) {
                 userService.setUserScene(user, newSceneId);

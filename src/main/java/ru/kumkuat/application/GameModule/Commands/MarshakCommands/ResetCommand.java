@@ -26,7 +26,7 @@ public class ResetCommand extends BotCommand implements AdminCommand {
         replyMessage.enableHtml(true);
         Long userId = Long.valueOf(user.getId());
 
-        if (userService.IsUserExist(user.getId().longValue()) && userService.getUser(userId).isAdmin()) {
+        if (userService.IsUserExist(user.getId().longValue()) && userService.getUserByTelegramId(userId).isAdmin()) {
             userService.setUserScene(user, 0);
             replyMessage.setText("Ваш игровой прогресс успешно сброшен");
 

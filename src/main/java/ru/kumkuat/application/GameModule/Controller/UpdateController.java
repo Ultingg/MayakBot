@@ -38,7 +38,7 @@ public class UpdateController {
         Message message = update.getMessage();
         if (message != null && !commandChecker(message) &&                      /**Check if the sended message wasn't a command **/
                 userService.IsUserExist(message.getFrom().getId().longValue()) &&           /**Check if the message sent from existing user **/
-                !userService.getUser(message.getFrom().getId().longValue()).isAdmin() &&  /**Check if the message sent from Admin **/
+                !userService.getUserByTelegramId(message.getFrom().getId().longValue()).isAdmin() &&  /**Check if the message sent from Admin **/
                 !message.getChat().getType().equals("private")) {                       /**Check if the message sent to private chat to bot **/
             Thread myThready = new Thread(new CallBotResponse(update));
             myThready.start();
@@ -53,7 +53,7 @@ public class UpdateController {
         User user = null;
 
         if (update.hasMessage() && userService.IsUserExist(update.getMessage().getFrom().getId().longValue())) {
-            user = userService.getUser(update.getMessage().getFrom().getId().longValue());
+            user = userService.getUserByTelegramId(update.getMessage().getFrom().getId().longValue());
         } else {
             marshakBot.onWebhookUpdateReceived(update);
         }

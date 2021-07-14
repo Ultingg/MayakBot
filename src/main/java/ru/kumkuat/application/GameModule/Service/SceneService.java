@@ -10,11 +10,11 @@ import java.util.List;
 @PropertySource(value = "file:../resources/externalsecret.yml")
 public class SceneService {
     private final List<Scene> sceneCollection;
-    private final XLSXReaderService xlsxReaderService;
+    private final XLSXScenarioReaderService xlsxScenarioReaderService;
 
-    public SceneService(XLSXReaderService xlsxReaderService) {
-        this.xlsxReaderService = xlsxReaderService;
-        sceneCollection = xlsxReaderService.parseXLXS();
+    public SceneService(XLSXScenarioReaderService xlsxScenarioReaderService) {
+        this.xlsxScenarioReaderService = xlsxScenarioReaderService;
+        sceneCollection = xlsxScenarioReaderService.parseXLXS();
     }
 
     public int count() {

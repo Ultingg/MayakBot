@@ -49,7 +49,7 @@ public class ResetUserCommand extends BotCommand {
                 userId = Long.valueOf(arguments[0]);
                 if (userService.IsUserExist(userId) && telegramChatService.isUserAlreadyPlaying(userId)) {
                     try {
-                        var player = userService.getUser(userId);
+                        var player = userService.getUserByTelegramId(userId);
                         kickAllCommand.KickChatMember(marshakBot, userId);
                         player.setTriggered(false);
                         userRepository.save(player);
