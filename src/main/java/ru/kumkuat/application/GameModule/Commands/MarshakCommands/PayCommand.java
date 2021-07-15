@@ -69,7 +69,7 @@ public class PayCommand extends BotCommand {
             List<LabeledPrice> labeledPrices = new ArrayList<>();
             LabeledPrice labeledPrice = new LabeledPrice();
             labeledPrice.setLabel("Руб");
-            labeledPrice.setAmount(70000);
+            labeledPrice.setAmount(50000);
             labeledPrices.add(labeledPrice);
             sendInvoice.setPrices(labeledPrices);
             try {
