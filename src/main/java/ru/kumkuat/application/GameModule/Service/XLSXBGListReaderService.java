@@ -74,7 +74,7 @@ public class XLSXBGListReaderService {
                             break;
                     }
                 }
-                setUsersIntoDB(newBGUser, newTelegramUser);
+                bgUserService.setBGUserToDB(newBGUser);
             }
             header = false;
         }
@@ -83,21 +83,4 @@ public class XLSXBGListReaderService {
     private String convertTelegramUserName(String username) {
         return username.substring(1);
     }
-
-
-    private void setUsersIntoDB(BGUser bgUser, User telegramUser) {
-        long userId = 0;
-        telegramUser.setId(0);
-        try {
-            userId = userService.setUserIntoDB(telegramUser);
-        } catch (Exception e) {
-            System.out.println("Try to insert user" + bgUser.getTelegramUserName() + " but faild");
-        }
-        ru.kumkuat.application.GameModule.Models.User userFromDB = userService.getUserByDBId(userId);
-
-        bgUserService.setBGUserToDB(bgUser);
-        bgUser.setUser(userFromDB);
-        bgUserService.setBGUserToDB(bgUser);
-    }
-
 }

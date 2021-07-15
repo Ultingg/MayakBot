@@ -15,7 +15,6 @@ import ru.kumkuat.application.GameModule.Bot.AkhmatovaBot;
 import ru.kumkuat.application.GameModule.Bot.Brodskiy;
 import ru.kumkuat.application.GameModule.Bot.Harms;
 import ru.kumkuat.application.GameModule.Bot.MayakBot;
-import ru.kumkuat.application.GameModule.Models.BGUser;
 import ru.kumkuat.application.GameModule.Service.BGUserService;
 import ru.kumkuat.application.GameModule.Service.TelegramChatService;
 import ru.kumkuat.application.GameModule.Service.UserService;
@@ -150,23 +149,18 @@ public class StartCommand extends BotCommand {
     }
 
     /**
-     *  Registration of users. Check if user was registered before by RunCity(BG), update User if it's true
-     *  and creat new User if it's false.
+     * Registration of users.
      * @param user
      */
     private void registerUser(User user) {
-        if (!bgUserService.isBGUserExistByUsername(user.getUserName())) {  // replace by simple validation!!!!
-            BGUser bgUser = bgUserService.getBGUserByUsername(user.getUserName());
-            userService.updateUserByBGUserData(bgUser, user);
-        } else {
-            if (!userService.IsUserExist(user.getId().longValue())) {
-                try {
-                    userService.setUserIntoDB(user);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        if (!userService.IsUserExist(user.getId().longValue())) {
+            try {
+                userService.setUserIntoDB(user);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
+
     }
 
     void execute(AbsSender sender, SendMessage message, User user) {

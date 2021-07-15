@@ -9,9 +9,8 @@ import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import ru.kumkuat.application.GameModule.Bot.*;
-import ru.kumkuat.application.GameModule.Service.SceneService;
-import ru.kumkuat.application.GameModule.Service.TelegramChatService;
+import ru.kumkuat.application.GameModule.Bot.MarshakBot;
+import ru.kumkuat.application.GameModule.Service.BGUserService;
 import ru.kumkuat.application.GameModule.Service.UserService;
 
 @Slf4j
@@ -19,12 +18,15 @@ import ru.kumkuat.application.GameModule.Service.UserService;
 public class PlayMarathonCommand extends BotCommand {
 
     private final UserService userService;
+    private final BGUserService bgUserService;
     @Autowired
     private MarshakBot marshakBot;
 
-    public PlayMarathonCommand(UserService userService) {
+
+    public PlayMarathonCommand(UserService userService, BGUserService bgUserService) {
         super("/play_marathon", "После этой команды начнется марафон");
         this.userService = userService;
+        this.bgUserService = bgUserService;
     }
 
     @Override
@@ -68,5 +70,9 @@ public class PlayMarathonCommand extends BotCommand {
             sender.execute(message);
         } catch (TelegramApiException e) {
         }
+    }
+
+    private boolean isUserIsBGUser(User user) {
+        return bgUserService.isBGUserExistByUsername(user.getUserName());
     }
 }
