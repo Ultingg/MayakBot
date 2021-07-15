@@ -2,8 +2,12 @@ package ru.kumkuat.application.GameModule.Service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.kumkuat.application.GameModule.Models.BGUser;
 import ru.kumkuat.application.GameModule.Models.User;
 import ru.kumkuat.application.GameModule.Repository.UserRepository;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -11,10 +15,12 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final SceneService sceneService;
+    private final BGUserService bgUserService;
 
-    public User getUserByDBId(Long id){
+    public User getUserByDBId(Long id) {
         return userRepository.getById(id);
     }
+
     public User getUserByTelegramId(Long telegramId) throws NullPointerException {
         User user = userRepository.getByTelegramUserId(telegramId);
         if (user == null) {
@@ -22,9 +28,17 @@ public class UserService {
         }
         return user;
     }
-    public UserService(UserRepository userRepository, SceneService sceneService) {
+
+    public List<User> getAll() {
+        List<User> userList = new ArrayList<>();
+        userRepository.findAll().iterator().forEachRemaining(userList::add);
+        return userList;
+    }
+
+    public UserService(UserRepository userRepository, SceneService sceneService, BGUserService bgUserService) {
         this.userRepository = userRepository;
         this.sceneService = sceneService;
+        this.bgUserService = bgUserService;
     }
 
     public void setUserScene(org.telegram.telegrambots.meta.api.objects.User telegramUser, Integer i) {
@@ -40,9 +54,26 @@ public class UserService {
         }
     }
 
+    public void updateUserByBGUserData(BGUser bgUser, org.telegram.telegrambots.meta.api.objects.User newUserData) {
+        User userFromDB = getUserByDBId(bgUser.getUser().getId());
+        userFromDB.setTelegramUserId((long) newUserData.getId());
+
+        if (newUserData.getFirstName() != null) {
+            userFromDB.setFirstName(badNameConvertingToGoodNameForLastFirstName(newUserData.getFirstName()));
+        } else {
+            userFromDB.setFirstName("");
+        }
+        if (newUserData.getLastName() != null) {
+            userFromDB.setLastName(badNameConvertingToGoodNameForLastFirstName(newUserData.getLastName()));
+        } else {
+            userFromDB.setLastName("");
+        }
+        userRepository.save(userFromDB);
+    }
+
     /*возможно стоит сделать этот метод синхронизированным,
      т.к. возможны проблемы при одновременной записи двух и более юзеров под одним id(не telegramID) в бд */
-    public long setUserIntoDB(org.telegram.telegrambots.meta.api.objects.User telegramUser)  {
+    public long setUserIntoDB(org.telegram.telegrambots.meta.api.objects.User telegramUser) {
         User user = new User();
         if (telegramUser.getUserName() != null) {
             user.setName(badNameConvertingToGoodName(telegramUser.getUserName()));
@@ -65,16 +96,14 @@ public class UserService {
         return user.getId();
     }
 
+
     private String badNameConvertingToGoodName(String badName) {
         return badName.replaceAll("\\W", "");
     }
-    private String badNameConvertingToGoodNameForLastFirstName(String badName){
+
+    private String badNameConvertingToGoodNameForLastFirstName(String badName) {
         return badName.replaceAll("[a-zA-zа-яА-Я]", "");
     }
-
-
-
-
 
     public boolean IsUserExist(Long telegramId) {
         return userRepository.getByTelegramUserId(telegramId) != null;
@@ -151,5 +180,11 @@ public class UserService {
         user.setTriggered(trigger);
         userRepository.save(user);
         return trigger == userRepository.getByTelegramUserId(telegramId).isTriggered();
+    }
+
+
+    public boolean validateUsersAndBGUsers(org.telegram.telegrambots.meta.api.objects.User userToValidate) {
+        List<BGUser> bgUsers = bgUserService.getAll();
+        return bgUsers.stream().anyMatch(bgUser -> bgUser.getTelegramUserName().equals(userToValidate.getUserName()));
     }
 }

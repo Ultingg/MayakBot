@@ -6,4 +6,9 @@ import ru.kumkuat.application.GameModule.Models.BGUser;
 
 @Repository
 public interface BGUserRepository extends CrudRepository<BGUser, Long> {
+
+
+    BGUser findBGUserByTelegramUserName(String telegramUsername);
+
+
 }

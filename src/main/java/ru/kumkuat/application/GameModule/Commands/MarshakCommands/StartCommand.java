@@ -15,6 +15,8 @@ import ru.kumkuat.application.GameModule.Bot.AkhmatovaBot;
 import ru.kumkuat.application.GameModule.Bot.Brodskiy;
 import ru.kumkuat.application.GameModule.Bot.Harms;
 import ru.kumkuat.application.GameModule.Bot.MayakBot;
+import ru.kumkuat.application.GameModule.Models.BGUser;
+import ru.kumkuat.application.GameModule.Service.BGUserService;
 import ru.kumkuat.application.GameModule.Service.TelegramChatService;
 import ru.kumkuat.application.GameModule.Service.UserService;
 
@@ -26,6 +28,8 @@ import java.util.List;
 public class StartCommand extends BotCommand {
 
     private final UserService userService;
+    private final BGUserService bgUserService;
+
     @Autowired
     private Harms harms;
     @Autowired
@@ -40,9 +44,10 @@ public class StartCommand extends BotCommand {
     @Autowired
     private HelpCommand helpCommand;
 
-    public StartCommand(UserService userService) {
+    public StartCommand(UserService userService, BGUserService bgUserService) {
         super("/start", "to start!\n");
         this.userService = userService;
+        this.bgUserService = bgUserService;
     }
 
     @Override
@@ -51,19 +56,7 @@ public class StartCommand extends BotCommand {
 
             log.debug("Marshak ");
 
-            /*if (user.getUserName() == null) {
-                //replyMessage.setText("Ты человек без имени. С тобой играть не получится. Разберись в себе для начала...");
-            } else if (user.getUserName().equals("GroupAnonymousBot")) {
-                //replyMessage.setText("Нужно выключить ананонимность. Ты не бэтмэн! Сними маску -_-");
-            } else */
-            if (!userService.IsUserExist(user.getId().longValue())) {
-                try {
-                    userService.setUserIntoDB(user);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                //replyMessage.setText("Вы успешно зарегистрировались!");
-            }
+            registerUser(user);
 
 
             InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
@@ -150,10 +143,31 @@ public class StartCommand extends BotCommand {
         }
     }
 
+    /**
+     *  Registration of users. Check if user was registered before by RunCity(BG), update User if it's true
+     *  and creat new User if it's false.
+     * @param user
+     */
+    private void registerUser(User user) {
+        if (!bgUserService.isBGUserExistByUsername(user.getUserName())) {  // replace by simple validation!!!!
+            BGUser bgUser = bgUserService.getBGUserByUsername(user.getUserName());
+            userService.updateUserByBGUserData(bgUser, user);
+        } else {
+            if (!userService.IsUserExist(user.getId().longValue())) {
+                try {
+                    userService.setUserIntoDB(user);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
     void execute(AbsSender sender, SendMessage message, User user) {
         try {
             sender.execute(message);
         } catch (TelegramApiException e) {
+            log.debug("Sending of message by Marshak was faild! IDIOT!");
         }
     }
 }

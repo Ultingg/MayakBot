@@ -107,7 +107,7 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
     }
 
     private void StartTimer() {
-        //http://java-online.ru/java-calendar.xhtml
+        //http://java-online.ru/java-calendar.xhtml   //TODO УБРАТЬ ЭТОТ МЕТОД в TIME SERVICE ОН ЗДЕСЬ ГВОЗДИТ
 
         final String TIMEZONE_msc = "Europe/Moscow";
 
