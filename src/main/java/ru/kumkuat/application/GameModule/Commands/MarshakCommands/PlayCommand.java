@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.extensions.bots.commandbot.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Chat;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -39,6 +40,13 @@ public class PlayCommand extends BotCommand {
         this.userService = userService;
     }
 
+
+    @Override
+    public void processMessage(AbsSender absSender, Message message, String[] arguments) {
+        execute(absSender, message.getFrom(), message.getChat(), arguments);
+    }
+
+
     @Override
     public void execute(AbsSender absSender, User user, Chat chat, String[] arguments) {
 
@@ -61,7 +69,7 @@ public class PlayCommand extends BotCommand {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    replyMessage.setText("Вы успешно зарегистрировались!");
+                    //replyMessage.setText("Вы успешно зарегистрировались!");
                     execute(absSender, replyMessage, user);
                 } else {
                     if ( userService.IsUserHasPayment(userId)) {

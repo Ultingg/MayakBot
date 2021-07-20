@@ -10,13 +10,13 @@ import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.MessageEntity;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.payments.PreCheckoutQuery;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import java.util.Collection;
-import java.util.Map;
+import java.util.*;
 import java.util.function.BiConsumer;
 
 public abstract class TelegramWebhookCommandBot extends TelegramWebhookBot implements ICommandRegistry {
@@ -86,6 +86,10 @@ public abstract class TelegramWebhookCommandBot extends TelegramWebhookBot imple
             DoAfterSuccessfulPayment(update);
         } else if (update.hasMessage()) {
             Message message = update.getMessage();
+            if (message.hasDocument() && message.getCaption() != null) {
+                message.setText(message.getCaption());
+                message.setEntities(message.getCaptionEntities());
+            }
             if (message.isCommand() && !filter(message)) {
                 if (!commandRegistry.executeCommand(this, message)) {
                     //we have received a not registered command, handle it as invalid
