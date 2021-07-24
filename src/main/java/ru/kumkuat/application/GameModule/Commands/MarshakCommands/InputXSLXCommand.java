@@ -24,6 +24,7 @@ import java.net.URL;
 
 @Slf4j
 @Service
+
 public class InputXSLXCommand extends BotCommand {
     private String path = "../resources/input_bg_users.xlsx";
     @Autowired
@@ -84,8 +85,12 @@ public class InputXSLXCommand extends BotCommand {
                 if (!userService.IsUserExist(userId)) {
 
                 } else {
-                    xlsxbgListReaderService.XLSXBGParser(path);
-                    replyMessage.setText("Пользователи успешно добавлены!");
+                    int usersAdded = xlsxbgListReaderService.XLSXBGParser(path);
+                    String message = usersAdded > 0 ?
+                            String.format("Пользователи %d успешно добавлены!", usersAdded):
+                            String.format("Пользователи не добавлены!");
+
+                    replyMessage.setText(message);
                     execute(absSender, replyMessage, user);
                 }
             } catch (Exception e) {

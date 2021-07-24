@@ -53,24 +53,6 @@ public class UserService {
             }
         }
     }
-
-//    public void updateUserByBGUserData(BGUser bgUser, org.telegram.telegrambots.meta.api.objects.User newUserData) {
-//        User userFromDB = getUserByDBId(bgUser.getUser().getId());
-//        userFromDB.setTelegramUserId((long) newUserData.getId());
-//
-//        if (newUserData.getFirstName() != null) {
-//            userFromDB.setFirstName(badNameConvertingToGoodNameForLastFirstName(newUserData.getFirstName()));
-//        } else {
-//            userFromDB.setFirstName("");
-//        }
-//        if (newUserData.getLastName() != null) {
-//            userFromDB.setLastName(badNameConvertingToGoodNameForLastFirstName(newUserData.getLastName()));
-//        } else {
-//            userFromDB.setLastName("");
-//        }
-//        userRepository.save(userFromDB);
-//    }
-
     /*возможно стоит сделать этот метод синхронизированным,
      т.к. возможны проблемы при одновременной записи двух и более юзеров под одним id(не telegramID) в бд */
     public long setUserIntoDB(org.telegram.telegrambots.meta.api.objects.User telegramUser) {
@@ -95,7 +77,6 @@ public class UserService {
         userRepository.save(user);
         return user.getId();
     }
-
 
     private String badNameConvertingToGoodName(String badName) {
         return badName.replaceAll("\\W", "");
@@ -183,8 +164,9 @@ public class UserService {
     }
 
 
-    public boolean validateUsersAndBGUsers(org.telegram.telegrambots.meta.api.objects.User userToValidate) {
+    public boolean validateUsersAndBGUsers(String username) {
         List<BGUser> bgUsers = bgUserService.getAll();
-        return bgUsers.stream().anyMatch(bgUser -> bgUser.getTelegramUserName().equals(userToValidate.getUserName()));
+        return bgUsers.stream()
+                .anyMatch(bgUser -> bgUser.getTelegramUserName().equals(username));
     }
 }

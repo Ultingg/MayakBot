@@ -32,11 +32,14 @@ public class PlayMarathonCommand extends BotCommand {
     @Override
     public void execute(AbsSender absSender, User user, Chat chat, String[] arguments) {
         long userId = user.getId().longValue();
+
         if (userId == marshakBot.getId() && userService.IsUserExist(chat.getId())) {
             userId = chat.getId();
+
         }
 
         if (userId == chat.getId()) {
+            String username = chat.getUserName();
 
             log.debug("Marshak ");
             SendMessage replyMessage = new SendMessage();
@@ -46,19 +49,35 @@ public class PlayMarathonCommand extends BotCommand {
             try {
                 if (!userService.IsUserExist(userId)) {
                     try {
-                        userService.setUserIntoDB(user);
+                        userService.setUserIntoDB(user); // а зачем это здесь? user - же это бот в данном случае
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
-                replyMessage.setText("Если вы приобретали билет на показ 31 июля, " +
-                        "в ближайшее время мы настроим вам время начала спектакля — " +
-                        "в соответствии с указанными в анкете пожеланиями.");
-                execute(absSender, replyMessage, user);
-                replyMessage.setText("Приобрести билеты на 31.07 можно тут:");
-                execute(absSender, replyMessage, user);
-                replyMessage.setText("https://runcity.timepad.ru/event/1700782/#register");
-                execute(absSender, replyMessage, user);
+
+                if (userService.validateUsersAndBGUsers(username)) {
+                    if (bgUserService.isItTimeToStart(username)) {
+                        userService.setUserPayment(userId, true);
+                        marshakBot.getPlayCommand().execute(absSender,user,chat,arguments);
+
+                    } else {
+                        String message = bgUserService.getTimeStartMessageForUser(username);
+                        replyMessage.setText(message);
+                        execute(absSender, replyMessage, user);
+                    }
+
+                } else {
+                    replyMessage.setText("Если вы еще не приобретали билет на показ 31 июля, " +
+                            "тогда мы в ближайшее время настроим вам время начала спектакля — " +
+                            "в соответствии с указанными в анкете пожеланиями.");
+                    execute(absSender, replyMessage, user);
+                    replyMessage.setText("Приобрести билеты на 31.07 можно тут:");
+                    execute(absSender, replyMessage, user);
+                    replyMessage.setText("https://runcity.timepad.ru/event/1700782/#register");
+                    execute(absSender, replyMessage, user);
+                }
+
+
             } catch (Exception e) {
                 e.printStackTrace();
             }

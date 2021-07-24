@@ -1,20 +1,26 @@
 package ru.kumkuat.application.GameModule.Service;
 
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import ru.kumkuat.application.GameModule.Models.BGUser;
 import ru.kumkuat.application.GameModule.Repository.BGUserRepository;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@PropertySource(value = "file:../resources/externalsecret.yml")
 public class BGUserService {
 
 
     private final BGUserRepository bgUserRepository;
-    private final String START_DATE = "2021-07-31T";
+    @Value("${start.time}")
+    private String startDateResource;
 
     public BGUserService(BGUserRepository bgUserRepository) {
         this.bgUserRepository = bgUserRepository;
@@ -38,43 +44,64 @@ public class BGUserService {
         return bgUserList;
     }
 
-// не знаю зачем нам endTime... если люди не влезут интервал будем их пихать куда влезут)
     public void calculateAndSetStartTimeForBGUser(BGUser bgUser) {
-        String time = bgUser.getPreferredTime();
-
-        String resolvedTimeString = time.replaceAll("[\\Wa-zA-Z]", "");
-        LocalTime startTime = LocalTime.parse("10:00");
-        LocalTime endTime = LocalTime.parse("11:00");
-        int length = resolvedTimeString.length();
-        if (length == 4) {
-            startTime = LocalTime.parse(resolvedTimeString.substring(0, 2) + "00");
-            endTime = LocalTime.parse(resolvedTimeString.substring(2) + "00");
+        LocalTime startTime;
+        LocalTime finalStartTime;
+        if (bgUser.getStartWith() == null || bgUser.getStartWith().equals("-")) {
+            startTime = calculateStartTime(bgUser);
+            finalStartTime = insertInSchedule(startTime);
         } else {
-            startTime = LocalTime.parse(resolvedTimeString.substring(0, 4) + "00");
-            endTime = LocalTime.parse(resolvedTimeString.substring(4) + "00");
-        }
-        if (bgUser.getStartWith() != null) {
             startTime = getTimeOfPreferredFriend(bgUser.getStartWith());
-            startTime = insertInSchedule(startTime);
-        } else {
-            startTime = insertInSchedule(startTime);
+            finalStartTime = insertInSchedule(startTime);
         }
-        bgUser.setStartTime(startTime);
+        bgUser.setStartTime(finalStartTime);
+        System.out.println(bgUser.getTelegramUserName() + ": start time - " + finalStartTime);
         bgUserRepository.save(bgUser);
+        BGUser fromDB = bgUserRepository.findBGUserByTelegramUserName(bgUser.getTelegramUserName());
+
+        System.out.println(fromDB.getTelegramUserName() + ": start time - " + fromDB.getStartTime());
     }
 
     private LocalTime getTimeOfPreferredFriend(String username) {
-        return bgUserRepository.findStartTimeByTelegramUserName(username);
+        return bgUserRepository.getTimeByUsername(username);
     }
 
-    public LocalTime insertInSchedule(LocalTime rawStart) {
-        boolean chek = bgUserRepository.existsBGUserByStartTime(rawStart);
-        while (chek) {
-            rawStart.plusMinutes(2);
-            chek = bgUserRepository.existsBGUserByStartTime(rawStart);
+    private LocalTime insertInSchedule(LocalTime rawStart) {
+        LocalTime temporaryStartTime = rawStart;
+        boolean check = bgUserRepository.existsBGUserByStartTime(temporaryStartTime);
+        while (check) {
+            temporaryStartTime = temporaryStartTime.plusMinutes(2);
+            check = bgUserRepository.existsBGUserByStartTime(temporaryStartTime);
         }
-        return rawStart;
+        return temporaryStartTime;
     }
 
+    public LocalTime calculateStartTime(BGUser bgUser) {
+        String resolvedTimeString = bgUser.getPreferredTime()
+                .replaceAll("[a-zA-Zа-яА-Я]", "")
+                .trim();
+        String[] times = resolvedTimeString.split("  ");
+        return LocalTime.parse(times[0]);
+    }
 
+    public boolean isItTimeToStart(String username) {
+        LocalTime startTimeOfUser = bgUserRepository.getTimeByUsername(username);
+        LocalDateTime startDateTime = LocalDateTime.of(getDate(), startTimeOfUser);
+        LocalDateTime currentTime = LocalDateTime.now();
+        return currentTime.isAfter(startDateTime);
+    }
+
+    public String getTimeStartMessageForUser(String username) {
+        LocalTime startTimeOfUser = bgUserRepository.getTimeByUsername(username);
+        return String.format("Добрый день! \n" +
+                "Время вашего старта: \n%s 31 июля 2021 года. \n" +
+                "Приходите к этому времени на старт.", startTimeOfUser);
+    }
+
+    private LocalDate getDate() {
+        int year = Integer.valueOf(startDateResource.substring(0, 4));
+        int month = Integer.valueOf(startDateResource.substring(5, 7));
+        int day = Integer.valueOf(startDateResource.substring(8));
+        return LocalDate.of(year, month, day);
+    }
 }

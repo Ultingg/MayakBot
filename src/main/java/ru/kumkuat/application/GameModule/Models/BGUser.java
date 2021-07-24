@@ -1,8 +1,6 @@
 package ru.kumkuat.application.GameModule.Models;
 
-import lombok.Getter;
-import lombok.Setter;
-
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -11,6 +9,9 @@ import java.time.LocalTime;
 @Getter
 @Setter
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "bguser")
 public class BGUser {
     @Id
@@ -25,6 +26,7 @@ public class BGUser {
     private String codeTicket;
     private String startWith;
     private LocalTime startTime;
+
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "id")

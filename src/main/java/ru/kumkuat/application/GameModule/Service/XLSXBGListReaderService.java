@@ -7,12 +7,10 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.objects.User;
 import ru.kumkuat.application.GameModule.Models.BGUser;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Iterator;
 
@@ -32,9 +30,10 @@ public class XLSXBGListReaderService {
     }
 
 
-    public void XLSXBGParser(String pathDataFile) throws IOException {
+    public int XLSXBGParser(String pathDataFile) throws IOException {
+        int counter = 0;
         var dataFile = new File(pathDataFile);
-        if(dataFile.exists()){
+        if (dataFile.exists()) {
             this.file = new FileInputStream(dataFile);
             this.workbook = new XSSFWorkbook(file);
             boolean header = true;
@@ -42,7 +41,6 @@ public class XLSXBGListReaderService {
             for (Row row : sheet) {
                 if (!header) {
                     BGUser newBGUser = new BGUser();
-                    User newTelegramUser = new User();
                     Iterator<Cell> cellIterator = row.cellIterator();
                     int lengthOfRow = row.getPhysicalNumberOfCells();
                     for (int cellNumber = 0; cellNumber < lengthOfRow; cellNumber++) {
@@ -54,15 +52,9 @@ public class XLSXBGListReaderService {
                             case 15:
                                 newBGUser.setEmail(cell.getStringCellValue());
                                 break;
-                            case 13:
-                                //newTelegramUser.setLastName(cell.getStringCellValue());
-                                break;
-                            case 14:
-                                //newTelegramUser.setFirstName(cell.getStringCellValue());
-                                break;
                             case 18:
-                                //String convertedUsername = convertTelegramUserName(cell.getStringCellValue());
-                                newBGUser.setTelegramUserName(cell.getStringCellValue());
+                                String convertedUsername = convertTelegramUserName(cell.getStringCellValue());
+                                newBGUser.setTelegramUserName(convertedUsername);
                                 //newTelegramUser.setUserName(convertedUsername);
                                 break;
                             case 19:
@@ -73,11 +65,16 @@ public class XLSXBGListReaderService {
                                 break;
                         }
                     }
-                    bgUserService.setBGUserToDB(newBGUser);
+                    if (!bgUserService.isBGUserExistByUsername(newBGUser.getTelegramUserName())) {
+                        bgUserService.setBGUserToDB(newBGUser);
+                        bgUserService.calculateAndSetStartTimeForBGUser(newBGUser);
+                        counter++;
+                    }
                 }
                 header = false;
             }
         }
+        return counter;
     }
 
     private String convertTelegramUserName(String username) {
