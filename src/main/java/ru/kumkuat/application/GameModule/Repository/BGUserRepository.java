@@ -15,6 +15,8 @@ public interface BGUserRepository extends CrudRepository<BGUser, Long> {
 
     boolean existsBGUserByStartTime(LocalTime startTime);
 
+    boolean existsBGUserByTelegramUserName(String username);
+
     @Query(value = "SELECT start_time FROM bguser  where telegram_user_name = :username",
             nativeQuery = true)
     LocalTime getTimeByUsername(@Param("username") String username);

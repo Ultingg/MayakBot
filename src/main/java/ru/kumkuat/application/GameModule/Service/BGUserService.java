@@ -45,14 +45,15 @@ public class BGUserService {
     }
 
     public void calculateAndSetStartTimeForBGUser(BGUser bgUser) {
-        LocalTime startTime;
         LocalTime finalStartTime;
-        if (bgUser.getStartWith() == null || bgUser.getStartWith().equals("-")) {
-            startTime = calculateStartTime(bgUser);
-            finalStartTime = insertInSchedule(startTime);
+        if (bgUser.getStartWith() != null && !bgUser.getStartWith().equals("")) {
+            if (bgUserRepository.existsBGUserByTelegramUserName(bgUser.getStartWith())) {
+                finalStartTime = getTimeOfPreferredFriend(bgUser.getStartWith());
+            } else {
+                finalStartTime = setTimeByDefoultSchema(bgUser);
+            }
         } else {
-            startTime = getTimeOfPreferredFriend(bgUser.getStartWith());
-            finalStartTime = insertInSchedule(startTime);
+            finalStartTime = setTimeByDefoultSchema(bgUser);
         }
         bgUser.setStartTime(finalStartTime);
         System.out.println(bgUser.getTelegramUserName() + ": start time - " + finalStartTime);
@@ -62,8 +63,14 @@ public class BGUserService {
         System.out.println(fromDB.getTelegramUserName() + ": start time - " + fromDB.getStartTime());
     }
 
+    private LocalTime setTimeByDefoultSchema(BGUser bgUser) {
+        LocalTime startTime = calculateStartTime(bgUser);
+        return insertInSchedule(startTime);
+    }
+
     private LocalTime getTimeOfPreferredFriend(String username) {
         return bgUserRepository.getTimeByUsername(username);
+
     }
 
     private LocalTime insertInSchedule(LocalTime rawStart) {
@@ -77,11 +84,8 @@ public class BGUserService {
     }
 
     public LocalTime calculateStartTime(BGUser bgUser) {
-        String resolvedTimeString = bgUser.getPreferredTime()
-                .replaceAll("[a-zA-Zа-яА-Я]", "")
-                .trim();
-        String[] times = resolvedTimeString.split("  ");
-        return LocalTime.parse(times[0]);
+        String startTime = bgUser.getPreferredTime();
+        return LocalTime.parse(startTime.substring(2, 7));
     }
 
     public boolean isItTimeToStart(String username) {

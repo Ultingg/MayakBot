@@ -12,6 +12,7 @@ import ru.kumkuat.application.GameModule.Models.BGUser;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Iterator;
 
 @Component
@@ -54,14 +55,15 @@ public class XLSXBGListReaderService {
                                 break;
                             case 18:
                                 String convertedUsername = convertTelegramUserName(cell.getStringCellValue());
+                                convertedUsername = convertedUsername.equals("") ? cell.getStringCellValue() : convertedUsername;
                                 newBGUser.setTelegramUserName(convertedUsername);
-                                //newTelegramUser.setUserName(convertedUsername);
                                 break;
                             case 19:
                                 newBGUser.setPreferredTime(cell.getStringCellValue());
                                 break;
                             case 20:
-                                newBGUser.setStartWith(cell.getStringCellValue());
+                                String convertedPrefferedUsername = convertTelegramUserName(cell.getStringCellValue());
+                                newBGUser.setStartWith(convertedPrefferedUsername);
                                 break;
                         }
                     }
@@ -76,8 +78,12 @@ public class XLSXBGListReaderService {
         }
         return counter;
     }
-
     private String convertTelegramUserName(String username) {
-        return username.substring(1);
+        String[] array = username.split(" ");
+        String finalUsername = Arrays.stream(array)
+                .filter(string -> string.contains("@"))
+                .findFirst()
+                .orElse("");
+        return finalUsername;
     }
 }
