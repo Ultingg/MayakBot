@@ -84,6 +84,7 @@ public class XLSXBGListReaderService {
                 .filter(string -> string.contains("@"))
                 .findFirst()
                 .orElse("");
+        finalUsername = finalUsername.replace("@","");
         return finalUsername;
     }
 }

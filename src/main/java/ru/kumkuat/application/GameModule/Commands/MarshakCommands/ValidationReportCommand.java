@@ -1,0 +1,80 @@
+package ru.kumkuat.application.GameModule.Commands.MarshakCommands;
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.extensions.bots.commandbot.commands.BotCommand;
+import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Chat;
+import org.telegram.telegrambots.meta.api.objects.User;
+import org.telegram.telegrambots.meta.bots.AbsSender;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import ru.kumkuat.application.GameModule.Models.BGUser;
+import ru.kumkuat.application.GameModule.Service.BGUserService;
+import ru.kumkuat.application.GameModule.Service.UserService;
+import ru.kumkuat.application.GameModule.Service.XLSXReportValidationService;
+
+import java.util.List;
+
+@Component
+public class ValidationReportCommand extends BotCommand implements AdminCommand {
+
+
+    private static final String COMMAND_IDENTIFIER = "/bgreport";
+    private static final String COMMAND_DESCRIPTION = "Вывести список не валидированных участников";
+    private static final String EXTENDED_DESCRIPTION = "This command displays all bgUsers that wasn't registered yet";
+
+    @Autowired
+    UserService userService;
+    @Autowired
+    BGUserService bgUserService;
+    @Autowired
+    XLSXReportValidationService xlsxReportValidationService;
+
+    public ValidationReportCommand() {
+        super(COMMAND_IDENTIFIER, COMMAND_DESCRIPTION);
+    }
+
+    @Override
+    public void execute(AbsSender absSender, User user, Chat chat, String[] strings) {
+        Long userId = Long.valueOf(user.getId());
+        System.out.println("REPORT requested");
+        SendMessage replyMessage = new SendMessage();
+        replyMessage.setChatId(chat.getId().toString());
+        replyMessage.enableHtml(true);
+        if (userService.getUserByTelegramId(userId).isAdmin()) {
+            List<BGUser> bgUsersList = bgUserService.getListOfUnregistratedBGUsers();
+            if (!bgUsersList.isEmpty()) {
+            //documentMakerservice
+             SendDocument sendDocument = xlsxReportValidationService.writeReportBGUserNotRegitred(bgUsersList);
+             sendDocument.setChatId(String.valueOf(chat.getId()));
+             String reply = String.format("Не зарегистрировано %d пользователей", bgUsersList.size());
+                replyMessage.setText(reply);
+                execute(absSender,replyMessage,user);
+                execute(absSender,sendDocument,user);
+            } else {
+                String reply ="Все пользователи зарегистрированы)";
+                replyMessage.setText(reply);
+                execute(absSender,replyMessage,user);
+            }
+        } else {
+            replyMessage.setText("Вы не обладаете соответствующим уровнем доступа.");
+            execute(absSender, replyMessage, user);
+        }
+    }
+
+    void execute(AbsSender sender, SendMessage message, User user) {
+        try {
+            sender.execute(message);
+        } catch (TelegramApiException e) {
+        }
+    }
+    void execute(AbsSender sender, SendDocument sendDocument, User user) {
+        try {
+            sender.execute(sendDocument);
+        } catch (TelegramApiException e) {
+        }
+    }
+
+}

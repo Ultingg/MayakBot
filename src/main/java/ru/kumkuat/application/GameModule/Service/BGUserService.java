@@ -5,13 +5,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import ru.kumkuat.application.GameModule.Models.BGUser;
+import ru.kumkuat.application.GameModule.Models.User;
 import ru.kumkuat.application.GameModule.Repository.BGUserRepository;
+import ru.kumkuat.application.GameModule.Repository.UserRepository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @PropertySource(value = "file:../resources/externalsecret.yml")
@@ -19,11 +22,14 @@ public class BGUserService {
 
 
     private final BGUserRepository bgUserRepository;
+    private final UserRepository userRepository;
+
     @Value("${start.time}")
     private String startDateResource;
 
-    public BGUserService(BGUserRepository bgUserRepository) {
+    public BGUserService(BGUserRepository bgUserRepository, UserRepository userRepository) {
         this.bgUserRepository = bgUserRepository;
+        this.userRepository = userRepository;
     }
 
     public void setBGUserToDB(BGUser bgUser) {
@@ -107,5 +113,26 @@ public class BGUserService {
         int month = Integer.valueOf(startDateResource.substring(5, 7));
         int day = Integer.valueOf(startDateResource.substring(8));
         return LocalDate.of(year, month, day);
+    }
+
+    public List<BGUser> getListOfUnregistratedBGUsers() {
+        List<User> users =  new ArrayList<>();
+        userRepository.findAll().forEach(users::add);
+        List<BGUser> bgUsers = new ArrayList<>();
+        bgUserRepository.findAll().forEach(bgUsers::add);
+
+//        List<String> bgUsersNames = bgUsers.stream()
+//                .map(element->element.getTelegramUserName())
+//                .collect(Collectors.toList());
+        List<String> usersNames = users.stream()
+                .map(element->element.getName())
+                .collect(Collectors.toList());
+//        List<String> diffNames = bgUsersNames.stream()
+//                .filter(element -> !usersNames.contains(element))
+//                .collect(Collectors.toList());
+        List<BGUser> diffBGUsers = bgUsers.stream()
+                .filter(element -> !usersNames.contains(element.getTelegramUserName()))
+                .collect(Collectors.toList());
+        return diffBGUsers;
     }
 }

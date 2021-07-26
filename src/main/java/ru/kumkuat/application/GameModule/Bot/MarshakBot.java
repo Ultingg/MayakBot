@@ -75,6 +75,8 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
     private UserRepository userRepository;
     @Autowired
     private InputXSLXCommand inputXSLXCommand;
+    @Autowired
+    private ValidationReportCommand validationReportCommand;
 
     private String secretName = "Marshak";
 
@@ -177,6 +179,7 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
         register(setSceneNumberCommand);
         register(sendMailCommand);
         register(inputXSLXCommand);
+        register(validationReportCommand);
     }
 
     @Override
@@ -275,6 +278,16 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
         } catch (TelegramApiException e) {
             e.getStackTrace();
             log.debug("{} failed sending SendTextMessage!", secretName);
+        }
+    }
+    public void sendDocument(SendDocument sendDocument) {
+        log.debug("{} get SendDocument!", secretName);
+        try {
+            execute(sendDocument);
+            log.debug("{} send SendDocument!", secretName);
+        } catch (TelegramApiException e) {
+            e.getStackTrace();
+            log.debug("{} failed sending SendDocument!", secretName);
         }
     }
 }

@@ -113,10 +113,6 @@ public class ResponseService {
                 ReplyResolver(chatId, scene, userTelegramId, message);
                 userService.incrementSceneId(userTelegramId);
             }
-//            if (user.getSceneId() >= sceneService.count() - 1 && !user.isAdmin()) {
-//                Thread.sleep(300000);
-//                kickAllCommand.KickChatMember(marshakBot, telegramChatService.getChatByUserTelegramId(user.getTelegramUserId()));
-//            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -144,7 +140,6 @@ public class ResponseService {
                 result = false;
             } else {
                 result = true;
-                // result = triggerService.triggerCheck(sceneTrigger, userText);
             }
         }
         if (message.hasLocation()) {
