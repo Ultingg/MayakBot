@@ -1,5 +1,6 @@
 package ru.kumkuat.application.GameModule.Service;
 
+import org.apache.poi.ss.formula.functions.T;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -13,7 +14,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 @Component
 @PropertySource(value = "file:../resources/externalsecret.yml")
@@ -21,6 +24,7 @@ public class XLSXBGListReaderService {
 
     private final BGUserService bgUserService;
     private final UserService userService;
+    private final Map<String, String> matchPropertyToHeader = new HashMap<>();
 
     private FileInputStream file;
     private Workbook workbook;
@@ -28,63 +32,100 @@ public class XLSXBGListReaderService {
     public XLSXBGListReaderService(BGUserService bgUserService, UserService userService) throws IOException {
         this.bgUserService = bgUserService;
         this.userService = userService;
+
+        matchPropertyToHeader.put("email", "E-mail");
+        matchPropertyToHeader.put("preferredTime", "Желаемое время начала");
+        matchPropertyToHeader.put("telegramUserName", "Имя пользователья в Telegram");
+        matchPropertyToHeader.put("codeTicket", "Код");
+        matchPropertyToHeader.put("startWith", "Хочу начать вместе с...");
     }
 
+    private <T> void SetFieldValue(Class<T> cls, T obj, String name, String value) {
+        for (var field :
+                cls.getDeclaredFields()) {
+            if (field.getName().equals(name)) {
+                try {
+                    field.setAccessible(true);
+                    if (field.getType().equals(String.class)) {
+                        field.set( obj, value);
+                    } else if (field.getType().equals(Integer.TYPE)) {
+                        field.setInt( obj, Integer.parseInt(value));
+                    } else if (field.getType().equals(Long.TYPE)) {
+                        field.setLong( obj, Long.parseLong(value));
+                    }
+                } catch (IllegalAccessException ex) {
 
-    public int XLSXBGParser(String pathDataFile) throws IOException {
+                }
+            }
+        }
+    }
+
+    private Row getHeader(Sheet sheet) throws Exception {
+        for (Row row : sheet) {
+            Iterator<Cell> cellIterator = row.cellIterator();
+            //int lengthOfRow = row.getPhysicalNumberOfCells();
+            while (cellIterator.hasNext()) {
+                Cell cell = cellIterator.next();
+                if (matchPropertyToHeader.containsValue(cell.getStringCellValue())) {
+                    return row;
+                }
+            }
+        }
+        throw new Exception("Header is not found!");
+    }
+    private Integer getCellColumnNumber(String headerValue, Row header) throws Exception{
+        Iterator<Cell> cellIterator = header.cellIterator();
+        while (cellIterator.hasNext()) {
+            Cell cell = cellIterator.next();
+            if ( cell.getStringCellValue().equals(headerValue)) {
+                return cell.getColumnIndex();
+            }
+        }
+        throw new Exception("Header is not contains this value!");
+    }
+
+    public int XLSXBGParser(String pathDataFile) throws Exception {
         int counter = 0;
         var dataFile = new File(pathDataFile);
         if (dataFile.exists()) {
             this.file = new FileInputStream(dataFile);
             this.workbook = new XSSFWorkbook(file);
-            boolean header = true;
+            boolean header = false;
             Sheet sheet = workbook.getSheetAt(0);
+            var headerRow = getHeader(sheet);
             for (Row row : sheet) {
-                if (!header) {
+                if (headerRow.equals(row)) {
+                    header = true;
+                    continue;
+                }
+                if (header) {
                     BGUser newBGUser = new BGUser();
-                    Iterator<Cell> cellIterator = row.cellIterator();
-                    int lengthOfRow = row.getPhysicalNumberOfCells();
-                    for (int cellNumber = 0; cellNumber < lengthOfRow; cellNumber++) {
-                        Cell cell = cellIterator.next();
-                        switch (cellNumber) {
-                            case 5:
-                                newBGUser.setCodeTicket(cell.getStringCellValue());
-                                break;
-                            case 15:
-                                newBGUser.setEmail(cell.getStringCellValue());
-                                break;
-                            case 18:
-                                String convertedUsername = convertTelegramUserName(cell.getStringCellValue());
-                                convertedUsername = convertedUsername.equals("") ? cell.getStringCellValue() : convertedUsername;
-                                newBGUser.setTelegramUserName(convertedUsername);
-                                break;
-                            case 19:
-                                newBGUser.setPreferredTime(cell.getStringCellValue());
-                                break;
-                            case 20:
-                                String convertedPrefferedUsername = convertTelegramUserName(cell.getStringCellValue());
-                                newBGUser.setStartWith(convertedPrefferedUsername);
-                                break;
-                        }
+                    for (var prop:
+                            matchPropertyToHeader.keySet()) {
+                        var headerValue = matchPropertyToHeader.get(prop);
+                        var columnIndex = getCellColumnNumber(headerValue, headerRow);
+                        var cellValue = row.getCell(columnIndex).getStringCellValue();
+                        SetFieldValue(BGUser.class, newBGUser, prop, cellValue);
                     }
+                    newBGUser.setTelegramUserName(convertTelegramUserName(newBGUser.getTelegramUserName()));
                     if (!bgUserService.isBGUserExistByUsername(newBGUser.getTelegramUserName())) {
                         bgUserService.setBGUserToDB(newBGUser);
                         bgUserService.calculateAndSetStartTimeForBGUser(newBGUser);
                         counter++;
                     }
                 }
-                header = false;
             }
         }
         return counter;
     }
+
     private String convertTelegramUserName(String username) {
         String[] array = username.split(" ");
         String finalUsername = Arrays.stream(array)
                 .filter(string -> string.contains("@"))
                 .findFirst()
                 .orElse("");
-        finalUsername = finalUsername.replace("@","");
+        finalUsername = finalUsername.replace("@", "");
         return finalUsername;
     }
 }

@@ -5,6 +5,7 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Arrays;
 
 @Getter
 @Setter
@@ -15,7 +16,7 @@ import java.time.LocalTime;
 @Table(name = "bguser")
 public class BGUser {
     @Id
-    @GeneratedValue (strategy = GenerationType.SEQUENCE, generator = "bg_user_gen")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "bg_user_gen")
     @SequenceGenerator(name = "bg_user_gen", allocationSize = 1, sequenceName = "bg_user_seq")
     private Long id;
 
@@ -31,6 +32,4 @@ public class BGUser {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
-
-
 }
