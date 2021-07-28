@@ -46,6 +46,4 @@ public class User {
     @Column(name = "is_playing")
     private boolean isPlaying;
 
-//    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
-//    private BGUser bgUser;
 }
