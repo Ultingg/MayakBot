@@ -1,6 +1,5 @@
 package ru.kumkuat.application.GameModule.Service;
 
-import org.apache.poi.ss.formula.functions.T;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -36,6 +35,8 @@ public class XLSXBGListReaderService {
         matchPropertyToHeader.put("email", "E-mail");
         matchPropertyToHeader.put("preferredTime", "Желаемое время начала");
         matchPropertyToHeader.put("telegramUserName", "Имя пользователья в Telegram");
+        matchPropertyToHeader.put("FirstName", "Имя");
+        matchPropertyToHeader.put("SecondName", "Фамилия");
         matchPropertyToHeader.put("codeTicket", "Код");
         matchPropertyToHeader.put("startWith", "Хочу начать вместе с...");
     }
@@ -107,7 +108,8 @@ public class XLSXBGListReaderService {
                         var cellValue = row.getCell(columnIndex).getStringCellValue();
                         SetFieldValue(BGUser.class, newBGUser, prop, cellValue);
                     }
-                    newBGUser.setTelegramUserName(convertTelegramUserName(newBGUser.getTelegramUserName()));
+                    newBGUser.setIsNotified(false);
+                    newBGUser.setStartWith(convertTelegramUserName(newBGUser.getStartWith()));
                     if (!bgUserService.isBGUserExistByUsername(newBGUser.getTelegramUserName())) {
                         bgUserService.setBGUserToDB(newBGUser);
                         bgUserService.calculateAndSetStartTimeForBGUser(newBGUser);

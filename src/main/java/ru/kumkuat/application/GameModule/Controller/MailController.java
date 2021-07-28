@@ -15,23 +15,25 @@ import java.util.Date;
 @Controller
 public class MailController {
 
-    private final String mailAdress = "solnce-3@yandex.ru";
+    private final String mailAdress = "teatr.prospektspb@gmail.com";
 
     @Autowired
     private JavaMailSender emailSender;
 
     @ResponseBody
-    @RequestMapping("/sendEmail")
+    @RequestMapping("/mail")
     public void sendSimpleEmail(String mailRecipient, String subject, String text) {
         MimeMessagePreparator preparator = new MimeMessagePreparator() {
             public void prepare(MimeMessage mimeMessage) {
-                MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
+                System.setProperty("mail.mime.splitlongparameters", "false");
                 try {
+                    MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
                     messageHelper.setTo(mailRecipient);
                     messageHelper.setFrom(mailAdress);
                     messageHelper.setSubject(subject);
                     messageHelper.setSentDate(new Date());
                     messageHelper.setText(text, true);
+
                 } catch (Exception ex) {
 
                 }

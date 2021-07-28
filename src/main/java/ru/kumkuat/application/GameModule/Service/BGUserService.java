@@ -56,10 +56,10 @@ public class BGUserService {
             if (bgUserRepository.existsBGUserByTelegramUserName(bgUser.getStartWith())) {
                 finalStartTime = getTimeOfPreferredFriend(bgUser.getStartWith());
             } else {
-                finalStartTime = setTimeByDefoultSchema(bgUser);
+                finalStartTime = setTimeByDefaultSchema(bgUser);
             }
         } else {
-            finalStartTime = setTimeByDefoultSchema(bgUser);
+            finalStartTime = setTimeByDefaultSchema(bgUser);
         }
         bgUser.setStartTime(finalStartTime);
         System.out.println(bgUser.getTelegramUserName() + ": start time - " + finalStartTime);
@@ -69,7 +69,7 @@ public class BGUserService {
         System.out.println(fromDB.getTelegramUserName() + ": start time - " + fromDB.getStartTime());
     }
 
-    private LocalTime setTimeByDefoultSchema(BGUser bgUser) {
+    private LocalTime setTimeByDefaultSchema(BGUser bgUser) {
         LocalTime startTime = calculateStartTime(bgUser);
         return insertInSchedule(startTime);
     }
@@ -134,5 +134,11 @@ public class BGUserService {
                 .filter(element -> !usersNames.contains(element.getTelegramUserName()))
                 .collect(Collectors.toList());
         return diffBGUsers;
+    }
+
+    public List<BGUser> getAllNotNotifedUsers() {
+        List<BGUser> bgUserList = new ArrayList<>();
+        getAll().stream().filter(bgUser -> bgUser.getIsNotified().equals(false)).iterator().forEachRemaining(bgUserList::add);
+        return bgUserList;
     }
 }

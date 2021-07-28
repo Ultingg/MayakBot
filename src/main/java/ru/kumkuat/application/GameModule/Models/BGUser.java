@@ -21,15 +21,17 @@ public class BGUser {
     private Long id;
 
     private String email;
-    private LocalDateTime timeOfStart;
+    //private LocalDateTime timeOfStart;
     private String preferredTime;
     private String telegramUserName;
+    private String FirstName;
+    private String SecondName;
     private String codeTicket;
     private String startWith;
     private LocalTime startTime;
+    private Boolean isNotified;
 
-
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User user;
+//    @OneToOne(cascade = CascadeType.ALL)
+//    @JoinColumn(name = "user_id", referencedColumnName = "id")
+//    private User user;
 }
