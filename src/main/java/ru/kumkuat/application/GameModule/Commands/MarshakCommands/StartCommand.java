@@ -48,10 +48,13 @@ public class StartCommand extends BotCommand {
 
     @Override
     public void execute(AbsSender absSender, User user, Chat chat, String[] arguments) {
-        //if (user.getId().longValue() == chat.getId()) {
+        if (user.getId().longValue() == chat.getId()) {
 
             log.debug("Marshak ");
-            log.info("User with id: {}, has start Marshak bot", user.getId());
+
+            registerUser(user);
+
+
             InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
             var ListButtonCollections = new ArrayList<List<InlineKeyboardButton>>();
 
@@ -150,6 +153,24 @@ public class StartCommand extends BotCommand {
             replyMessage.setText("Или ты всегда можешь написать нам на почту. \n" +
                     "teatr.prospektspb@gmail.com");
             execute(absSender, replyMessage, user);
+
+//            helpCommand.execute(absSender, user, chat, arguments);
+        }
+    }
+
+    /**
+     * Registration of users.
+     * @param user
+     */
+    private void registerUser(User user) {
+        if (!userService.IsUserExist(user.getId().longValue())) {
+            try {
+                userService.setUserIntoDB(user);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
     void execute(AbsSender sender, SendMessage message, User user) {
