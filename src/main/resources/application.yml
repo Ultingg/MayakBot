@@ -1,7 +1,7 @@
 spring:
   datasource:
     username: root
-    password: Maximnn_1720
+    password:
     url: jdbc:mysql://localhost:3306/promenad?serverTimezone=UTC&characterEncoding=UTF-8&useUnicode=true
     driver-class-name: com.mysql.cj.jdbc.Driver
     initialization-mode: never
@@ -14,7 +14,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
-        show_sql: true
+        show_sql: false
 
   profiles:
     active: prod   #2 types of profile: 'dev' - DEBUG level, 'prod' - INFO level

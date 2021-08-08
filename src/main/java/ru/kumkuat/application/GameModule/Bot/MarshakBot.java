@@ -1,5 +1,6 @@
 package ru.kumkuat.application.GameModule.Bot;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +28,7 @@ import java.util.*;
 @Slf4j
 @Setter
 @Getter
+@AllArgsConstructor
 @PropertySource(value = "file:../resources/externalsecret.yml")
 public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender, InitializingBean {
     @Autowired

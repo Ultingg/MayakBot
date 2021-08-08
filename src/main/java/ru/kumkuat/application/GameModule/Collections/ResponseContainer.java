@@ -23,6 +23,7 @@ public class ResponseContainer {
     private SendSticker sendSticker;
     private String botName;
     private Message message;
+    private boolean wrongMessage;
 
     public boolean hasPicture() {
         return sendPhoto != null;

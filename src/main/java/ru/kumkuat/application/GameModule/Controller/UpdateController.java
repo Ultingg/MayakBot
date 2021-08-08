@@ -1,7 +1,7 @@
 package ru.kumkuat.application.GameModule.Controller;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -17,21 +17,36 @@ import ru.kumkuat.application.GameModule.Service.UserService;
 
 @Slf4j
 @RestController
+@AllArgsConstructor
 public class UpdateController {
 
-    @Autowired
-    private TelegramChatService telegramChatService;
+    private final TelegramChatService telegramChatService;
     private final MarshakBot marshakBot;
     private final Brodskiy brodskiy; // бот слушатель
     private final ResponseService responseService;
     private final UserService userService;
+    private final BotController botController;
 
-    public UpdateController(MarshakBot marshakBot, Brodskiy brodskiy, ResponseService responseService, UserService userService) {
-        this.marshakBot = marshakBot;
-        this.brodskiy = brodskiy;
-        this.responseService = responseService;
-        this.userService = userService;
-    }
+//    @PostMapping(value = "/")
+//    public void receivedUpdateFromSimpleListener(@RequestBody Update update) {
+//        if (update.hasMessage() && !update.getMessage().getChat().getType().equals("private")) {     //проверка что Листнер видит update только в Беседке
+//            botController.resolveUpdatesFromSimpleLIstner(update.getMessage());
+//        }else {
+//            marshakBot.onWebhookUpdateReceived(update);
+//        }
+//    }
+//    @PostMapping(value = "/admin")
+//    public void receivedUpdateFromAdminListener(@RequestBody Update update) {
+//        if (update.hasMessage() &&
+//               update.getMessage().getFrom().getId().equals(update.getMessage().getChatId())) {       // проверка что Админ видит update только в личке
+//
+//                  botController.resolveUpdatesFromAdminLIstner(update.getMessage());
+//              } else {
+//            marshakBot.onWebhookUpdateReceived(update);
+//        }
+//    }
+
+
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
     public void onUpdateReceived(@RequestBody Update update) {
@@ -58,7 +73,7 @@ public class UpdateController {
             marshakBot.onWebhookUpdateReceived(update);
         }
 
-        if (user != null && user.getTelegramUserId().equals(update.getMessage().getChatId())) {
+        if (user != null && user.getTelegramUserId().equals(update.getMessage().getChatId())) { //проверка приватности чата игнор беседки чтобы не дублировать
 
 
             if (user.isPlaying() &&
