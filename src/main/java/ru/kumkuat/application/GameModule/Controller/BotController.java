@@ -126,44 +126,46 @@ public class BotController {
 //    }
 
     public void responseResolver(List<ResponseContainer> responseContainers) {
-        boolean wrongMessage = false;
-        long userId = responseContainers.get(0).getUserId();
-        for (ResponseContainer responseContainer : responseContainers) {
-            String botName = responseContainer.getBotName();
-            wrongMessage = responseContainer.isWrongMessage();
-            int time = responseContainer.getTimingOfReply();
-            try {
-                Thread.currentThread().sleep(time);
-            } // тут какая-то ахенея
-            catch (InterruptedException e) {
-                log.debug("Thread was Interrupted while waiting timing of reply.");
-                e.getStackTrace();
+        if (!responseContainers.isEmpty()) {
+            boolean wrongMessage = false;
+            long userId = responseContainers.get(0).getUserId();
+            for (ResponseContainer responseContainer : responseContainers) {
+                String botName = responseContainer.getBotName();
+                wrongMessage = responseContainer.isWrongMessage();
+                int time = responseContainer.getTimingOfReply();
+                try {
+                    Thread.currentThread().sleep(time);
+                } // тут какая-то ахенея
+                catch (InterruptedException e) {
+                    log.debug("Thread was Interrupted while waiting timing of reply.");
+                    e.getStackTrace();
+                }
+                if (botName.equals("Marshak")) {
+                    sendResponseToUserInPrivate(responseContainer, marshakBot);
+                    log.debug("BotController processed reply of {}.", "Marshak");
+                } else {
+                    if (botName.equals("Mayakovsky")) {
+                        sendResponseToUser(responseContainer, mayakBot);
+                        log.debug("BotController processed reply of {}.", "Myakovskiy");
+                    }
+                    if (botName.equals("Akhmatova")) {
+                        sendResponseToUser(responseContainer, akhmatovaBot);
+                        log.debug("BotController processed reply of {}.", "Akhmatova");
+                    }
+                    if (botName.equals("Brodskiy")) {
+                        sendResponseToUser(responseContainer, brodskiy);
+                        log.debug("BotController processed reply of {}.", "Brodskiy");
+                    }
+                    if (botName.equals("Harms")) {
+                        sendResponseToUser(responseContainer, harms);
+                        log.debug("BotController processed reply of {}.", "Harms");
+                    }
+                }
             }
-            if (botName.equals("Marshak")) {
-                sendResponseToUserInPrivate(responseContainer, marshakBot);
-                log.debug("BotController processed reply of {}.", "Marshak");
-            } else {
-                if (botName.equals("Mayakovsky")) {
-                    sendResponseToUser(responseContainer, mayakBot);
-                    log.debug("BotController processed reply of {}.", "Myakovskiy");
-                }
-                if (botName.equals("Akhmatova")) {
-                    sendResponseToUser(responseContainer, akhmatovaBot);
-                    log.debug("BotController processed reply of {}.", "Akhmatova");
-                }
-                if (botName.equals("Brodskiy")) {
-                    sendResponseToUser(responseContainer, brodskiy);
-                    log.debug("BotController processed reply of {}.", "Brodskiy");
-                }
-                if (botName.equals("Harms")) {
-                    sendResponseToUser(responseContainer, harms);
-                    log.debug("BotController processed reply of {}.", "Harms");
-                }
+            if (!wrongMessage) {
+                userService.incrementSceneId(userId);
+                userService.setUserTrigger(userId, false);
             }
-        }
-        if (!wrongMessage) {
-            userService.incrementSceneId(userId);
-            userService.setUserTrigger(userId, false);
         }
     }
 

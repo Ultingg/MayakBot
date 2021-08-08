@@ -107,7 +107,7 @@ public class ResponseService {
                         responseContainers = ReceiveNextReplies(chatId, userId, message);                 //вернуть такой ответ
                     } else {
                         if (!isTypeIncommingMessageEqualTriggerType(message, sceneTrigger)) {
-                            responseContainers = List.of(configureWrongTriggerMessage(chatId));
+                            responseContainers = List.of(configureWrongTriggerMessage(chatId, userId));
 //                            ResponseContainer  wrongAnswerResponse = configureWrongTriggerMessage(chatId);
 //                            botController.responseResolver(wrongAnswerResponse);                              //вернуть такой ответ
                         }
@@ -151,13 +151,15 @@ public class ResponseService {
     }
 
     private boolean checkIncomingMessage(Message message, Trigger trigger) {
-        boolean result;
-        if (!isUserTriggered(message)) {
-            result = checkTriggerOfIncomingMessage(message, trigger);
-        } else {
-            result = false;
-        }
-        return result;
+//        boolean result;
+
+        return !isUserTriggered(message) && checkTriggerOfIncomingMessage(message, trigger);
+//        if (!isUserTriggered(message)) {
+//            result = checkTriggerOfIncomingMessage(message, trigger);
+//        } else {
+//            result = false;
+//        }
+//        return result;
     }
 
     private boolean checkTriggerOfIncomingMessage(Message message, Trigger sceneTrigger) {
@@ -199,7 +201,7 @@ public class ResponseService {
     }
 
 
-    private ResponseContainer configureWrongTriggerMessage(String chatId) {
+    private ResponseContainer configureWrongTriggerMessage(String chatId, Long userId ) {
         String wrongAnswerMessage = "Мне кажется, я вас не совсем понимаю.";
         ResponseContainer responseContainer = new ResponseContainer();
         SendMessage sendMessage = new SendMessage();
@@ -209,6 +211,7 @@ public class ResponseService {
         responseContainer.setBotName("Mayakovsky"); //дежурный по стране
         responseContainer.setTimingOfReply(100);
         responseContainer.isWrongMessage();
+        responseContainer.setUserId(userId);
         return responseContainer;
     }
 
