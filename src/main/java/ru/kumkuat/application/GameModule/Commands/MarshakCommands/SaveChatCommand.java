@@ -36,7 +36,6 @@ public class SaveChatCommand extends BotCommand implements AdminCommand {
                 GetChat getChat = new GetChat();
                 getChat.setChatId(chat.getId().toString());
 
-
                 try {
                     var chatInfo = absSender.execute(getChat);
 

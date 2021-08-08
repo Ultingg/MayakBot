@@ -38,7 +38,6 @@ public class TriggerService {
             return distance <= 500.0;
         }
         return false;
-
     }
 
     private String eReplacing(String text) {

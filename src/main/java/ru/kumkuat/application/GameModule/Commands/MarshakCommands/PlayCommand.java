@@ -40,12 +40,10 @@ public class PlayCommand extends BotCommand {
         this.userService = userService;
     }
 
-
     @Override
     public void processMessage(AbsSender absSender, Message message, String[] arguments) {
         execute(absSender, message.getFrom(), message.getChat(), arguments);
     }
-
 
     @Override
     public void execute(AbsSender absSender, User user, Chat chat, String[] arguments) {

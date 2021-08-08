@@ -53,6 +53,7 @@ public class UserService {
             }
         }
     }
+
     /*возможно стоит сделать этот метод синхронизированным,
      т.к. возможны проблемы при одновременной записи двух и более юзеров под одним id(не telegramID) в бд */
     public long setUserIntoDB(org.telegram.telegrambots.meta.api.objects.User telegramUser) {
@@ -167,6 +168,10 @@ public class UserService {
     public boolean validateUsersAndBGUsers(String username) {
         List<BGUser> bgUsers = bgUserService.getAll();
         return bgUsers.stream()
-                .anyMatch(bgUser -> bgUser.getTelegramUserName().equals(username));
+                .anyMatch(bgUser -> bgUser.getTelegramUserName().toLowerCase().equals(username.toLowerCase()));
+    }
+
+    public void saveUser(User player) {
+        userRepository.save(player);
     }
 }

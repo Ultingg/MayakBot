@@ -144,6 +144,20 @@ public class StartCommand extends BotCommand {
             replyMessage.setReplyMarkup(inlineKeyboardMarkup);
             execute(absSender, replyMessage, user);
 
+            replyMessage = new SendMessage();
+            replyMessage.setChatId(chat.getId().toString());
+            replyMessage.enableHtml(true);
+            replyMessage.setText("Если у тебя возникли какие-то трудности, воспользуйстя командой /help. \n" +
+                    "Мы постараемся помочь.");
+            execute(absSender, replyMessage, user);
+
+            replyMessage = new SendMessage();
+            replyMessage.setChatId(chat.getId().toString());
+            replyMessage.enableHtml(true);
+            replyMessage.setText("Или ты всегда можешь написать нам на почту. \n" +
+                    "teatr.prospektspb@gmail.com");
+            execute(absSender, replyMessage, user);
+
 //            helpCommand.execute(absSender, user, chat, arguments);
         }
     }

@@ -12,6 +12,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import ru.kumkuat.application.GameModule.Abstract.TelegramWebhookCommandBot;
 import ru.kumkuat.application.GameModule.Bot.MarshakBot;
 import ru.kumkuat.application.GameModule.Service.UserService;
 import ru.kumkuat.application.GameModule.Service.XLSXBGListReaderService;
@@ -52,7 +53,8 @@ public class InputXSLXCommand extends BotCommand {
                 if (!localfile.exists()) {
                     localfile.createNewFile();
                 }
-                InputStream is = new URL(file.getFileUrl(marshakBot.getBotToken())).openStream();
+                var botToken = ((TelegramWebhookCommandBot)absSender).getBotToken();
+                InputStream is = new URL(file.getFileUrl(botToken)).openStream();
                 FileUtils.copyInputStreamToFile(is, localfile);
             } catch (TelegramApiException e) {
                 e.printStackTrace();

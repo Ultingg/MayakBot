@@ -24,12 +24,11 @@ public class Brodskiy extends TelegramWebhookBot implements BotsSender {
     @Value("${brodskiy.path}")
     private String BotPath;
 
-
     @Override
     public BotApiMethod onWebhookUpdateReceived(Update update) {
         return new SendMessage();
     }
-
+    @Override
     public void sendLocation(SendLocation sendLocation) {
         log.debug("{} get SendLocationMessage!", secretName);
         try {
@@ -40,7 +39,7 @@ public class Brodskiy extends TelegramWebhookBot implements BotsSender {
             e.getStackTrace();
         }
     }
-
+    @Override
     public void sendVoice(SendVoice sendVoice) {
         log.debug("{} get SendVoiceMessage!", secretName);
         try {
@@ -51,7 +50,7 @@ public class Brodskiy extends TelegramWebhookBot implements BotsSender {
             log.debug("{} failed sending SendVoiceMessage!", secretName);
         }
     }
-
+    @Override
     public void sendPicture(SendPhoto sendPhoto) {
         log.debug("{} get SendPhotoMessage!", secretName);
         try {
@@ -62,7 +61,7 @@ public class Brodskiy extends TelegramWebhookBot implements BotsSender {
             log.debug("{} failed sending SendPhotoMessage!", secretName);
         }
     }
-
+    @Override
     public void sendMessage(SendMessage sendMessage) {
         log.debug("{} get SendTextMessage!", secretName);
         try {
@@ -73,7 +72,6 @@ public class Brodskiy extends TelegramWebhookBot implements BotsSender {
             log.debug("{} failed sending SendTextMessage!", secretName);
         }
     }
-
     @Override
     public void sendSticker(SendSticker sendSticker) {
         log.debug("{} get SendTextMessage!", secretName);

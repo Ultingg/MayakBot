@@ -40,8 +40,7 @@ public class AkhmatovaBot extends TelegramWebhookBot implements BotsSender {
         log.debug("{} sends message!", secretName);
         return sendMessage;
     }
-
-
+    @Override
     public void sendLocation(SendLocation sendLocation) {
         log.debug("{} get SendLocationMessage!", secretName);
         try {
@@ -52,7 +51,7 @@ public class AkhmatovaBot extends TelegramWebhookBot implements BotsSender {
             e.getStackTrace();
         }
     }
-
+    @Override
     public void sendVoice(SendVoice sendVoice) {
         log.debug("{} get SendVoiceMessage!", secretName);
         try {
@@ -63,7 +62,7 @@ public class AkhmatovaBot extends TelegramWebhookBot implements BotsSender {
             log.debug("{} failed sending SendVoiceMessage!", secretName);
         }
     }
-
+    @Override
     public void sendPicture(SendPhoto sendPhoto) {
         log.debug("{} get SendPhotoMessage!", secretName);
         try {
@@ -74,7 +73,7 @@ public class AkhmatovaBot extends TelegramWebhookBot implements BotsSender {
             log.debug("{} failed sending SendPhotoMessage!", secretName);
         }
     }
-
+    @Override
     public void sendMessage(SendMessage sendMessage) {
         log.debug("{} get SendTextMessage!", secretName);
         try {
@@ -85,7 +84,6 @@ public class AkhmatovaBot extends TelegramWebhookBot implements BotsSender {
             log.debug("{} failed sending SendTextMessage!", secretName);
         }
     }
-
     @Override
     public void sendSticker(SendSticker sendSticker) {
         log.debug("{} get SendTextMessage!", secretName);
@@ -97,7 +95,6 @@ public class AkhmatovaBot extends TelegramWebhookBot implements BotsSender {
             log.debug("{} failed sending SendTextMessage!", secretName);
         }
     }
-
     public boolean isBotsStarting(String UserId) {
         SendMessage checkMessage = new SendMessage();
         checkMessage.setText("Проверка");

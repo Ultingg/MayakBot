@@ -9,14 +9,19 @@ import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import ru.kumkuat.application.GameModule.Abstract.TelegramWebhookCommandBot;
 import ru.kumkuat.application.GameModule.Bot.MarshakBot;
 import ru.kumkuat.application.GameModule.Service.BGUserService;
 import ru.kumkuat.application.GameModule.Service.UserService;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Slf4j
 @Service
-public class PlayMarathonCommand extends BotCommand {
+public class PlayMarathonCommand extends BotCommand implements IListenerSupport {
 
+    private final List<TelegramWebhookCommandBot> listeners = new ArrayList<>();
     private final UserService userService;
     private final BGUserService bgUserService;
     @Autowired
@@ -58,8 +63,7 @@ public class PlayMarathonCommand extends BotCommand {
                 if (userService.validateUsersAndBGUsers(username)) {
                     if (bgUserService.isItTimeToStart(username)) {
                         userService.setUserPayment(userId, true);
-                        marshakBot.getPlayCommand().execute(absSender,user,chat,arguments);
-
+                        InvokePlayCommand(user, chat, arguments);
                     } else {
                         String message = bgUserService.getTimeStartMessageForUser(username);
                         replyMessage.setText(message);
@@ -93,5 +97,16 @@ public class PlayMarathonCommand extends BotCommand {
 
     private boolean isUserIsBGUser(User user) {
         return bgUserService.isBGUserExistByUsername(user.getUserName());
+    }
+
+    @Override
+    public void addListener(TelegramWebhookCommandBot telegramWebhookCommandBot) {
+        listeners.add(telegramWebhookCommandBot);
+    }
+    private void InvokePlayCommand(User user, Chat chat, String[] arguments) {
+        for (var bot :
+                listeners) {
+            bot.InvokeCommand("play", user, chat, arguments);
+        }
     }
 }

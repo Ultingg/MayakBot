@@ -8,10 +8,7 @@ import org.telegram.telegrambots.extensions.bots.commandbot.commands.ICommandReg
 import org.telegram.telegrambots.meta.api.methods.AnswerPreCheckoutQuery;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
-import org.telegram.telegrambots.meta.api.objects.Message;
-import org.telegram.telegrambots.meta.api.objects.MessageEntity;
-import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.*;
 import org.telegram.telegrambots.meta.api.objects.payments.PreCheckoutQuery;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -109,6 +106,16 @@ public abstract class TelegramWebhookCommandBot extends TelegramWebhookBot imple
             }
         }
         return processNonCommandUpdate(update);
+    }
+
+    public void InvokeCommand(String commandName, User user, Chat chat , String[] arguments){
+        if(isCommand(commandName)){
+            var command = getRegisteredCommand(commandName);
+            Message message = new Message();
+            message.setFrom(user);
+            message.setChat(chat);
+            command.processMessage(this, message, arguments);
+        }
     }
 
     public boolean isCallbackQueryHasCommand(CallbackQuery callbackQuery) {
