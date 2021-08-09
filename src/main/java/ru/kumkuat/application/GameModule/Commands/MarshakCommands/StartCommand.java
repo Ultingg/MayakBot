@@ -124,10 +124,10 @@ public class StartCommand extends BotCommand {
             Button21.setCallbackData("play");
             keyboardButtonsRow2.add(Button21);
             List<InlineKeyboardButton> keyboardButtonsRow3 = new ArrayList<>();
-            var Button31 = new InlineKeyboardButton();
-            Button31.setText("Иду на спектакль 31 июля");
-            Button31.setCallbackData("play_marathon");
-            keyboardButtonsRow3.add(Button31);
+            //var Button31 = new InlineKeyboardButton();
+            //Button31.setText("Иду на спектакль 31 июля");
+            //Button31.setCallbackData("play_marathon");
+            //keyboardButtonsRow3.add(Button31);
 
             List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
             rowList.add(keyboardButtonsRow1);
@@ -142,6 +142,27 @@ public class StartCommand extends BotCommand {
             replyMessage.enableHtml(true);
             replyMessage.setText("Нажми, когда будешь готов!");
             replyMessage.setReplyMarkup(inlineKeyboardMarkup);
+            execute(absSender, replyMessage, user);
+
+            replyMessage = new SendMessage();
+            replyMessage.setChatId(chat.getId().toString());
+            replyMessage.enableHtml(true);
+            replyMessage.setText("Если у тебя возникли какие-то трудности, воспользуйстя командой /help. \n" +
+                    "Мы постараемся помочь.");
+            execute(absSender, replyMessage, user);
+
+            replyMessage = new SendMessage();
+            replyMessage.setChatId(chat.getId().toString());
+            replyMessage.enableHtml(true);
+            replyMessage.setText("Или ты всегда можешь написать нам на почту. \n" +
+                    "teatr.prospektspb@gmail.com");
+            execute(absSender, replyMessage, user);
+
+            replyMessage = new SendMessage();
+            replyMessage.setChatId(chat.getId().toString());
+            replyMessage.enableHtml(true);
+            replyMessage.setText("Всю информацию о нас можно найти в группе: \n" +
+                    "https://vk.com/prospektspb");
             execute(absSender, replyMessage, user);
 
 //            helpCommand.execute(absSender, user, chat, arguments);
