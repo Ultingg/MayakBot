@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramWebhookBot;
 import org.telegram.telegrambots.meta.api.methods.updates.SetWebhook;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.kumkuat.application.GameModule.Abstract.TelegramWebhookCommandBot;
 import ru.kumkuat.application.GameModule.Bot.*;
@@ -59,45 +58,25 @@ public class BotController {
         }
     }
 
-    public void resolveUpdatesFromSimpleListener(Message updateMessage) {
-        updateValidationService.registerUser(updateMessage.getFrom());
-        User user = userService.getUserByTelegramId(updateMessage.getFrom().getId().longValue());
-        if (!user.isAdmin()
-                && !updateMessage.getChat().getType().equals("private")
-                && !commandChecker(updateMessage)) {
+    public void resolveUpdatesFromSimpleLIstner(Message updateMessage) {
+        if (userService.IsUserExist(updateMessage.getFrom().getId().longValue()) &&
+                !userService.getUserByTelegramId(updateMessage.getFrom().getId().longValue()).isAdmin()) {
             Thread myThready = new Thread(new CallBotResponse(updateMessage));
             myThready.start();
         }
     }
 
-    public void resolveUpdatesFromAdminListener(Message updateMessage) {
-        updateValidationService.registerUser(updateMessage.getFrom());
-        if (updateMessage.hasText()) {
-            if (updateMessage.getChat().getType().equals("private")) {
-                if (commandChecker(updateMessage)) {
-                    commandExecute(updateMessage);
-                } else {
-                    User user = userService.getUserByTelegramId(updateMessage.getFrom().getId().longValue());
-                    if ((user.isPlaying() &&
-                            !telegramChatService.isUserAlreadyGetChat(user.getTelegramUserId()))) {
-                        Thread myThready = new Thread(new CallBotResponse(updateMessage));
-                        myThready.start();
-                    }
-                }
+    public void resolveUpdatesFromAdminLIstner(Message updateMessage) {
+        User user;
+        if (userService.IsUserExist(updateMessage.getFrom().getId().longValue())) {
+            user = userService.getUserByTelegramId(updateMessage.getFrom().getId().longValue());
+            if (commandChecker(updateMessage) ||
+                    (user.isPlaying() &&
+                            !telegramChatService.isUserAlreadyPlaying(user.getTelegramUserId()))) {
+                Thread myThready = new Thread(new CallBotResponse(updateMessage));
+                myThready.start();
             }
         }
-    }
-
-    public void resolvePerCheckoutQuery(Update update) {
-        TelegramWebhookCommandBot marshak = (MarshakBot) botCollection.stream().filter(bot -> bot instanceof MarshakBot).findFirst().get();
-        marshak.onWebhookUpdateReceived(update);
-    }
-    public void resolveCallbackQueryFromAdminListener(Update update) {
-        var marshak = (MarshakBot) botCollection.stream().filter(bot -> bot instanceof MarshakBot).findFirst().get();
-        var user = update.getCallbackQuery().getMessage().getFrom();
-        user.setId(user.getId().equals(marshak.getId()) ? update.getCallbackQuery().getMessage().getChatId().intValue() : user.getId());
-        updateValidationService.registerUser(update.getCallbackQuery().getMessage().getFrom());
-        marshak.onWebhookUpdateReceived(update);
     }
 
     public void responseResolver(List<ResponseContainer> responseContainers) {
@@ -176,7 +155,6 @@ public class BotController {
         if (responseContainer.hasText()) {
             if (telegramWebhookBot.isCommand(responseContainer.getSendMessage().getText())) {
                 var command = telegramWebhookBot.getRegisteredCommand(responseContainer.getSendMessage().getText());
-                //Не понял зачем это в аргументы пихать
                 String[] arguments = new String[]{responseContainer.getMessage().getText()};
                 var message = responseContainer.getMessage();
                 message.setText(responseContainer.getSendMessage().getText());

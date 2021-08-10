@@ -52,13 +52,13 @@ public class ResponseService {
             Trigger sceneTrigger = scene.getTrigger();
             String chatId = message.getChatId().toString();
 
-                if (checkIncomingMessage(message, sceneTrigger)) {
-                    responseContainers = ReceiveNextReplies(chatId, userId, message);                 //вернуть такой ответ
-                } else {
-                    if (!isTypeIncommingMessageEqualTriggerType(message, sceneTrigger)) {
-                        responseContainers = List.of(configureWrongTriggerMessage(chatId, userId));
-                    }
+            if (checkIncomingMessage(message, sceneTrigger)) {
+                responseContainers = ReceiveNextReplies(chatId, userId, message);                 //вернуть такой ответ
+            } else {
+                if (!isTypeIncommingMessageEqualTriggerType(message, sceneTrigger)) {
+                    responseContainers = List.of(configureWrongTriggerMessage(chatId, userId));
                 }
+            }
 
         }
         return responseContainers;
