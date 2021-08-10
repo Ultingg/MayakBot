@@ -2,18 +2,15 @@ package ru.kumkuat.application.GameModule.Service;
 
 import com.vdurmont.emoji.EmojiParser;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.*;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Location;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import ru.kumkuat.application.GameModule.Bot.MarshakBot;
 import ru.kumkuat.application.GameModule.Collections.Reply;
 import ru.kumkuat.application.GameModule.Collections.ResponseContainer;
 import ru.kumkuat.application.GameModule.Collections.Scene;
 import ru.kumkuat.application.GameModule.Collections.Trigger;
-import ru.kumkuat.application.GameModule.Commands.MarshakCommands.KickCommand;
 import ru.kumkuat.application.GameModule.Models.Geolocation;
 import ru.kumkuat.application.GameModule.Models.User;
 
@@ -24,105 +21,53 @@ import java.util.List;
 @Slf4j
 @Service
 public class ResponseService {
-
-    @Autowired
-    private MarshakBot marshakBot;
-    @Autowired
-    private KickCommand kickAllCommand;
-
     private final SceneService sceneService;
-    private final TelegramChatService telegramChatService;
     private final PictureService pictureService;
     private final AudioService audioService;
-//    private final BotController botController;
     private final GeolocationDatabaseService geolocationDatabaseService;
     private final TriggerService triggerService;
     private final UserService userService;
     private final StickerService stickerService;
 
-    public ResponseService(SceneService sceneService, TelegramChatService telegramChatService, PictureService pictureService,
-                           AudioService audioService, /*BotController botController,*/
+    public ResponseService(SceneService sceneService, PictureService pictureService,
+                           AudioService audioService,
                            GeolocationDatabaseService geolocationDatabaseService,
                            TriggerService triggerService, UserService userService, StickerService stickerService) {
         this.sceneService = sceneService;
-        this.telegramChatService = telegramChatService;
         this.pictureService = pictureService;
         this.audioService = audioService;
-//        this.botController = botController;
         this.geolocationDatabaseService = geolocationDatabaseService;
         this.triggerService = triggerService;
-
         this.userService = userService;
         this.stickerService = stickerService;
     }
 
-    //    public void messageReceiver2(Message message, boolean isNavigationCommand) {
-//        Long userId = Long.valueOf(message.getFrom().getId());
-//        if (userService.IsUserExist(userId)) {
-//            User user = userService.getUserByTelegramId(userId);
-//            Long sceneId = getSceneId(message.getFrom().getId());
-//            if(user.getSceneId() <= sceneService.count() - 1){
-//                Scene scene = sceneService.getScene(sceneId);
-//                Trigger sceneTrigger = scene.getTrigger();
-//                String chatId = message.getChatId().toString();
-//                try {
-//                    if (isNavigationCommand) {    //сделал отдельно чтобы не проводить проверку checkIncomingMessage лишний раз
-//                        ReplyResolver(chatId, scene, userId, message);
-//                        userService.incrementSceneId(userId);
-//                    } else {
-//                        if (checkIncomingMessage(message, sceneTrigger)) {
-//                            ReceiveNextReplies(chatId, userId, message);                 //вернуть такой ответ
-//                        } else {
-//                            if (!isTypeIncommingMessageEqualTriggerType(message, sceneTrigger)) {
-//                                ResponseContainer wrongAnswerResponse = configureWrongTriggerMessage(chatId);
-//                                botController.responseResolver(wrongAnswerResponse);                              //вернуть такой ответ
-//                            }
-//                        }
-//                    }
-////            } catch (IncomingMessageException exception) {
-////                exception.printStackTrace();
-////                log.debug("Incoming message Exception!");}
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
-//    }
     public List<ResponseContainer> messageReceiver(Message message, boolean isNavigationCommand) {
         List<ResponseContainer> responseContainers = new ArrayList<>();
         Long userId = Long.valueOf(message.getFrom().getId());
-        if (userService.IsUserExist(userId)) { //была ли проверка до этого???
-            User user = userService.getUserByTelegramId(userId);
-            Long sceneId = getSceneId(message.getFrom().getId());
-            if (user.getSceneId() <= sceneService.count() - 1) {
-                Scene scene = sceneService.getScene(sceneId);
-                Trigger sceneTrigger = scene.getTrigger();
-                String chatId = message.getChatId().toString();
-//                try {
-                if (isNavigationCommand) {    //сделал отдельно чтобы не проводить проверку checkIncomingMessage лишний раз
-                    responseContainers = ReplyResolver(chatId, scene, userId, message);
-//                        userService.incrementSceneId(userId);
+        User user = userService.getUserByTelegramId(userId);
+        Long sceneId = getSceneId(message.getFrom().getId());
+        if (user.getSceneId() <= sceneService.count() - 1) {
+            Scene scene = sceneService.getScene(sceneId);
+            Trigger sceneTrigger = scene.getTrigger();
+            String chatId = message.getChatId().toString();
+            if (isNavigationCommand) {    //сделал отдельно чтобы не проводить проверку checkIncomingMessage лишний раз
+                responseContainers = ReplyResolver(chatId, scene, userId, message);
+            } else {
+                if (checkIncomingMessage(message, sceneTrigger)) {
+                    responseContainers = ReceiveNextReplies(chatId, userId, message);                 //вернуть такой ответ
                 } else {
-                    if (checkIncomingMessage(message, sceneTrigger)) {
-                        responseContainers = ReceiveNextReplies(chatId, userId, message);                 //вернуть такой ответ
-                    } else {
-                        if (!isTypeIncommingMessageEqualTriggerType(message, sceneTrigger)) {
-                            responseContainers = List.of(configureWrongTriggerMessage(chatId, userId));
-//                            ResponseContainer  wrongAnswerResponse = configureWrongTriggerMessage(chatId);
-//                            botController.responseResolver(wrongAnswerResponse);                              //вернуть такой ответ
-                        }
+                    if (!isTypeIncommingMessageEqualTriggerType(message, sceneTrigger)) {
+                        responseContainers = List.of(configureWrongTriggerMessage(chatId, userId));
                     }
                 }
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
             }
         }
         return responseContainers;
     }
 
     private boolean isTypeIncommingMessageEqualTriggerType(Message message, Trigger sceneTrigger) {
-        if (!isUserTriggered(message)) {
+        if (isUserNotTriggered(message)) {
             if (message.hasPhoto()) {
                 return sceneTrigger.isHasPicture();
             }
@@ -134,32 +79,15 @@ public class ResponseService {
             }
         }
         return true;
-
     }
 
     public List<ResponseContainer> ReceiveNextReplies(String chatId, Long userTelegramId, Message message) {
-//        try {
-            User user = userService.getUserByTelegramId(userTelegramId);
-//            if(user.getSceneId() <= sceneService.count() - 1){
-            Scene scene = sceneService.getScene(getSceneId(userTelegramId.intValue()));
-            return ReplyResolver(chatId, scene, userTelegramId, message);
-            //  userService.incrementSceneId(userTelegramId);
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+        Scene scene = sceneService.getScene(getSceneId(userTelegramId.intValue()));
+        return ReplyResolver(chatId, scene, userTelegramId, message);
     }
 
     private boolean checkIncomingMessage(Message message, Trigger trigger) {
-//        boolean result;
-
-        return !isUserTriggered(message) && checkTriggerOfIncomingMessage(message, trigger);
-//        if (!isUserTriggered(message)) {
-//            result = checkTriggerOfIncomingMessage(message, trigger);
-//        } else {
-//            result = false;
-//        }
-//        return result;
+        return isUserNotTriggered(message) && checkTriggerOfIncomingMessage(message, trigger);
     }
 
     private boolean checkTriggerOfIncomingMessage(Message message, Trigger sceneTrigger) {
@@ -194,14 +122,12 @@ public class ResponseService {
             responseContainer = configureMessage(reply, chatId, userId);
             responseContainer.setMessage(message);
             responseContainers.add(responseContainer);
-            //botController.responseResolver(responseContainer);
         }
-//        userService.setUserTrigger(userId, false);
         return responseContainers;
     }
 
 
-    private ResponseContainer configureWrongTriggerMessage(String chatId, Long userId ) {
+    private ResponseContainer configureWrongTriggerMessage(String chatId, Long userId) {
         String wrongAnswerMessage = "Мне кажется, я вас не совсем понимаю.";
         ResponseContainer responseContainer = new ResponseContainer();
         SendMessage sendMessage = new SendMessage();
@@ -210,16 +136,15 @@ public class ResponseService {
         responseContainer.setSendMessage(sendMessage);
         responseContainer.setBotName("Mayakovsky"); //дежурный по стране
         responseContainer.setTimingOfReply(100);
-        responseContainer.isWrongMessage();
+        responseContainer.setWrongMessage(true);
         responseContainer.setUserId(userId);
         return responseContainer;
     }
 
-
-    private boolean isUserTriggered(Message message) {
+    private boolean isUserNotTriggered(Message message) {
         Long userId = Long.valueOf(message.getFrom().getId());
         User user = userService.getUserByTelegramId(userId);
-        return user.isTriggered();
+        return !user.isTriggered();
     }
 
     private void triggUser(Message message) {
@@ -227,9 +152,7 @@ public class ResponseService {
         User user = userService.getUserByTelegramId(userId);
         user.setTriggered(true);
         userService.setUserTrigger(userId, true);
-
     }
-
 
     private synchronized ResponseContainer configureMessage(Reply reply, String chatId, Long userId) {
         ResponseContainer responseContainer = new ResponseContainer();

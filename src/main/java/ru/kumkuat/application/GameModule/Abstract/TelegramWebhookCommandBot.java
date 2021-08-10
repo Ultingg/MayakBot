@@ -10,13 +10,13 @@ import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import org.telegram.telegrambots.meta.api.objects.MessageEntity;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.payments.PreCheckoutQuery;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Map;
 import java.util.function.BiConsumer;
 
 public abstract class TelegramWebhookCommandBot extends TelegramWebhookBot implements ICommandRegistry {
@@ -116,8 +116,9 @@ public abstract class TelegramWebhookCommandBot extends TelegramWebhookBot imple
     }
 
     public boolean isCommand(String message) {
+        String convertedMessage = message.replace("/","");
         for (var command : this.getRegisteredCommands()) {
-            if (command.getCommandIdentifier().equals(message)) {
+            if (command.getCommandIdentifier().equals(convertedMessage)) {
                 return true;
             }
         }

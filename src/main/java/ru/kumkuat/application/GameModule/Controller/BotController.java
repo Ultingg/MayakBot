@@ -45,7 +45,6 @@ public class BotController {
 
     }
     //beanPreconstruct??? or to bots
-
     private void webhookSetting() {
         try {
             SetWebhook setWebhook = new SetWebhook();
@@ -56,74 +55,28 @@ public class BotController {
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
-
     }
-
-
-//    public boolean IsBotsStarting(String UserId){
-//        SendMessage checkMessage = new SendMessage();
-//        checkMessage.setText("Проверка");
-//        harms.execute();
-//    }
 
     public void resolveUpdatesFromSimpleLIstner(Message updateMessage) {
         if (userService.IsUserExist(updateMessage.getFrom().getId().longValue()) &&
                 !userService.getUserByTelegramId(updateMessage.getFrom().getId().longValue()).isAdmin()) {
             Thread myThready = new Thread(new CallBotResponse(updateMessage));
-
             myThready.start();
         }
     }
 
     public void resolveUpdatesFromAdminLIstner(Message updateMessage) {
-        User user = null;
-        //регистрация
-
-
+        User user;
         if (userService.IsUserExist(updateMessage.getFrom().getId().longValue())) {
             user = userService.getUserByTelegramId(updateMessage.getFrom().getId().longValue());
-
-            if (user.isPlaying() && !telegramChatService.isUserAlreadyPlaying(user.getTelegramUserId())) {
+            if (commandChecker(updateMessage) ||
+                    (user.isPlaying() &&
+                            !telegramChatService.isUserAlreadyPlaying(user.getTelegramUserId()))) {
                 Thread myThready = new Thread(new CallBotResponse(updateMessage));
                 myThready.start();
             }
         }
     }
-
-
-    // удалить
-//    public void responseResolver(ResponseContainer responseContainer) {
-//        String botName = responseContainer.getBotName();
-//        int time = responseContainer.getTimingOfReply();
-//        try {
-//            Thread.currentThread().sleep(time);
-//        } // тут какая-то ахенея
-//        catch (InterruptedException e) {
-//            log.debug("Thread was Interrupted while waiting timing of reply.");
-//            e.getStackTrace();
-//        }
-//        if (botName.equals("Marshak")) {
-//            sendResponseToUserInPrivate(responseContainer, marshakBot);
-//            log.debug("BotController processed reply of {}.", "Marshak");
-//        } else {
-//            if (botName.equals("Mayakovsky")) {
-//                sendResponseToUser(responseContainer, mayakBot);
-//                log.debug("BotController processed reply of {}.", "Myakovskiy");
-//            }
-//            if (botName.equals("Akhmatova")) {
-//                sendResponseToUser(responseContainer, akhmatovaBot);
-//                log.debug("BotController processed reply of {}.", "Akhmatova");
-//            }
-//            if (botName.equals("Brodskiy")) {
-//                sendResponseToUser(responseContainer, brodskiy);
-//                log.debug("BotController processed reply of {}.", "Brodskiy");
-//            }
-//            if (botName.equals("Harms")) {
-//                sendResponseToUser(responseContainer, harms);
-//                log.debug("BotController processed reply of {}.", "Harms");
-//            }
-//        }
-//    }
 
     public void responseResolver(List<ResponseContainer> responseContainers) {
         if (!responseContainers.isEmpty()) {
@@ -235,7 +188,7 @@ public class BotController {
         public void run() {
             System.out.println("Привет из побочного потока!");
             Message incomingMessage = message;
-            if (incomingMessage != null && commandChecker(incomingMessage)) {
+            if (incomingMessage.hasText() && commandChecker(incomingMessage)) {
                 log.debug("Received throw to Marshak.");
                 responseResolver(responseService.messageReceiver(incomingMessage, navigationCommandCheck(incomingMessage)));
             } else {

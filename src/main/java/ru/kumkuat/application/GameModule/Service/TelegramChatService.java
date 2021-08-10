@@ -108,6 +108,8 @@ public class TelegramChatService {
         return userchat.orElseThrow(Exception::new);
     }
 
+
+
     public Long getUserTelegramIdByChatId(Long chatId) {
         return telegramChatRepository.getTelegramChatByChatId(chatId).getUserId();
     }
