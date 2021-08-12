@@ -18,10 +18,6 @@ import ru.kumkuat.application.GameModule.Service.UserService;
 public class SetSceneNumberCommand extends BotCommand {
 
     private final UserService userService;
-    @Autowired
-    private TelegramChatService telegramChatService;
-    @Autowired
-    private UserRepository userRepository;
 
     public SetSceneNumberCommand(UserService userService) {
         super("/set_scene_number", "Установить номер сцены пользователю");
@@ -44,8 +40,7 @@ public class SetSceneNumberCommand extends BotCommand {
                         var player = userService.getUserByTelegramId(userId);
                         player.setSceneId(sceneId);
                         player.setTriggered(false);
-                        userRepository.save(player);
-
+                        userService.saveUser(player);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

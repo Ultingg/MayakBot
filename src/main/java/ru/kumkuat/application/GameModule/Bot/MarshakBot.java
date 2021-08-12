@@ -137,25 +137,25 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
         calendar_midnight.set(Calendar.HOUR_OF_DAY, TimeOffset);
         calendar_midnight.set(Calendar.MINUTE, 0);
         calendar_midnight.set(Calendar.SECOND, 0);
-        calendar_midnight.add(Calendar.DAY_OF_WEEK,1);
+        calendar_midnight.add(Calendar.DAY_OF_WEEK, 1);
 
         long timeDelay = Math.abs(calendar_curr.getTime().getTime() - calendar_midnight.getTime().getTime());
 
         Timer timer = new Timer(true);
         TimerService timerService = new TimerService();
 
-        timerService.setTimerOperation(() -> TimerOperation());
+        //timerService.setTimerOperation(() -> TimerOperation());
         timer.scheduleAtFixedRate(timerService, timeDelay, 24 * 60 * 60 * 1000);
 
-        int hours = (int)(timeDelay / 1000) / (60 * 60);
-        int minutes = (int)(((timeDelay / 1000) % (60d * 60d)) / 60);
+        int hours = (int) (timeDelay / 1000) / (60 * 60);
+        int minutes = (int) (((timeDelay / 1000) % (60d * 60d)) / 60);
 
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(telegramChatService.getAdminChatId());
         sendMessage = new SendMessage();
         sendMessage.setChatId(telegramChatService.getAdminChatId());
         sendMessage.setText("Очистка беседок через: " + hours + " часов " + minutes + " минут");
-        this.sendMessage(sendMessage);
+        //this.sendMessage(sendMessage);
     }
 
     @Override
@@ -182,6 +182,13 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
         register(sendMailCommand);
         register(inputXSLXCommand);
         register(validationReportCommand);
+
+        for (var command :
+                getRegisteredCommands()) {
+            if (command instanceof IListenerSupport) {
+                ((IListenerSupport) command).addListener(this);
+            }
+        }
     }
 
     @Override
@@ -226,6 +233,7 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
         }
     }
 
+    @Override
     public void sendLocation(SendLocation sendLocation) {
         log.debug("{} get SendLocationMessage!", secretName);
         try {
@@ -237,6 +245,7 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
         }
     }
 
+    @Override
     public void sendVoice(SendVoice sendVoice) {
         log.debug("{} get SendVoiceMessage!", secretName);
         try {
@@ -248,6 +257,7 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
         }
     }
 
+    @Override
     public void sendPicture(SendPhoto sendPhoto) {
         log.debug("{} get SendPhotoMessage!", secretName);
         try {
@@ -259,6 +269,7 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
         }
     }
 
+    @Override
     public void sendMessage(SendMessage sendMessage) {
         log.debug("{} get SendTextMessage!", secretName);
         try {
@@ -282,6 +293,7 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
             log.debug("{} failed sending SendTextMessage!", secretName);
         }
     }
+
     public void sendDocument(SendDocument sendDocument) {
         log.debug("{} get SendDocument!", secretName);
         try {

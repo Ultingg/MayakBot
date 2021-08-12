@@ -125,13 +125,13 @@ public class BGUserService {
 //                .map(element->element.getTelegramUserName())
 //                .collect(Collectors.toList());
         List<String> usersNames = users.stream()
-                .map(element->element.getName())
+                .map(element->element.getName().toLowerCase())
                 .collect(Collectors.toList());
 //        List<String> diffNames = bgUsersNames.stream()
 //                .filter(element -> !usersNames.contains(element))
 //                .collect(Collectors.toList());
         List<BGUser> diffBGUsers = bgUsers.stream()
-                .filter(element -> !usersNames.contains(element.getTelegramUserName()))
+                .filter(element -> !usersNames.contains(element.getTelegramUserName().toLowerCase()))
                 .collect(Collectors.toList());
         return diffBGUsers;
     }

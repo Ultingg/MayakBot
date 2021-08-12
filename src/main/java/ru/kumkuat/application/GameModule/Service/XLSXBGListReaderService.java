@@ -109,6 +109,7 @@ public class XLSXBGListReaderService {
                         SetFieldValue(BGUser.class, newBGUser, prop, cellValue);
                     }
                     newBGUser.setIsNotified(false);
+                    newBGUser.setTelegramUserName(convertTelegramUserName(newBGUser.getTelegramUserName()));
                     newBGUser.setStartWith(convertTelegramUserName(newBGUser.getStartWith()));
                     if (!bgUserService.isBGUserExistByUsername(newBGUser.getTelegramUserName())) {
                         bgUserService.setBGUserToDB(newBGUser);
