@@ -10,13 +10,8 @@ public class UpdateValidationService {
     @Autowired
     private UserService userService;
 
-    public void registerUser(User user) {
-        if (!userService.IsUserExist(user.getId().longValue())) {
-            try {
-                userService.setUserIntoDB(user);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+    public boolean validateUserForSimpleListener(Message updateMessage) {
+        return userService.IsUserExist(updateMessage.getFrom().getId().longValue())&&
+                !userService.getUserByTelegramId(updateMessage.getFrom().getId().longValue()).isAdmin();
     }
 }

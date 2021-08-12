@@ -58,15 +58,14 @@ public class BotController {
         }
     }
 
-    public void resolveUpdatesFromSimpleLIstner(Message updateMessage) {
-        if (userService.IsUserExist(updateMessage.getFrom().getId().longValue()) &&
-                !userService.getUserByTelegramId(updateMessage.getFrom().getId().longValue()).isAdmin()) {
+    public void resolveUpdatesFromSimpleListener(Message updateMessage) {
+        if (updateValidationService.validateUserForSimpleListener(updateMessage)) {
             Thread myThready = new Thread(new CallBotResponse(updateMessage));
             myThready.start();
         }
     }
 
-    public void resolveUpdatesFromAdminLIstner(Message updateMessage) {
+    public void resolveUpdatesFromAdminListener(Message updateMessage) {
         User user;
         if (userService.IsUserExist(updateMessage.getFrom().getId().longValue())) {
             user = userService.getUserByTelegramId(updateMessage.getFrom().getId().longValue());
@@ -96,14 +95,14 @@ public class BotController {
                 }
                 if (botName.equals("Marshak")) {
                     var marshak = botCollection.stream().filter(bot -> bot.getBotUsername().equals(botName)).findFirst();
-                    if (marshak.isPresent()) {
+                    if (!marshak.isEmpty()) {
                         sendResponseToUserInPrivate(responseContainer, (TelegramWebhookCommandBot) marshak.get());
                         log.debug("BotController processed reply of {}.", "Marshak");
                     }
                 } else {
                     var botReplier = botCollection.stream().filter(bot -> bot.getBotUsername().equals(botName)).findFirst();
-                    if (botReplier.isPresent()) {
-                        sendResponseToUser(responseContainer, (BotsSender) botReplier.get());
+                    if (!botReplier.isEmpty()) {
+                        sendResponseToUser(responseContainer, (BotsSender)botReplier.get());
                         log.debug("BotController processed reply of {}.", botName);
                     }
                 }
