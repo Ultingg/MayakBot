@@ -20,16 +20,16 @@ import ru.kumkuat.application.GameModule.Service.UserService;
 @Service
 public class SendChatCommand extends BotCommand {
 
-    private final UserService userService;
+    @Autowired
+    private UserService userService;
     @Autowired
     private TelegramChatService telegramChatService;
     @Autowired
     private MarshakBot marshakBot;
 
 
-    public SendChatCommand(UserService userService) {
+    public SendChatCommand() {
         super("/sendchat", "Направить пользователю ссылку на свободный чат");
-        this.userService = userService;
     }
 
     @Override

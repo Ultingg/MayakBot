@@ -1,7 +1,9 @@
 package ru.kumkuat.application.GameModule.Controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.bots.TelegramWebhookBot;
 import org.telegram.telegrambots.meta.api.methods.updates.SetWebhook;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -11,61 +13,59 @@ import ru.kumkuat.application.GameModule.Collections.ResponseContainer;
 import ru.kumkuat.application.GameModule.Models.User;
 import ru.kumkuat.application.GameModule.Service.ResponseService;
 import ru.kumkuat.application.GameModule.Service.TelegramChatService;
+import ru.kumkuat.application.GameModule.Service.UpdateValidationService;
 import ru.kumkuat.application.GameModule.Service.UserService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
 @Component
 public class BotController {
 
-    private final Harms harms;
-    private final MayakBot mayakBot;
-    private final AkhmatovaBot akhmatovaBot;
-    private final Brodskiy brodskiy;
-    private final MarshakBot marshakBot;
+    private final List<TelegramWebhookBot> botCollection;
     private final ResponseService responseService;
-    private final TelegramWebhookCommandBot telegramWebhookCommandBot;
     private final UserService userService;
     private final TelegramChatService telegramChatService;
+    @Autowired
+    private UpdateValidationService updateValidationService;
 
     public BotController(MarshakBot marshakBot, Harms harms, MayakBot mayakBot, AkhmatovaBot akhmatovaBot,
-                         Brodskiy brodskiy, ResponseService responseService, TelegramWebhookCommandBot telegramWebhookCommandBot, UserService userService, TelegramChatService telegramChatService) {
-        this.harms = harms;
-        this.mayakBot = mayakBot;
-        this.akhmatovaBot = akhmatovaBot;
-        this.brodskiy = brodskiy;
-        this.marshakBot = marshakBot;
+                         Brodskiy brodskiy, ResponseService responseService, UserService userService, TelegramChatService telegramChatService) {
         this.responseService = responseService;
-        this.telegramWebhookCommandBot = telegramWebhookCommandBot;
         this.userService = userService;
         this.telegramChatService = telegramChatService;
 
-        webhookSetting();
+        botCollection = new ArrayList<>();
+        botCollection.add(harms);
+        botCollection.add(mayakBot);
+        botCollection.add(akhmatovaBot);
+        botCollection.add(brodskiy);
+        botCollection.add(marshakBot);
 
+        webhookSetting(brodskiy);
+        webhookSetting(marshakBot);
     }
+
     //beanPreconstruct??? or to bots
-    private void webhookSetting() {
+    private void webhookSetting(TelegramWebhookBot telegramWebhookBot) {
         try {
             SetWebhook setWebhook = new SetWebhook();
-            setWebhook.setUrl(brodskiy.getBotPath());
-            brodskiy.execute(setWebhook);
-            setWebhook.setUrl(marshakBot.getBotPath());
-            marshakBot.execute(setWebhook);
+            setWebhook.setUrl(telegramWebhookBot.getBotPath());
+            telegramWebhookBot.execute(setWebhook);
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
     }
 
-    public void resolveUpdatesFromSimpleLIstner(Message updateMessage) {
-        if (userService.IsUserExist(updateMessage.getFrom().getId().longValue()) &&
-                !userService.getUserByTelegramId(updateMessage.getFrom().getId().longValue()).isAdmin()) {
+    public void resolveUpdatesFromSimpleListener(Message updateMessage) {
+        if (updateValidationService.validateUserForSimpleListener(updateMessage)) {
             Thread myThready = new Thread(new CallBotResponse(updateMessage));
             myThready.start();
         }
     }
 
-    public void resolveUpdatesFromAdminLIstner(Message updateMessage) {
+    public void resolveUpdatesFromAdminListener(Message updateMessage) {
         User user;
         if (userService.IsUserExist(updateMessage.getFrom().getId().longValue())) {
             user = userService.getUserByTelegramId(updateMessage.getFrom().getId().longValue());
@@ -94,24 +94,16 @@ public class BotController {
                     e.getStackTrace();
                 }
                 if (botName.equals("Marshak")) {
-                    sendResponseToUserInPrivate(responseContainer, marshakBot);
-                    log.debug("BotController processed reply of {}.", "Marshak");
+                    var marshak = botCollection.stream().filter(bot -> bot.getBotUsername().equals(botName)).findFirst();
+                    if (!marshak.isEmpty()) {
+                        sendResponseToUserInPrivate(responseContainer, (TelegramWebhookCommandBot) marshak.get());
+                        log.debug("BotController processed reply of {}.", "Marshak");
+                    }
                 } else {
-                    if (botName.equals("Mayakovsky")) {
-                        sendResponseToUser(responseContainer, mayakBot);
-                        log.debug("BotController processed reply of {}.", "Myakovskiy");
-                    }
-                    if (botName.equals("Akhmatova")) {
-                        sendResponseToUser(responseContainer, akhmatovaBot);
-                        log.debug("BotController processed reply of {}.", "Akhmatova");
-                    }
-                    if (botName.equals("Brodskiy")) {
-                        sendResponseToUser(responseContainer, brodskiy);
-                        log.debug("BotController processed reply of {}.", "Brodskiy");
-                    }
-                    if (botName.equals("Harms")) {
-                        sendResponseToUser(responseContainer, harms);
-                        log.debug("BotController processed reply of {}.", "Harms");
+                    var botReplier = botCollection.stream().filter(bot -> bot.getBotUsername().equals(botName)).findFirst();
+                    if (!botReplier.isEmpty()) {
+                        sendResponseToUser(responseContainer, (BotsSender)botReplier.get());
+                        log.debug("BotController processed reply of {}.", botName);
                     }
                 }
             }
@@ -162,6 +154,7 @@ public class BotController {
         if (responseContainer.hasText()) {
             if (telegramWebhookBot.isCommand(responseContainer.getSendMessage().getText())) {
                 var command = telegramWebhookBot.getRegisteredCommand(responseContainer.getSendMessage().getText());
+                //Не понял зачем это в аргументы пихать
                 String[] arguments = new String[]{responseContainer.getMessage().getText()};
                 var message = responseContainer.getMessage();
                 message.setText(responseContainer.getSendMessage().getText());
@@ -200,7 +193,8 @@ public class BotController {
     }
 
     private boolean commandChecker(Message message) {
-        return telegramWebhookCommandBot.isCommand(message.getText());
+        return botCollection.stream().filter(bot -> bot instanceof TelegramWebhookCommandBot)
+                .anyMatch(bot -> ((TelegramWebhookCommandBot) bot).isCommand(message.getText()));
     }
 
     private boolean navigationCommandCheck(Message message) {

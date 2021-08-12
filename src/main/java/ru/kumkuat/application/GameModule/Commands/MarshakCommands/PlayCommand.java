@@ -19,7 +19,8 @@ import ru.kumkuat.application.GameModule.Service.UserService;
 @Service
 public class PlayCommand extends BotCommand {
 
-    private final UserService userService;
+    @Autowired
+    private UserService userService;
     @Autowired
     private TelegramChatService telegramChatService;
     @Autowired
@@ -35,9 +36,8 @@ public class PlayCommand extends BotCommand {
     @Autowired
     private SceneService sceneService;
 
-    public PlayCommand(UserService userService) {
+    public PlayCommand() {
         super("/play", "После этой команды начнется игра");
-        this.userService = userService;
     }
 
     @Override

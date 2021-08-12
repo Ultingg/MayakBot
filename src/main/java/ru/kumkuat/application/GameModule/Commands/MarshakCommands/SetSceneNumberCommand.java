@@ -17,11 +17,11 @@ import ru.kumkuat.application.GameModule.Service.UserService;
 @Service
 public class SetSceneNumberCommand extends BotCommand {
 
-    private final UserService userService;
+    @Autowired
+    private UserService userService;
 
-    public SetSceneNumberCommand(UserService userService) {
+    public SetSceneNumberCommand() {
         super("/set_scene_number", "Установить номер сцены пользователю");
-        this.userService = userService;
     }
 
     private long userId;

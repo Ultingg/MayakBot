@@ -25,7 +25,7 @@ public class UpdateController {
         if (update.hasMessage()
                 && isNotCommand(update.getMessage())
                 && !update.getMessage().getChat().getType().equals("private")) {     //проверка что Листнер видит update только в Беседке
-            botController.resolveUpdatesFromSimpleLIstner(update.getMessage());
+            botController.resolveUpdatesFromSimpleListener(update.getMessage());
         }
     }
 
@@ -34,7 +34,7 @@ public class UpdateController {
         if (update.hasMessage()
                 && Objects.equals(Long.valueOf(update.getMessage().getFrom().getId()), update.getMessage().getChatId())// проверка что Админ видит update только в личке
                 && isNotCommand(update.getMessage())) {
-            botController.resolveUpdatesFromAdminLIstner(update.getMessage());
+            botController.resolveUpdatesFromAdminListener(update.getMessage());
         } else {
             marshakBot.onWebhookUpdateReceived(update);
         }

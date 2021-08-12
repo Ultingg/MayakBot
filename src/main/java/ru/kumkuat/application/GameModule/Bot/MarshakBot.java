@@ -48,17 +48,9 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
     @Autowired
     private PayCommand payCommand;
     @Autowired
-    private ResetCommand resetCommand;
-    @Autowired
     private SaveChatCommand saveChatCommand;
     @Autowired
-    private NextSceneCommand nextSceneCommand;
-    @Autowired
-    private PreviousSceneCommand previousSceneCommand;
-    @Autowired
     private KickCommand kickAllCommand;
-    @Autowired
-    private SupportCommand supportCommand;
     @Autowired
     private StartCommand startCommand;
     @Autowired
@@ -168,12 +160,8 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
         register(playCommand);
         register(payCommand);
         register(playMarathonCommand);
-        register(resetCommand);
         register(saveChatCommand);
         register(kickAllCommand);
-        register(nextSceneCommand);
-        register(previousSceneCommand);
-        register(supportCommand);
         register(startCommand);
         register(helpCommand);
         register(sendChatCommand);
