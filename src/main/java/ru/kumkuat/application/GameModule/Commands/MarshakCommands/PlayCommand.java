@@ -117,7 +117,7 @@ public class PlayCommand extends BotCommand {
         replyMessage.setChatId(userId.toString());
         replyMessage.enableHtml(true);
         if (userService.IsUserExist(userId.longValue())) {
-            if (!telegramChatService.isUserAlreadyPlaying(userId) ) {
+            if (!telegramChatService.isUserAlreadyGetChat(userId) ) {
                 if (isBotsStarting(absSender, Long.valueOf(userId))) {
 
                     if(userService.getUserByTelegramId(userId).getSceneId() < 1) {

@@ -65,7 +65,7 @@ public class HelpCommand extends ManCommand {
                 reply += "юзер isTriggered: " + userdb.isTriggered() + "\n";
                 reply += "юзер hasPaying: " + userdb.isHasPay() + "\n";
 
-                if(telegramChatService.isUserAlreadyPlaying(userTelegeramId)){
+                if(telegramChatService.isUserAlreadyGetChat(userTelegeramId)){
                     var chatdb = telegramChatService.getChatByUserTelegramId(userTelegeramId);
                     reply += "чат телеграм id: " + chatdb.getUserId() + "\n";
                     reply += "чат id: " + chatdb.getId() + "\n";

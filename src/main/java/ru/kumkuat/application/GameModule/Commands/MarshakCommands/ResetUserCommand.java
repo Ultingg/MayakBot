@@ -10,8 +10,6 @@ import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.kumkuat.application.GameModule.Abstract.TelegramWebhookCommandBot;
-import ru.kumkuat.application.GameModule.Bot.MarshakBot;
-import ru.kumkuat.application.GameModule.Repository.UserRepository;
 import ru.kumkuat.application.GameModule.Service.TelegramChatService;
 import ru.kumkuat.application.GameModule.Service.TimerService;
 import ru.kumkuat.application.GameModule.Service.UserService;
@@ -43,7 +41,7 @@ public class ResetUserCommand extends BotCommand implements IListenerSupport {
             log.debug("Marshak");
             try {
                 userId = Long.valueOf(arguments[0]);
-                if (userService.IsUserExist(userId) && telegramChatService.isUserAlreadyPlaying(userId)) {
+                if (userService.IsUserExist(userId) && telegramChatService.isUserAlreadyGetChat(userId)) {
                     try {
                         var player = userService.getUserByTelegramId(userId);
                         //kickAllCommand.KickChatMember(marshakBot, userId);
