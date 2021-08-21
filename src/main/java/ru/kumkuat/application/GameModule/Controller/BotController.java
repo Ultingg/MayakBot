@@ -59,21 +59,28 @@ public class BotController {
     }
 
     public void resolveUpdatesFromSimpleListener(Message updateMessage) {
-        if (updateValidationService.validateUserForSimpleListener(updateMessage)) {
+        updateValidationService.registerUser(updateMessage.getFrom());
+        User user = userService.getUserByTelegramId(updateMessage.getFrom().getId().longValue());
+        if (!user.isAdmin()
+                && !updateMessage.getChat().getType().equals("private")
+                && !commandChecker(updateMessage)) {
             Thread myThready = new Thread(new CallBotResponse(updateMessage));
             myThready.start();
         }
     }
 
     public void resolveUpdatesFromAdminListener(Message updateMessage) {
-        User user;
-        if (userService.IsUserExist(updateMessage.getFrom().getId().longValue())) {
-            user = userService.getUserByTelegramId(updateMessage.getFrom().getId().longValue());
-            if (commandChecker(updateMessage) ||
-                    (user.isPlaying() &&
-                            !telegramChatService.isUserAlreadyPlaying(user.getTelegramUserId()))) {
-                Thread myThready = new Thread(new CallBotResponse(updateMessage));
-                myThready.start();
+        updateValidationService.registerUser(updateMessage.getFrom());
+        if (updateMessage.getChat().getType().equals("private")) {
+            if (commandChecker(updateMessage)) {
+                //Тут должно быть исполнение команд
+            } else {
+                User user = userService.getUserByTelegramId(updateMessage.getFrom().getId().longValue());
+                if ((user.isPlaying() &&
+                        !telegramChatService.isUserAlreadyGetChat(user.getTelegramUserId()))) {
+                    Thread myThready = new Thread(new CallBotResponse(updateMessage));
+                    myThready.start();
+                }
             }
         }
     }
@@ -102,7 +109,7 @@ public class BotController {
                 } else {
                     var botReplier = botCollection.stream().filter(bot -> bot.getBotUsername().equals(botName)).findFirst();
                     if (!botReplier.isEmpty()) {
-                        sendResponseToUser(responseContainer, (BotsSender)botReplier.get());
+                        sendResponseToUser(responseContainer, (BotsSender) botReplier.get());
                         log.debug("BotController processed reply of {}.", botName);
                     }
                 }

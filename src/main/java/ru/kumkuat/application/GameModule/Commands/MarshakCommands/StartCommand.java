@@ -52,9 +52,6 @@ public class StartCommand extends BotCommand {
 
             log.debug("Marshak ");
 
-            registerUser(user);
-
-
             InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
             var ListButtonCollections = new ArrayList<List<InlineKeyboardButton>>();
 
@@ -154,23 +151,7 @@ public class StartCommand extends BotCommand {
                     "teatr.prospektspb@gmail.com");
             execute(absSender, replyMessage, user);
 
-//            helpCommand.execute(absSender, user, chat, arguments);
         }
-    }
-
-    /**
-     * Registration of users.
-     * @param user
-     */
-    private void registerUser(User user) {
-        if (!userService.IsUserExist(user.getId().longValue())) {
-            try {
-                userService.setUserIntoDB(user);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
     }
 
     void execute(AbsSender sender, SendMessage message, User user) {
