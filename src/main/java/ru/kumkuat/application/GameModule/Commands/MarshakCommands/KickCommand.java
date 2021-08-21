@@ -1,5 +1,6 @@
 package ru.kumkuat.application.GameModule.Commands.MarshakCommands;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.extensions.bots.commandbot.commands.BotCommand;
@@ -16,7 +17,7 @@ import ru.kumkuat.application.GameModule.Service.UserService;
 
 import java.time.Duration;
 import java.util.Objects;
-
+@Slf4j
 @Service
 public class KickCommand extends BotCommand implements AdminCommand {
     @Autowired
@@ -36,7 +37,8 @@ public class KickCommand extends BotCommand implements AdminCommand {
             if (arguments != null && arguments.length > 0) {
                 try {
                     kickUserId = Long.parseLong(arguments[0]);
-                } catch (Exception e) {
+                } catch (NumberFormatException e) {
+                    log.info("wrong number format when you kick him");
                 }
             }
             KickChatMember(absSender, kickUserId);
@@ -46,6 +48,7 @@ public class KickCommand extends BotCommand implements AdminCommand {
             replyMessage.enableHtml(true);
             replyMessage.setText("Вы не обладаете соответствующим уровнем доступа.");
             execute(absSender, replyMessage, user);
+            log.info("Access denied to Kick command for user wit id: " + userId);
         }
     }
 
@@ -55,6 +58,7 @@ public class KickCommand extends BotCommand implements AdminCommand {
                 busyChatsList) {
             if (Objects.equals(busyChat.getUserId(), userId) || userId < 0) {
                 KickChatMember(absSender, busyChat);
+                log.info("User with id:" + userId + " was kicked from chat");
             }
         }
     }
@@ -92,6 +96,7 @@ public class KickCommand extends BotCommand implements AdminCommand {
                 sendMessage.setText("Пользователь: @" + name + " успешно удален из чата");
                 sendMessage.setChatId(telegramChatService.getAdminChatId());
                 sendMessage.enableHtml(true);
+                log.info("User with id:" + userId + " was kicked from chat");
                 return true;
             } else {
                 return false;

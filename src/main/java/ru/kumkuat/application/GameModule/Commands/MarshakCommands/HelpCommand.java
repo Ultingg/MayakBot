@@ -1,5 +1,6 @@
 package ru.kumkuat.application.GameModule.Commands.MarshakCommands;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.extensions.bots.commandbot.commands.helpCommand.ManCommand;
@@ -9,7 +10,7 @@ import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import ru.kumkuat.application.GameModule.Service.TelegramChatService;
 import ru.kumkuat.application.GameModule.Service.UserService;
-
+@Slf4j
 @Component
 public class HelpCommand extends ManCommand {
     private static final String COMMAND_IDENTIFIER = "help";
@@ -46,6 +47,7 @@ public class HelpCommand extends ManCommand {
                 sendMessage.setChatId(chat.getId().toString());
                 sendMessage.setText("Ваш запрос успешно направлен в поддержку");
                 absSender.execute(sendMessage);
+                log.info("User with id: " + userId + "get notified about requset for help");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -70,7 +72,7 @@ public class HelpCommand extends ManCommand {
                     reply += "чат телеграм id: " + chatdb.getUserId() + "\n";
                     reply += "чат id: " + chatdb.getId() + "\n";
                 }
-
+                log.info("User with id: " + userdb.getId() + "asked for HELP");
                 SendMessage sendMessage = new SendMessage();
                 sendMessage.enableHtml(true);
                 sendMessage.setChatId(telegramChatService.getAdminChatId());
