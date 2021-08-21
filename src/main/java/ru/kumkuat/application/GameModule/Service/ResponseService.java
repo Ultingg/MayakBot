@@ -42,7 +42,7 @@ public class ResponseService {
         this.stickerService = stickerService;
     }
 
-    public List<ResponseContainer> messageReceiver(Message message, boolean isNavigationCommand) {
+    public List<ResponseContainer> messageReceiver(Message message ) {
         List<ResponseContainer> responseContainers = new ArrayList<>();
         Long userId = Long.valueOf(message.getFrom().getId());
         User user = userService.getUserByTelegramId(userId);
@@ -51,9 +51,7 @@ public class ResponseService {
             Scene scene = sceneService.getScene(sceneId);
             Trigger sceneTrigger = scene.getTrigger();
             String chatId = message.getChatId().toString();
-            if (isNavigationCommand) {    //сделал отдельно чтобы не проводить проверку checkIncomingMessage лишний раз
-                responseContainers = ReplyResolver(chatId, scene, userId, message);
-            } else {
+
                 if (checkIncomingMessage(message, sceneTrigger)) {
                     responseContainers = ReceiveNextReplies(chatId, userId, message);                 //вернуть такой ответ
                 } else {
@@ -61,7 +59,7 @@ public class ResponseService {
                         responseContainers = List.of(configureWrongTriggerMessage(chatId, userId));
                     }
                 }
-            }
+
         }
         return responseContainers;
     }
