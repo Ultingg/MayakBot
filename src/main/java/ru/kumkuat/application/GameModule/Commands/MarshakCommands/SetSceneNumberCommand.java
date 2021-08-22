@@ -35,7 +35,7 @@ public class SetSceneNumberCommand extends BotCommand {
             try {
                 userId = Long.valueOf(arguments[0]);
                 sceneId = Long.valueOf(arguments[1]);
-                if (userService.IsUserExist(userId) /*&& telegramChatService.isUserAlreadyGetChat(userId)*/) {
+                //if (userService.IsUserExist(userId) /*&& telegramChatService.isUserAlreadyGetChat(userId)*/) {
                     try {
                         var player = userService.getUserByTelegramId(userId);
                         player.setSceneId(sceneId);
@@ -44,7 +44,7 @@ public class SetSceneNumberCommand extends BotCommand {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                }
+                //}
             } catch (Exception e) {
                 e.printStackTrace();
             }

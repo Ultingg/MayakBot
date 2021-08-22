@@ -48,7 +48,7 @@ public class StartCommand extends BotCommand {
 
     @Override
     public void execute(AbsSender absSender, User user, Chat chat, String[] arguments) {
-        if (user.getId().longValue() == chat.getId()) {
+        //if (user.getId().longValue() == chat.getId()) {
 
             log.debug("Marshak ");
 
@@ -151,7 +151,7 @@ public class StartCommand extends BotCommand {
                     "teatr.prospektspb@gmail.com");
             execute(absSender, replyMessage, user);
 
-        }
+        //}
     }
 
     void execute(AbsSender sender, SendMessage message, User user) {

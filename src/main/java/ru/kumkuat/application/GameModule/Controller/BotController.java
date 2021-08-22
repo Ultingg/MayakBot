@@ -73,7 +73,13 @@ public class BotController {
         updateValidationService.registerUser(updateMessage.getFrom());
         if (updateMessage.getChat().getType().equals("private")) {
             if (commandChecker(updateMessage)) {
-                //Тут должно быть исполнение команд
+                var botMarshak = botCollection.stream().filter(bot -> bot instanceof MarshakBot).findFirst();
+                if(!botMarshak.isEmpty()){
+                    var marshak = (MarshakBot)botMarshak.get();
+                    var user = updateMessage.getFrom();
+                    user.setId(user.getId().equals(marshak.getId()) ? updateMessage.getChatId().intValue() : user.getId());
+                }
+                commandExecute(updateMessage);
             } else {
                 User user = userService.getUserByTelegramId(updateMessage.getFrom().getId().longValue());
                 if ((user.isPlaying() &&
