@@ -41,7 +41,7 @@ public class ResetUserCommand extends BotCommand implements IListenerSupport {
             log.debug("Marshak");
             try {
                 userId = Long.valueOf(arguments[0]);
-                if (userService.IsUserExist(userId) && telegramChatService.isUserAlreadyGetChat(userId)) {
+                if (/*userService.IsUserExist(userId) && */telegramChatService.isUserAlreadyGetChat(userId)) {
                     try {
                         var player = userService.getUserByTelegramId(userId);
                         //kickAllCommand.KickChatMember(marshakBot, userId);

@@ -73,7 +73,13 @@ public class BotController {
         updateValidationService.registerUser(updateMessage.getFrom());
         if (updateMessage.getChat().getType().equals("private")) {
             if (commandChecker(updateMessage)) {
-                //Тут должно быть исполнение команд
+                var botMarshak = botCollection.stream().filter(bot -> bot instanceof MarshakBot).findFirst();
+                if(!botMarshak.isEmpty()){
+                    var marshak = (MarshakBot)botMarshak.get();
+                    var user = updateMessage.getFrom();
+                    user.setId(user.getId().equals(marshak.getId()) ? updateMessage.getChatId().intValue() : user.getId());
+                }
+                commandExecute(updateMessage);
             } else {
                 User user = userService.getUserByTelegramId(updateMessage.getFrom().getId().longValue());
                 if ((user.isPlaying() &&
@@ -201,6 +207,14 @@ public class BotController {
     private boolean commandChecker(Message message) {
         return botCollection.stream().filter(bot -> bot instanceof TelegramWebhookCommandBot)
                 .anyMatch(bot -> ((TelegramWebhookCommandBot) bot).isCommand(message.getText()));
+    }
+
+    private void commandExecute(Message message) {
+        var commandBot = botCollection.stream().filter(bot -> bot instanceof TelegramWebhookCommandBot)
+                .filter(bot -> ((TelegramWebhookCommandBot) bot).isCommand(message.getText())).findFirst();
+        if (!commandBot.isEmpty()) {
+            ((TelegramWebhookCommandBot) commandBot.get()).InvokeCommand(message);
+        }
     }
 }
 

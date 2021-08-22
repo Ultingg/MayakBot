@@ -36,11 +36,11 @@ public class SendChatCommand extends BotCommand {
     public void execute(AbsSender absSender, User user, Chat chat, String[] arguments) {
 
         long userId = user.getId().longValue();
-        if (userId == marshakBot.getId() && userService.IsUserExist(chat.getId())) {
-            userId = chat.getId();
-        }
+//        if (userId == marshakBot.getId() && userService.IsUserExist(chat.getId())) {
+//            userId = chat.getId();
+//        }
 
-        if (userId == chat.getId()) {
+//        if (userId == chat.getId()) {
 
             if(arguments != null && arguments.length > 0){
                 try {
@@ -57,17 +57,17 @@ public class SendChatCommand extends BotCommand {
             replyMessage.enableHtml(true);
 
             try {
-                if (userService.IsUserExist(userId) ) {
+                //if (userService.IsUserExist(userId) ) {
                     try {
                         SendFreeChat(absSender, Long.valueOf(userId));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                }
+                //}
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
+        //}
     }
 
     void SendFreeChat(AbsSender absSender, Long userId) throws Exception {

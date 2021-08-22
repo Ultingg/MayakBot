@@ -31,7 +31,7 @@ public class SaveChatCommand extends BotCommand implements AdminCommand {
         replyMessage.enableHtml(true);
         Long userId = Long.valueOf(user.getId());
 
-        if (userService.IsUserExist(user.getId().longValue()) && userService.getUserByTelegramId(userId).isAdmin()) {
+        if (/*userService.IsUserExist(user.getId().longValue()) && */userService.getUserByTelegramId(userId).isAdmin()) {
             try {
                 GetChat getChat = new GetChat();
                 getChat.setChatId(chat.getId().toString());

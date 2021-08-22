@@ -94,17 +94,17 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
         sendMessage.setChatId(telegramChatService.getAdminChatId());
         sendMessage.setText("Выполнено отложенное задание: " + new Date());
         this.sendMessage(sendMessage);
-        var busyChatsList = telegramChatService.getBusyChats();
-        for (var busyChat :
-                busyChatsList) {
-            var player = userService.getUserByTelegramId(busyChat.getUserId());
-            player.setTriggered(false);
-            player.setSceneId(0L);
-            player.setHasPay(false);
-            player.setPlaying(false);
-            userRepository.save(player);
-            //resetUserCommand.execute(this, null, null, new String[]{player.getTelegramUserId().toString()} );
-        }
+        //var busyChatsList = telegramChatService.getBusyChats();
+//        for (var busyChat :
+//                busyChatsList) {
+//            var player = userService.getUserByTelegramId(busyChat.getUserId());
+//            player.setTriggered(false);
+//            player.setSceneId(0L);
+//            player.setHasPay(false);
+//            player.setPlaying(false);
+//            userRepository.save(player);
+//            //resetUserCommand.execute(this, null, null, new String[]{player.getTelegramUserId().toString()} );
+//        }
         kickAllCommand.KickAllChatMember(this);
     }
 
@@ -136,7 +136,7 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
         Timer timer = new Timer(true);
         TimerService timerService = new TimerService();
 
-        //timerService.setTimerOperation(() -> TimerOperation());
+        timerService.setTimerOperation(() -> TimerOperation());
         timer.scheduleAtFixedRate(timerService, timeDelay, 24 * 60 * 60 * 1000);
 
         int hours = (int) (timeDelay / 1000) / (60 * 60);
@@ -147,7 +147,7 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
         sendMessage = new SendMessage();
         sendMessage.setChatId(telegramChatService.getAdminChatId());
         sendMessage.setText("Очистка беседок через: " + hours + " часов " + minutes + " минут");
-        //this.sendMessage(sendMessage);
+        this.sendMessage(sendMessage);
     }
 
     @Override

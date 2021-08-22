@@ -49,11 +49,11 @@ public class PlayCommand extends BotCommand {
     public void execute(AbsSender absSender, User user, Chat chat, String[] arguments) {
 
         long userId = user.getId().longValue();
-        if (userId == marshakBot.getId() && userService.IsUserExist(chat.getId())) {
-            userId = chat.getId();
-        }
+//        if (userId == marshakBot.getId() && userService.IsUserExist(chat.getId())) {
+//            userId = chat.getId();
+//        }
 
-        if (userId == chat.getId()) {
+        //if (userId == chat.getId()) {
 
             log.debug("Marshak ");
             SendMessage replyMessage = new SendMessage();
@@ -61,26 +61,26 @@ public class PlayCommand extends BotCommand {
             replyMessage.enableHtml(true);
 
             try {
-                if (!userService.IsUserExist(userId)) {
-                    try {
-                        userService.setUserIntoDB(user);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    //replyMessage.setText("Вы успешно зарегистрировались!");
-                    execute(absSender, replyMessage, user);
-                } else {
+//                if (!userService.IsUserExist(userId)) {
+//                    try {
+//                        userService.setUserIntoDB(user);
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                    //replyMessage.setText("Вы успешно зарегистрировались!");
+//                    execute(absSender, replyMessage, user);
+//                } else {
                     if ( userService.IsUserHasPayment(userId)) {
                         SendFreeChat(absSender, Long.valueOf(userId));
                     } else {
                         replyMessage.setText("Необходимо внести оплату!");
                         execute(absSender, replyMessage, user);
                     }
-                }
+                //}
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
+        //}
     }
 
     boolean isBotsStarting(AbsSender absSender, Long userId) throws TelegramApiException {

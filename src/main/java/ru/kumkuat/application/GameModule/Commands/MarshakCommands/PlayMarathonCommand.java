@@ -38,12 +38,12 @@ public class PlayMarathonCommand extends BotCommand implements IListenerSupport 
     public void execute(AbsSender absSender, User user, Chat chat, String[] arguments) {
         long userId = user.getId().longValue();
 
-        if (userId == marshakBot.getId() && userService.IsUserExist(chat.getId())) {
-            userId = chat.getId();
+//        if (userId == marshakBot.getId() && userService.IsUserExist(chat.getId())) {
+//            userId = chat.getId();
+//
+//        }
 
-        }
-
-        if (userId == chat.getId()) {
+        //if (userId == chat.getId()) {
             String username = chat.getUserName();
 
             log.debug("Marshak ");
@@ -52,13 +52,13 @@ public class PlayMarathonCommand extends BotCommand implements IListenerSupport 
             replyMessage.enableHtml(true);
 
             try {
-                if (!userService.IsUserExist(userId)) {
-                    try {
-                        userService.setUserIntoDB(user); // а зачем это здесь? user - же это бот в данном случае
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+//                if (!userService.IsUserExist(userId)) {
+//                    try {
+//                        userService.setUserIntoDB(user); // а зачем это здесь? user - же это бот в данном случае
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                }
 
                 if (userService.validateUsersAndBGUsers(username)) {
                     if (bgUserService.isItTimeToStart(username)) {
@@ -85,7 +85,7 @@ public class PlayMarathonCommand extends BotCommand implements IListenerSupport 
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
+        //}
     }
 
     void execute(AbsSender sender, SendMessage message, User user) {

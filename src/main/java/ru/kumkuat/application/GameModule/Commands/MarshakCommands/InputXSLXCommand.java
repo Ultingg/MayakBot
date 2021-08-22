@@ -72,11 +72,11 @@ public class InputXSLXCommand extends BotCommand {
     public void execute(AbsSender absSender, User user, Chat chat, String[] arguments) {
 
         long userId = user.getId().longValue();
-        if (userId == marshakBot.getId() && userService.IsUserExist(chat.getId())) {
-            userId = chat.getId();
-        }
+//        if (userId == marshakBot.getId() && userService.IsUserExist(chat.getId())) {
+//            userId = chat.getId();
+//        }
 
-        if (userId == chat.getId()) {
+        //if (userId == chat.getId()) {
 
             log.debug("Marshak ");
             SendMessage replyMessage = new SendMessage();
@@ -84,9 +84,9 @@ public class InputXSLXCommand extends BotCommand {
             replyMessage.enableHtml(true);
 
             try {
-                if (!userService.IsUserExist(userId)) {
-
-                } else {
+//                if (!userService.IsUserExist(userId)) {
+//
+//                } else {
                     int usersAdded = xlsxbgListReaderService.XLSXBGParser(path);
                     String message = usersAdded > 0 ?
                             String.format("Пользователи %d успешно добавлены!", usersAdded):
@@ -94,11 +94,11 @@ public class InputXSLXCommand extends BotCommand {
 
                     replyMessage.setText(message);
                     execute(absSender, replyMessage, user);
-                }
+                //}
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
+        //}
     }
 
     void execute(AbsSender sender, SendMessage message, User user) {
