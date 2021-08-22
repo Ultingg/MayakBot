@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramWebhookBot;
 import org.telegram.telegrambots.meta.api.methods.updates.SetWebhook;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.kumkuat.application.GameModule.Abstract.TelegramWebhookCommandBot;
 import ru.kumkuat.application.GameModule.Bot.*;
@@ -73,12 +74,6 @@ public class BotController {
         updateValidationService.registerUser(updateMessage.getFrom());
         if (updateMessage.getChat().getType().equals("private")) {
             if (commandChecker(updateMessage)) {
-                var botMarshak = botCollection.stream().filter(bot -> bot instanceof MarshakBot).findFirst();
-                if(!botMarshak.isEmpty()){
-                    var marshak = (MarshakBot)botMarshak.get();
-                    var user = updateMessage.getFrom();
-                    user.setId(user.getId().equals(marshak.getId()) ? updateMessage.getChatId().intValue() : user.getId());
-                }
                 commandExecute(updateMessage);
             } else {
                 User user = userService.getUserByTelegramId(updateMessage.getFrom().getId().longValue());
@@ -89,6 +84,14 @@ public class BotController {
                 }
             }
         }
+    }
+
+    public void resolveCallbackQueryFromAdminListener(Update update) {
+        var marshak = (MarshakBot) botCollection.stream().filter(bot -> bot instanceof MarshakBot).findFirst().get();
+        var user = update.getCallbackQuery().getMessage().getFrom();
+        user.setId(user.getId().equals(marshak.getId()) ? update.getCallbackQuery().getMessage().getChatId().intValue() : user.getId());
+        updateValidationService.registerUser(update.getCallbackQuery().getMessage().getFrom());
+        marshak.onWebhookUpdateReceived(update);
     }
 
     public void responseResolver(List<ResponseContainer> responseContainers) {

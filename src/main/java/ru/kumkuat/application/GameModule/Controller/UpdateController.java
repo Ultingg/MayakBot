@@ -15,14 +15,14 @@ public class UpdateController {
 
     @PostMapping(value = "/")
     public void receivedUpdateFromSimpleListener(@RequestBody Update update) {
-        if (update.hasMessage()) {
-            botController.resolveUpdatesFromSimpleListener(update.getMessage());
-        }
+        botController.resolveUpdatesFromSimpleListener(update.getMessage());
     }
 
     @PostMapping(value = "/admin")
     public void receivedUpdateFromAdminListener(@RequestBody Update update) {
-        if (update.hasMessage()) {
+        if (update.hasCallbackQuery()) {
+            botController.resolveCallbackQueryFromAdminListener(update);
+        } else {
             botController.resolveUpdatesFromAdminListener(update.getMessage());
         }
     }
