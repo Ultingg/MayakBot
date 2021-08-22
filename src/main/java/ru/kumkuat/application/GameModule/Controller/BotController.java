@@ -196,10 +196,10 @@ public class BotController {
             Message incomingMessage = message;
             if (incomingMessage.hasText() && commandChecker(incomingMessage)) {
                 log.debug("Received throw to Marshak.");
-                responseResolver(responseService.messageReceiver(incomingMessage, false));
+                responseResolver(responseService.messageReceiver(incomingMessage));
             } else {
                 log.debug("Received message.");
-                responseResolver(responseService.messageReceiver(incomingMessage, false));
+                responseResolver(responseService.messageReceiver(incomingMessage));
             }
         }
     }

@@ -1,6 +1,7 @@
 package ru.kumkuat.application.GameModule.Commands.MarshakCommands;
 
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.extensions.bots.commandbot.commands.BotCommand;
@@ -16,7 +17,7 @@ import ru.kumkuat.application.GameModule.Service.UserService;
 import ru.kumkuat.application.GameModule.Service.XLSXReportValidationService;
 
 import java.util.List;
-
+@Slf4j
 @Component
 public class ValidationReportCommand extends BotCommand implements AdminCommand {
 
@@ -39,28 +40,30 @@ public class ValidationReportCommand extends BotCommand implements AdminCommand 
     @Override
     public void execute(AbsSender absSender, User user, Chat chat, String[] strings) {
         Long userId = Long.valueOf(user.getId());
-        System.out.println("REPORT requested");
+        log.info("BG report requested");
         SendMessage replyMessage = new SendMessage();
         replyMessage.setChatId(chat.getId().toString());
         replyMessage.enableHtml(true);
         if (userService.getUserByTelegramId(userId).isAdmin()) {
             List<BGUser> bgUsersList = bgUserService.getListOfUnregistratedBGUsers();
             if (!bgUsersList.isEmpty()) {
-            //documentMakerservice
              SendDocument sendDocument = xlsxReportValidationService.writeReportBGUserNotRegitred(bgUsersList);
              sendDocument.setChatId(String.valueOf(chat.getId()));
              String reply = String.format("Не зарегистрировано %d пользователей", bgUsersList.size());
                 replyMessage.setText(reply);
                 execute(absSender,replyMessage,user);
                 execute(absSender,sendDocument,user);
+                log.info("Unregistred users in report " +bgUsersList.size());
             } else {
                 String reply ="Все пользователи зарегистрированы)";
                 replyMessage.setText(reply);
                 execute(absSender,replyMessage,user);
+                log.info("Registered all users");
             }
         } else {
             replyMessage.setText("Вы не обладаете соответствующим уровнем доступа.");
             execute(absSender, replyMessage, user);
+            log.info("Access denied to BG report command for user wit id: " + userId);
         }
     }
 
