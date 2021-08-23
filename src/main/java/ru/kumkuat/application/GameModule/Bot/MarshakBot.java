@@ -204,17 +204,8 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
             try {
                 userService.setUserPayment(user.getId(), true);
                 replyMessage.setText("Отлично! Вcе готово, чтобы начать!");
-//                replyMessage.setText("Вcе готово, чтобы начать!\n" +
-//                        "Осталось активировать ботов:\n" +
-//                        "@" + mayakBot.getBotUsername() + "\n" +
-//                        "@" + akhmatovaBot.getBotUsername() + "\n" +
-//                        "@" + brodskiy.getBotUsername() + "\n" +
-//                        "@" + harms.getBotUsername() + "\n" +ss
-//                        "и нажать /play"
-//                );
-
                 execute(replyMessage);
-                //SendFreeChat(user, update.getMessage().getChat());
+                log.info("Paid was done bu user with id: {}", user.getId());
             } catch (Exception e) {
                 e.printStackTrace();
             }

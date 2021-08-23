@@ -33,7 +33,7 @@ public class KickCommand extends BotCommand implements AdminCommand {
     public void execute(AbsSender absSender, User user, Chat chat, String[] arguments) {
         Long userId = Long.valueOf(user.getId());
         if (userService.getUserByTelegramId(userId).isAdmin()) {
-            Long kickUserId = -1l;
+            Long kickUserId = -1L;
             if (arguments != null && arguments.length > 0) {
                 try {
                     kickUserId = Long.parseLong(arguments[0]);
@@ -48,7 +48,7 @@ public class KickCommand extends BotCommand implements AdminCommand {
             replyMessage.enableHtml(true);
             replyMessage.setText("Вы не обладаете соответствующим уровнем доступа.");
             execute(absSender, replyMessage, user);
-            log.info("Access denied to Kick command for user wit id: " + userId);
+            log.info("Access denied to Kick command for user wit id: {}",userId);
         }
     }
 
@@ -58,7 +58,7 @@ public class KickCommand extends BotCommand implements AdminCommand {
                 busyChatsList) {
             if (Objects.equals(busyChat.getUserId(), userId) || userId < 0) {
                 KickChatMember(absSender, busyChat);
-                log.info("User with id:" + userId + " was kicked from chat");
+                log.info("User with id: {} was kicked from chat", userId);
             }
         }
     }
@@ -96,17 +96,14 @@ public class KickCommand extends BotCommand implements AdminCommand {
                 sendMessage.setText("Пользователь: @" + name + " успешно удален из чата");
                 sendMessage.setChatId(telegramChatService.getAdminChatId());
                 sendMessage.enableHtml(true);
-                log.info("User with id:" + userId + " was kicked from chat");
+                log.info("User with id: {} was kicked from chat", userId);
                 return true;
             } else {
                 return false;
             }
-
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-            return false;
         } catch (Exception e) {
             e.printStackTrace();
+            log.info("exception in kickCommand execution");
             return false;
         }
     }
@@ -115,6 +112,7 @@ public class KickCommand extends BotCommand implements AdminCommand {
         try {
             sender.execute(message);
         } catch (TelegramApiException e) {
+            log.info("exception in kickCommand execution");
         }
     }
 

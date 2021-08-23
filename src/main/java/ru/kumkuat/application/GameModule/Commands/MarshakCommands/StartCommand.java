@@ -51,33 +51,32 @@ public class StartCommand extends BotCommand {
         //if (user.getId().longValue() == chat.getId()) {
 
             log.debug("Marshak ");
-
+            log.info("User with id: {}, has start Marshak bot", user.getId());
             InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
             var ListButtonCollections = new ArrayList<List<InlineKeyboardButton>>();
 
             var InlineKeyboardButtonCollection = new ArrayList<InlineKeyboardButton>();
             InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
             inlineKeyboardButton.setText("Бродский");
-//            inlineKeyboardButton.setUrl("https://t.me/IABrodskiyTestBot?start");
             inlineKeyboardButton.setUrl("https://t.me/".concat(brodskiy.getBotUsername().concat("?start")));
             InlineKeyboardButtonCollection.add(inlineKeyboardButton);
             ListButtonCollections.add(InlineKeyboardButtonCollection);
 
-            InlineKeyboardButtonCollection = new ArrayList<InlineKeyboardButton>();
+            InlineKeyboardButtonCollection = new ArrayList<>();
             inlineKeyboardButton = new InlineKeyboardButton();
             inlineKeyboardButton.setText("Маяковский");
             inlineKeyboardButton.setUrl("https://t.me/".concat(mayakBot.getBotUsername().concat("?start")));
             InlineKeyboardButtonCollection.add(inlineKeyboardButton);
             ListButtonCollections.add(InlineKeyboardButtonCollection);
 
-            InlineKeyboardButtonCollection = new ArrayList<InlineKeyboardButton>();
+            InlineKeyboardButtonCollection = new ArrayList<>();
             inlineKeyboardButton = new InlineKeyboardButton();
             inlineKeyboardButton.setText("Хармс");
             inlineKeyboardButton.setUrl("https://t.me/".concat(harms.getBotUsername().concat("?start")));
             InlineKeyboardButtonCollection.add(inlineKeyboardButton);
             ListButtonCollections.add(InlineKeyboardButtonCollection);
 
-            InlineKeyboardButtonCollection = new ArrayList<InlineKeyboardButton>();
+            InlineKeyboardButtonCollection = new ArrayList<>();
             inlineKeyboardButton = new InlineKeyboardButton();
             inlineKeyboardButton.setText("Ахматова");
             inlineKeyboardButton.setUrl("https://t.me/".concat(akhmatovaBot.getBotUsername().concat("?start")));

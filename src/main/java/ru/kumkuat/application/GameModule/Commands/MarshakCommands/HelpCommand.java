@@ -34,6 +34,7 @@ public class HelpCommand extends ManCommand {
     @Override
     public void execute(AbsSender absSender, User user, Chat chat, String[] arguments) {
         try {
+
             Long userId = Long.valueOf(user.getId());
             if (userService.getUserByTelegramId(userId).isAdmin() && arguments != null && arguments.length > 0) {
                 var qweryuserId = Long.valueOf(arguments[0]);
