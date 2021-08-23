@@ -51,7 +51,7 @@ public class StartCommand extends BotCommand {
         //if (user.getId().longValue() == chat.getId()) {
 
             log.debug("Marshak ");
-
+            log.info("User with id: {}, has start Marshak bot", user.getId());
             InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
             var ListButtonCollections = new ArrayList<List<InlineKeyboardButton>>();
 
