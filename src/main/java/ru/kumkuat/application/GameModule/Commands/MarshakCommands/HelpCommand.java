@@ -8,6 +8,8 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.bots.AbsSender;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import ru.kumkuat.application.GameModule.Exceptions.TelegramCommandException;
 import ru.kumkuat.application.GameModule.Service.TelegramChatService;
 import ru.kumkuat.application.GameModule.Service.UserService;
 @Slf4j
@@ -31,6 +33,14 @@ public class HelpCommand extends ManCommand {
         super(commandIdentifier, description, extendedDescription);
     }
 
+    private void execute(AbsSender absSender,SendMessage sendMessage) throws TelegramCommandException {
+        try {
+            absSender.execute(sendMessage);
+        } catch (TelegramApiException e) {
+            throw new TelegramCommandException();
+        }
+    }
+
     @Override
     public void execute(AbsSender absSender, User user, Chat chat, String[] arguments) {
         try {
@@ -47,11 +57,12 @@ public class HelpCommand extends ManCommand {
                 sendMessage.enableHtml(true);
                 sendMessage.setChatId(chat.getId().toString());
                 sendMessage.setText("Ваш запрос успешно направлен в поддержку");
-                absSender.execute(sendMessage);
+                execute(absSender, sendMessage);
                 log.info("User with id: " + userId + "get notified about requset for help");
             }
-        } catch (Exception e) {
+        } catch (TelegramCommandException e) {
             e.printStackTrace();
+            e.getLogMessage(this, "when sending msg to user.");
         }
     }
 
@@ -78,8 +89,11 @@ public class HelpCommand extends ManCommand {
                 sendMessage.enableHtml(true);
                 sendMessage.setChatId(telegramChatService.getAdminChatId());
                 sendMessage.setText(reply);
-                absSender.execute(sendMessage);
+                execute(absSender,sendMessage);
             }
+        } catch (TelegramCommandException e) {
+            e.printStackTrace();
+            e.getLogMessage(this, "when sending msg to Admin" );
         } catch (Exception e) {
             e.printStackTrace();
         }

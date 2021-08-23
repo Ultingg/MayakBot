@@ -1,5 +1,6 @@
 package ru.kumkuat.application.GameModule.Commands.MarshakCommands;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -12,12 +13,15 @@ import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.api.objects.payments.LabeledPrice;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import ru.kumkuat.application.GameModule.Exceptions.TelegramCommandException;
 import ru.kumkuat.application.GameModule.Repository.UserRepository;
+import ru.kumkuat.application.GameModule.Service.TelegramChatService;
 import ru.kumkuat.application.GameModule.Service.UserService;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 @PropertySource(value = "file:../resources/externalsecret.yml")
 public class PayCommand extends BotCommand {
@@ -25,6 +29,8 @@ public class PayCommand extends BotCommand {
     private UserService userService;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private TelegramChatService telegramChatService;
 
     @Value("${marshak.payment.provider.token}")
     private String paymentProviderToken;
@@ -46,14 +52,14 @@ public class PayCommand extends BotCommand {
                 replyMessage.setChatId(chat.getId().toString());
                 replyMessage.enableHtml(true);
                 replyMessage.setText("Оплата успешно проведена!");
-                try {
-                    absSender.execute(replyMessage);
-                } catch (TelegramApiException e) {
-                }
-            } catch (Exception e) {
+
+                absSender.execute(replyMessage);
+                sendInfoMessageToAdmin(absSender, user.getId().longValue());
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+                log.info("Exception while executing pay command, when pay is success.");
             }
-        }
-        else{
+        } else {
             SendMessage replyMessage = new SendMessage();
             replyMessage.setChatId(chat.getId().toString());
             replyMessage.enableHtml(true);
@@ -75,10 +81,41 @@ public class PayCommand extends BotCommand {
             try {
                 var result = absSender.execute(sendInvoice);
                 System.out.println("result text:" + result.getInvoice().getTitle());
+
             } catch (TelegramApiException e) {
+                e.getStackTrace();
+                log.info("Exception while executing pay command.");
             }
         }
     }
 
+    public void sendInfoMessageToAdmin(AbsSender absSender, Long userTelegeramId) {
+        try {
+            if (userService.IsUserExist(userTelegeramId)) {
+                var userdb = userService.getUserByTelegramId(userTelegeramId);
+
+                String reply = "Пользователь:\n";
+                reply += "юзер телеграм id: " + userdb.getTelegramUserId() + "\n";
+                reply += "юзер id: " + userdb.getId() + "\n";
+                reply += "юзер совершил оплату!";
+
+                SendMessage sendMessage = new SendMessage();
+                sendMessage.enableHtml(true);
+                sendMessage.setChatId(telegramChatService.getAdminChatId());
+                sendMessage.setText(reply);
+                execute(absSender, sendMessage);
+            }
+        }  catch (TelegramCommandException e) {
+            e.printStackTrace();
+            e.getLogMessage(this, "when sending message to Admin chat..");
+        }
+    }
+    private void execute(AbsSender absSender,SendMessage sendMessage) throws TelegramCommandException {
+        try {
+            absSender.execute(sendMessage);
+        } catch (TelegramApiException e) {
+            throw new TelegramCommandException();
+        }
+    }
 
 }

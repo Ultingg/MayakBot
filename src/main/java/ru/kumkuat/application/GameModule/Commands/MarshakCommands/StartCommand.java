@@ -150,8 +150,6 @@ public class StartCommand extends BotCommand {
             replyMessage.setText("Или ты всегда можешь написать нам на почту. \n" +
                     "teatr.prospektspb@gmail.com");
             execute(absSender, replyMessage, user);
-
-        //}
     }
 
     void execute(AbsSender sender, SendMessage message, User user) {
