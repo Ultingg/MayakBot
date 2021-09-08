@@ -1,5 +1,6 @@
 package ru.kumkuat.application.GameModule.Commands.MarshakCommands;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -17,7 +18,7 @@ import ru.kumkuat.application.GameModule.Service.UserService;
 
 import java.util.ArrayList;
 import java.util.List;
-
+@Slf4j
 @Service
 @PropertySource(value = "file:../resources/externalsecret.yml")
 public class PayCommand extends BotCommand {
@@ -25,6 +26,8 @@ public class PayCommand extends BotCommand {
     private UserService userService;
     @Autowired
     private UserRepository userRepository;
+    @Value("${price.general}")
+    private Integer price;
 
     @Value("${marshak.payment.provider.token}")
     private String paymentProviderToken;
@@ -69,13 +72,16 @@ public class PayCommand extends BotCommand {
             List<LabeledPrice> labeledPrices = new ArrayList<>();
             LabeledPrice labeledPrice = new LabeledPrice();
             labeledPrice.setLabel("Руб");
-            labeledPrice.setAmount(50000);
+            labeledPrice.setAmount(price);
             labeledPrices.add(labeledPrice);
             sendInvoice.setPrices(labeledPrices);
             try {
                 var result = absSender.execute(sendInvoice);
                 System.out.println("result text:" + result.getInvoice().getTitle());
+                log.info("Invoice sent to {}", user.getId());
             } catch (TelegramApiException e) {
+                log.info("Exception on creation of invoice", e);
+
             }
         }
     }
