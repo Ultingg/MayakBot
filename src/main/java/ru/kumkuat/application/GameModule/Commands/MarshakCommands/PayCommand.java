@@ -80,7 +80,7 @@ public class PayCommand extends BotCommand {
                 System.out.println("result text:" + result.getInvoice().getTitle());
                 log.info("Invoice sent to {}", user.getId());
             } catch (TelegramApiException e) {
-                log.info("Exception on creation of invoice", e);
+                log.info("Exception on creation of invoice ", e);
 
             }
         }
