@@ -78,7 +78,7 @@ public class PayCommand extends BotCommand {
             try {
                 var result = absSender.execute(sendInvoice);
                 System.out.println("result text:" + result.getInvoice().getTitle());
-                log.info("Invoice sent to {}", user.getId());
+                log.info("Invoice sent to {}", chat.getId());
             } catch (TelegramApiException e) {
                 log.info("Exception on creation of invoice ", e);
 
