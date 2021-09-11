@@ -6,6 +6,7 @@ import ru.kumkuat.application.GameModule.Models.BGUser;
 import ru.kumkuat.application.GameModule.Models.User;
 import ru.kumkuat.application.GameModule.Repository.UserRepository;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,6 +75,7 @@ public class UserService {
         }
         user.setSceneId(0L);
         user.setTelegramUserId((long) telegramUser.getId());
+        user.setRegistrationStamp(LocalDateTime.now().plusHours(3));
         userRepository.save(user);
         return user.getId();
     }
@@ -134,7 +136,7 @@ public class UserService {
     */
     public boolean isSceneHaveLastNumberOrMore(Long sceneId) { //наша халява обнуляет счетчик сцен
         //читай коммент вверху ;)
-        Long sceneSize = (long) sceneService.count();
+        long sceneSize = sceneService.count();
         return sceneId >= sceneSize - 1;
 
     }
