@@ -2,7 +2,10 @@ package ru.kumkuat.application.GameModule.Commands.MarshakCommands;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.bots.TelegramWebhookBot;
 import org.telegram.telegrambots.extensions.bots.commandbot.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Chat;
@@ -16,7 +19,6 @@ import ru.kumkuat.application.GameModule.Bot.Brodskiy;
 import ru.kumkuat.application.GameModule.Bot.Harms;
 import ru.kumkuat.application.GameModule.Bot.MayakBot;
 import ru.kumkuat.application.GameModule.Service.BGUserService;
-import ru.kumkuat.application.GameModule.Service.TelegramChatService;
 import ru.kumkuat.application.GameModule.Service.UserService;
 
 import java.util.ArrayList;
@@ -24,6 +26,7 @@ import java.util.List;
 
 @Slf4j
 @Service
+@PropertySource(value = "file:../resources/messages.yml", encoding = "UTF-8")
 public class StartCommand extends BotCommand {
 
     private final UserService userService;
@@ -37,11 +40,26 @@ public class StartCommand extends BotCommand {
     private Brodskiy brodskiy;
     @Autowired
     private MayakBot mayakBot;
-    @Autowired
-    private TelegramChatService telegramChatService;
 
-    @Autowired
-    private HelpCommand helpCommand;
+    @Value("${message.greeting.one}")
+    private String greetingOne;
+    @Value("${message.greeting.two}")
+    private  String greetingTwo;
+    @Value("${message.greeting.three}")
+    private String greetingThree;
+    @Value("${message.greeting.four}")
+    private String greetingFour;
+    @Value("${message.greeting.five}")
+    private String greetingFive;
+    @Value("${message.greeting.bots}")
+    private String botGreeting;
+    @Value("${message.greeting.pay_start}")
+    private String payStartMessage;
+    @Value("${message.greeting.pay_button}")
+    private String payButtonName;
+    @Value("${message.greeting.start_button}")
+    private String startWalkButtonName;
+
 
     public StartCommand(UserService userService, BGUserService bgUserService) {
         super("/start", "to start!\n");
@@ -52,143 +70,89 @@ public class StartCommand extends BotCommand {
     @Override
     public void execute(AbsSender absSender, User user, Chat chat, String[] arguments) {
         if (user.getId().longValue() == chat.getId()) {
-
-            log.debug("Marshak ");
-
+            log.info("Marshak start command start executing");
             registerUser(user);
 
+            sendMessage(absSender, user, chat.getId().toString(), greetingOne);
+            sendMessage(absSender, user, chat.getId().toString(), greetingTwo);
+            sendMessage(absSender, user, chat.getId().toString(), greetingThree);
+            sendMessage(absSender, user, chat.getId().toString(), greetingFour);
+            sendMessage(absSender, user, chat.getId().toString(), greetingFive);
 
             InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
-            var ListButtonCollections = new ArrayList<List<InlineKeyboardButton>>();
-
-            var InlineKeyboardButtonCollection = new ArrayList<InlineKeyboardButton>();
-            InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
-            inlineKeyboardButton.setText("Бродский");
-//            inlineKeyboardButton.setUrl("https://t.me/IABrodskiyTestBot?start");
-            inlineKeyboardButton.setUrl("https://t.me/".concat(brodskiy.getBotUsername().concat("?start")));
-            InlineKeyboardButtonCollection.add(inlineKeyboardButton);
-            ListButtonCollections.add(InlineKeyboardButtonCollection);
-
-            InlineKeyboardButtonCollection = new ArrayList<InlineKeyboardButton>();
-            inlineKeyboardButton = new InlineKeyboardButton();
-            inlineKeyboardButton.setText("Маяковский");
-            inlineKeyboardButton.setUrl("https://t.me/".concat(mayakBot.getBotUsername().concat("?start")));
-            InlineKeyboardButtonCollection.add(inlineKeyboardButton);
-            ListButtonCollections.add(InlineKeyboardButtonCollection);
-
-            InlineKeyboardButtonCollection = new ArrayList<InlineKeyboardButton>();
-            inlineKeyboardButton = new InlineKeyboardButton();
-            inlineKeyboardButton.setText("Хармс");
-            inlineKeyboardButton.setUrl("https://t.me/".concat(harms.getBotUsername().concat("?start")));
-            InlineKeyboardButtonCollection.add(inlineKeyboardButton);
-            ListButtonCollections.add(InlineKeyboardButtonCollection);
-
-            InlineKeyboardButtonCollection = new ArrayList<InlineKeyboardButton>();
-            inlineKeyboardButton = new InlineKeyboardButton();
-            inlineKeyboardButton.setText("Ахматова");
-            inlineKeyboardButton.setUrl("https://t.me/".concat(akhmatovaBot.getBotUsername().concat("?start")));
-            InlineKeyboardButtonCollection.add(inlineKeyboardButton);
-            ListButtonCollections.add(InlineKeyboardButtonCollection);
-
-            markup.setKeyboard(ListButtonCollections);
-
-            SendMessage replyMessage = new SendMessage();
-            replyMessage.setChatId(chat.getId().toString());
-            replyMessage.enableHtml(true);
-            replyMessage.setText("Привет! Мы рады приветствовать тебя!");
-            execute(absSender, replyMessage, user);
-
-
-            replyMessage = new SendMessage();
-            replyMessage.setChatId(chat.getId().toString());
-            replyMessage.enableHtml(true);
-            replyMessage.setText("Чтобы начать тебе нужно активировать авторов!");
-            execute(absSender, replyMessage, user);
-
-            replyMessage = new SendMessage();
-            replyMessage.setChatId(chat.getId().toString());
-            replyMessage.enableHtml(true);
-            replyMessage.setText("Перейди по каждой ссылке и нажми старт");
-            replyMessage.setReplyMarkup(markup);
-            execute(absSender, replyMessage, user);
-
-
-            List<InlineKeyboardButton> keyboardButtonsRow1 = new ArrayList<>();
-            var Button11 = new InlineKeyboardButton();
-            Button11.setText("Оплата");
-            Button11.setCallbackData("pay");
-            keyboardButtonsRow1.add(Button11);
-            List<InlineKeyboardButton> keyboardButtonsRow2 = new ArrayList<>();
-            var Button21 = new InlineKeyboardButton();
-            Button21.setText("Начать прогулку");
-            Button21.setCallbackData("play");
-            keyboardButtonsRow2.add(Button21);
-            List<InlineKeyboardButton> keyboardButtonsRow3 = new ArrayList<>();
-            //var Button31 = new InlineKeyboardButton();
-            //Button31.setText("Иду на спектакль 31 июля");
-            //Button31.setCallbackData("play_marathon");
-            //keyboardButtonsRow3.add(Button31);
+            List<List<InlineKeyboardButton>> listButtonCollections = new ArrayList<>();
+            listButtonCollections.add(getInlineBotButton("Бродский", brodskiy));
+            listButtonCollections.add(getInlineBotButton("Маяковский", mayakBot));
+            listButtonCollections.add(getInlineBotButton("Хармс", harms));
+            listButtonCollections.add(getInlineBotButton("Ахматова", akhmatovaBot));
+            markup.setKeyboard(listButtonCollections);
+            sendMessageWithKeyBoard(absSender, user, chat.getId().toString(), markup, botGreeting);
 
             List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
-            rowList.add(keyboardButtonsRow1);
-            rowList.add(keyboardButtonsRow2);
-            rowList.add(keyboardButtonsRow3);
-
+            rowList.add(getRowOfInlineButtonWithCallback(payButtonName, "pay"));
+            rowList.add(getRowOfInlineButtonWithCallback(startWalkButtonName,"play"));
             InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
             inlineKeyboardMarkup.setKeyboard(rowList);
 
-            replyMessage = new SendMessage();
-            replyMessage.setChatId(chat.getId().toString());
-            replyMessage.enableHtml(true);
-            replyMessage.setText("Нажми, когда будешь готов!");
-            replyMessage.setReplyMarkup(inlineKeyboardMarkup);
-            execute(absSender, replyMessage, user);
-
-            replyMessage = new SendMessage();
-            replyMessage.setChatId(chat.getId().toString());
-            replyMessage.enableHtml(true);
-            replyMessage.setText("Если у тебя возникли какие-то трудности, воспользуйстя командой /help. \n" +
-                    "Мы постараемся помочь.");
-            execute(absSender, replyMessage, user);
-
-            replyMessage = new SendMessage();
-            replyMessage.setChatId(chat.getId().toString());
-            replyMessage.enableHtml(true);
-            replyMessage.setText("Или ты всегда можешь написать нам на почту. \n" +
-                    "teatr.prospektspb@gmail.com");
-            execute(absSender, replyMessage, user);
-
-            replyMessage = new SendMessage();
-            replyMessage.setChatId(chat.getId().toString());
-            replyMessage.enableHtml(true);
-            replyMessage.setText("Всю информацию о нас можно найти в группе: \n" +
-                    "https://vk.com/prospektspb");
-            execute(absSender, replyMessage, user);
-
-//            helpCommand.execute(absSender, user, chat, arguments);
+            sendMessageWithKeyBoard(absSender, user, chat.getId().toString(), inlineKeyboardMarkup, payStartMessage);
+            log.info("Marshak start command finished executing");
         }
     }
-
     /**
      * Registration of users.
-     * @param user
+     *
+     * @param user to register in DB
      */
     private void registerUser(User user) {
         if (!userService.IsUserExist(user.getId().longValue())) {
             try {
                 userService.setUserIntoDB(user);
+                log.info("User id: {} registered", user.getId());
             } catch (Exception e) {
-                e.printStackTrace();
+                log.info("registration failed", e);
             }
         }
-
     }
 
     void execute(AbsSender sender, SendMessage message, User user) {
         try {
             sender.execute(message);
         } catch (TelegramApiException e) {
-            log.debug("Sending of message by Marshak was faild! IDIOT!");
+            log.debug("Sending of message by Marshak was failed! IDIOT!");
         }
+    }
+
+    private void sendMessage(AbsSender absSender, User user, String chatId, String text) {
+        SendMessage replyMessage = new SendMessage();
+        replyMessage.setChatId(chatId);
+        replyMessage.enableHtml(true);
+        replyMessage.setText(text);
+        execute(absSender, replyMessage, user);
+    }
+
+    private void sendMessageWithKeyBoard(AbsSender absSender, User user, String chatId, InlineKeyboardMarkup markup, String text) {
+        SendMessage replyMessage = new SendMessage();
+        replyMessage.setChatId(chatId);
+        replyMessage.enableHtml(true);
+        replyMessage.setText(text);
+        replyMessage.setReplyMarkup(markup);
+        execute(absSender, replyMessage, user);
+    }
+
+    private List<InlineKeyboardButton> getInlineBotButton(String text, TelegramWebhookBot bot) {
+        List<InlineKeyboardButton> inlineKeyboardButtonCollection = new ArrayList<>();
+        InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
+        inlineKeyboardButton.setText(text);
+        inlineKeyboardButton.setUrl("https://t.me/".concat(bot.getBotUsername().concat("?start")));
+        inlineKeyboardButtonCollection.add(inlineKeyboardButton);
+        return  inlineKeyboardButtonCollection;
+    }
+    private List<InlineKeyboardButton> getRowOfInlineButtonWithCallback(String text, String callback) {
+        List<InlineKeyboardButton> keyboardButtonsRow = new ArrayList<>();
+        var Button21 = new InlineKeyboardButton();
+        Button21.setText(text);
+        Button21.setCallbackData(callback);
+        keyboardButtonsRow.add(Button21);
+        return keyboardButtonsRow;
     }
 }
