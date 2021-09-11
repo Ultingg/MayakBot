@@ -1,5 +1,6 @@
 package ru.kumkuat.application.GameModule.Abstract;
 
+import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.bots.TelegramWebhookBot;
 import org.telegram.telegrambots.extensions.bots.commandbot.commands.CommandRegistry;
@@ -10,15 +11,15 @@ import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import org.telegram.telegrambots.meta.api.objects.MessageEntity;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.payments.PreCheckoutQuery;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Map;
 import java.util.function.BiConsumer;
-
+@Slf4j
 public abstract class TelegramWebhookCommandBot extends TelegramWebhookBot implements ICommandRegistry {
     private final CommandRegistry commandRegistry;
 
@@ -58,11 +59,10 @@ public abstract class TelegramWebhookCommandBot extends TelegramWebhookBot imple
         AnswerPreCheckoutQuery answerPreCheckoutQuery = new AnswerPreCheckoutQuery();
         answerPreCheckoutQuery.setOk(true);
         answerPreCheckoutQuery.setPreCheckoutQueryId("1");
-
         try {
             System.out.println(this.execute(answerPreCheckoutQuery));
         } catch (TelegramApiException e) {
-            e.printStackTrace();
+            log.info("Prechek answer failed", e);
         }
     }
 

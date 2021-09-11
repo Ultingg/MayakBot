@@ -86,6 +86,25 @@ public class UserService {
         return badName.replaceAll("[a-zA-zа-яА-Я]", "");
     }
 
+    public void save (User user) {
+        userRepository.save(user);
+    }
+
+    public boolean isUserPromoByTelegramId(Long userTelegramId) {
+        User user = userRepository.getByTelegramUserId(userTelegramId);
+        return user.isPromo();
+    }
+
+    public void setUserPromoFlag(Long userTelegramId, boolean promoFlag) {
+        User user = userRepository.getByTelegramUserId(userTelegramId);
+        if (user != null) {
+            user.setPromo(promoFlag);
+            userRepository.save(user);
+        } else {
+            throw new NullPointerException("User is null");
+        }
+    }
+
     public boolean IsUserExist(Long telegramId) {
         return userRepository.getByTelegramUserId(telegramId) != null;
     }

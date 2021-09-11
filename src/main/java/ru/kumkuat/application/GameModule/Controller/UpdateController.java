@@ -2,21 +2,22 @@ package ru.kumkuat.application.GameModule.Controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.web.bind.annotation.*;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.kumkuat.application.GameModule.Bot.Brodskiy;
 import ru.kumkuat.application.GameModule.Bot.MarshakBot;
 import ru.kumkuat.application.GameModule.Models.User;
+import ru.kumkuat.application.GameModule.Service.PromocodeLogeService;
 import ru.kumkuat.application.GameModule.Service.ResponseService;
 import ru.kumkuat.application.GameModule.Service.TelegramChatService;
 import ru.kumkuat.application.GameModule.Service.UserService;
 
 @Slf4j
 @RestController
+@PropertySource(value = "file:../resources/promocode.yml")
 public class UpdateController {
 
     @Autowired
@@ -25,12 +26,14 @@ public class UpdateController {
     private final Brodskiy brodskiy; // бот слушатель
     private final ResponseService responseService;
     private final UserService userService;
+    private final PromocodeLogeService promocodeLogeService;
 
-    public UpdateController(MarshakBot marshakBot, Brodskiy brodskiy, ResponseService responseService, UserService userService) {
+    public UpdateController(MarshakBot marshakBot, Brodskiy brodskiy, ResponseService responseService, UserService userService, PromocodeLogeService promocodeLogeService) {
         this.marshakBot = marshakBot;
         this.brodskiy = brodskiy;
         this.responseService = responseService;
         this.userService = userService;
+        this.promocodeLogeService = promocodeLogeService;
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
@@ -66,6 +69,14 @@ public class UpdateController {
                     !commandChecker(update.getMessage())) {
                 new Thread(new CallBotResponse(update)).start();
             } else {
+                if(update.hasMessage() && update.getMessage().hasText() && update.getMessage().getText().equals(promocodeLogeService.getPromocode()) ) {
+                 User user1 =  userService.getUserByTelegramId(update.getMessage().getFrom().getId().longValue());
+                 user1.setPromo(true);
+                 userService.save(user1);
+                 marshakBot.sendMessage(SendMessage.builder()
+                         .chatId(update.getMessage().getChatId().toString())
+                         .text("Промокод принят").build());
+                }
                 marshakBot.onWebhookUpdateReceived(update);
             }
         } else if (user != null && user.isAdmin()) {

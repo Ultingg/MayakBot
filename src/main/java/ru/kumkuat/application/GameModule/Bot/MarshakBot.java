@@ -17,6 +17,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.kumkuat.application.GameModule.Abstract.TelegramWebhookCommandBot;
 import ru.kumkuat.application.GameModule.Commands.MarshakCommands.*;
 import ru.kumkuat.application.GameModule.Repository.UserRepository;
+import ru.kumkuat.application.GameModule.Service.PromocodeLogeService;
 import ru.kumkuat.application.GameModule.Service.TelegramChatService;
 import ru.kumkuat.application.GameModule.Service.TimerService;
 import ru.kumkuat.application.GameModule.Service.UserService;
@@ -77,7 +78,8 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
     private InputXSLXCommand inputXSLXCommand;
     @Autowired
     private ValidationReportCommand validationReportCommand;
-
+    @Autowired
+    private PromocodeLogeService promocodeLogeService;
     private String secretName = "Marshak";
 
     @Value("${marshak.name}")
@@ -207,19 +209,11 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
             try {
                 userService.setUserPayment(user.getId(), true);
                 replyMessage.setText("Отлично! Вcе готово, чтобы начать!");
-//                replyMessage.setText("Вcе готово, чтобы начать!\n" +
-//                        "Осталось активировать ботов:\n" +
-//                        "@" + mayakBot.getBotUsername() + "\n" +
-//                        "@" + akhmatovaBot.getBotUsername() + "\n" +
-//                        "@" + brodskiy.getBotUsername() + "\n" +
-//                        "@" + harms.getBotUsername() + "\n" +ss
-//                        "и нажать /play"
-//                );
-
+                promocodeLogeService.pomocodeLogging(user);
                 execute(replyMessage);
-                //SendFreeChat(user, update.getMessage().getChat());
+                log.info("Payment was sent by user id: {}",user.getId() );
             } catch (Exception e) {
-                e.printStackTrace();
+                log.info("Payment of user {} faild", user.getId(), e);
             }
         }
     }

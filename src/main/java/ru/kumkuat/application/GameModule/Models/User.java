@@ -46,4 +46,7 @@ public class User {
     @Column(name = "is_playing")
     private boolean isPlaying;
 
+    @Column(name = "is_promo")
+    private boolean isPromo;
+
 }

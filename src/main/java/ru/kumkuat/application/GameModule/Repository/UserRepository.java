@@ -12,4 +12,5 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
     @Query("SELECT u FROM User u where u.telegramUserId = ?1")
     User getByTelegramUserId(Long id);
+
 }

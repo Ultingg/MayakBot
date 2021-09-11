@@ -27,7 +27,9 @@ public class PayCommand extends BotCommand {
     @Autowired
     private UserRepository userRepository;
     @Value("${price.general}")
-    private Integer price;
+    private Integer generalPrice;
+    @Value("${price.promo}")
+    private Integer promoPrice;
 
     @Value("${marshak.payment.provider.token}")
     private String paymentProviderToken;
@@ -57,10 +59,7 @@ public class PayCommand extends BotCommand {
             }
         }
         else{
-            SendMessage replyMessage = new SendMessage();
-            replyMessage.setChatId(chat.getId().toString());
-            replyMessage.enableHtml(true);
-
+            var userId = chat.getId();
             SendInvoice sendInvoice = new SendInvoice();
             sendInvoice.setChatId(chat.getId().intValue());
             sendInvoice.setTitle("ПроСпект");
@@ -72,7 +71,7 @@ public class PayCommand extends BotCommand {
             List<LabeledPrice> labeledPrices = new ArrayList<>();
             LabeledPrice labeledPrice = new LabeledPrice();
             labeledPrice.setLabel("Руб");
-            labeledPrice.setAmount(price);
+            labeledPrice.setAmount(getActualPriceForCurrentUser(userId));
             labeledPrices.add(labeledPrice);
             sendInvoice.setPrices(labeledPrices);
             try {
@@ -86,5 +85,9 @@ public class PayCommand extends BotCommand {
         }
     }
 
+    private Integer getActualPriceForCurrentUser(Long id) {
+        var currentUser = userService.getUserByTelegramId(id);
+        return currentUser.isPromo()? promoPrice : generalPrice;
+    }
 
 }
