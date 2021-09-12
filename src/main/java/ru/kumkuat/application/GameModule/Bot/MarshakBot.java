@@ -81,7 +81,7 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
     @Value("${marshak.path}")
     private String botPath;
     @Value("${marshak.id}")
-    private Double Id;
+    private int Id;
     @Value("${time.hour.offset}")
     private int TimeOffset;
 

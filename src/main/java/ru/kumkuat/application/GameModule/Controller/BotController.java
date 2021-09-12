@@ -72,20 +72,26 @@ public class BotController {
 
     public void resolveUpdatesFromAdminListener(Message updateMessage) {
         updateValidationService.registerUser(updateMessage.getFrom());
-        if (updateMessage.getChat().getType().equals("private")) {
-            if (commandChecker(updateMessage)) {
-                commandExecute(updateMessage);
-            } else {
-                User user = userService.getUserByTelegramId(updateMessage.getFrom().getId().longValue());
-                if ((user.isPlaying() &&
-                        !telegramChatService.isUserAlreadyGetChat(user.getTelegramUserId()))) {
-                    Thread myThready = new Thread(new CallBotResponse(updateMessage));
-                    myThready.start();
+        if (updateMessage.hasText()) {
+            if (updateMessage.getChat().getType().equals("private")) {
+                if (commandChecker(updateMessage)) {
+                    commandExecute(updateMessage);
+                } else {
+                    User user = userService.getUserByTelegramId(updateMessage.getFrom().getId().longValue());
+                    if ((user.isPlaying() &&
+                            !telegramChatService.isUserAlreadyGetChat(user.getTelegramUserId()))) {
+                        Thread myThready = new Thread(new CallBotResponse(updateMessage));
+                        myThready.start();
+                    }
                 }
             }
         }
     }
 
+    public void resolvePerCheckoutQuery(Update update) {
+        TelegramWebhookCommandBot marshak = (MarshakBot) botCollection.stream().filter(bot -> bot instanceof MarshakBot).findFirst().get();
+        marshak.onWebhookUpdateReceived(update);
+    }
     public void resolveCallbackQueryFromAdminListener(Update update) {
         var marshak = (MarshakBot) botCollection.stream().filter(bot -> bot instanceof MarshakBot).findFirst().get();
         var user = update.getCallbackQuery().getMessage().getFrom();
@@ -111,13 +117,13 @@ public class BotController {
                 }
                 if (botName.equals("Marshak")) {
                     var marshak = botCollection.stream().filter(bot -> bot.getBotUsername().equals(botName)).findFirst();
-                    if (!marshak.isEmpty()) {
+                    if (marshak.isPresent()) {
                         sendResponseToUserInPrivate(responseContainer, (TelegramWebhookCommandBot) marshak.get());
                         log.debug("BotController processed reply of {}.", "Marshak");
                     }
                 } else {
                     var botReplier = botCollection.stream().filter(bot -> bot.getBotUsername().equals(botName)).findFirst();
-                    if (!botReplier.isEmpty()) {
+                    if (botReplier.isPresent()) {
                         sendResponseToUser(responseContainer, (BotsSender) botReplier.get());
                         log.debug("BotController processed reply of {}.", botName);
                     }

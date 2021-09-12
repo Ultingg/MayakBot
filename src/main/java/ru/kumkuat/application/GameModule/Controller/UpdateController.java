@@ -22,7 +22,10 @@ public class UpdateController {
     public void receivedUpdateFromAdminListener(@RequestBody Update update) {
         if (update.hasCallbackQuery()) {
             botController.resolveCallbackQueryFromAdminListener(update);
-        } else {
+        } else if(update.hasPreCheckoutQuery()) {
+            botController.resolvePerCheckoutQuery(update);
+        }
+        else {
             botController.resolveUpdatesFromAdminListener(update.getMessage());
         }
     }
