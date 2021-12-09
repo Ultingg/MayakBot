@@ -17,6 +17,8 @@ public class PromocodeLogeService {
 
     @Value("${promocode}")
     private String promocode;
+    @Value("${tsystemscode}")
+    private String tsystemscode;
 
     private final UserService userService;
     private final PromocodeRepository promocodeRepository;
@@ -28,6 +30,11 @@ public class PromocodeLogeService {
 
     public PromocodeLog save(PromocodeLog promocodeLog) {
         return promocodeRepository.save(promocodeLog);
+    }
+
+    public String getTsystemscode()
+    {
+        return tsystemscode;
     }
 
     public String getPromocode() {

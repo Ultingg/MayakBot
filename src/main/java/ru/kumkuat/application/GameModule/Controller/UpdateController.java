@@ -62,8 +62,6 @@ public class UpdateController {
         }
 
         if (user != null && user.getTelegramUserId().equals(update.getMessage().getChatId())) {
-
-
             if (user.isPlaying() &&
                     !telegramChatService.isUserAlreadyPlaying(user.getTelegramUserId()) &&
                     !commandChecker(update.getMessage())) {
@@ -76,6 +74,15 @@ public class UpdateController {
                  marshakBot.sendMessage(SendMessage.builder()
                          .chatId(update.getMessage().getChatId().toString())
                          .text("Промокод принят").build());
+                }
+                if(update.hasMessage() && update.getMessage().hasText() && update.getMessage().getText().equals(promocodeLogeService.getTsystemscode()))
+                {
+                    User user1 =  userService.getUserByTelegramId(update.getMessage().getFrom().getId().longValue());
+                    user1.setHasPay(true);
+                    userService.save(user1);
+                    marshakBot.sendMessage(SendMessage.builder()
+                            .chatId(update.getMessage().getChatId().toString())
+                            .text("Промокод принят. Доступ предоставлен. Нажмите начать прогулку.").build());
                 }
                 marshakBot.onWebhookUpdateReceived(update);
             }
