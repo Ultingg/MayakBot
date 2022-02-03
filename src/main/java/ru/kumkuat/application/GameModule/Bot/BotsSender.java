@@ -4,6 +4,9 @@ import org.telegram.telegrambots.meta.api.methods.send.*;
 import org.telegram.telegrambots.meta.generics.BotOptions;
 
 public interface BotsSender extends BotOptions {
+
+    String getSecretName();
+
     void sendLocation(SendLocation sendLocation);
 
     void sendVoice(SendVoice sendVoice);

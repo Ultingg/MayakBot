@@ -31,6 +31,20 @@ import java.util.*;
 @AllArgsConstructor
 @PropertySource(value = "file:../resources/externalsecret.yml")
 public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender, InitializingBean {
+
+    @Value("${marshak.secretName}")
+    private String secretName;
+    @Value("${marshak.name}")
+    private String botUsername;
+    @Value("${marshak.token}")
+    private String botToken;
+    @Value("${marshak.path}")
+    private String botPath;
+    @Value("${marshak.id}")
+    private int Id;
+    @Value("${time.hour.offset}")
+    private int TimeOffset;
+
     @Autowired
     private TelegramChatService telegramChatService;
     @Autowired
@@ -72,21 +86,8 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
     @Autowired
     private ValidationReportCommand validationReportCommand;
 
-    private String secretName = "Marshak";
-
-    @Value("${marshak.name}")
-    private String botUsername;
-    @Value("${marshak.token}")
-    private String botToken;
-    @Value("${marshak.path}")
-    private String botPath;
-    @Value("${marshak.id}")
-    private int Id;
-    @Value("${time.hour.offset}")
-    private int TimeOffset;
 
     private MarshakBot() {
-
     }
 
     public void TimerOperation() {
@@ -282,5 +283,9 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
             e.getStackTrace();
             log.debug("{} failed sending SendDocument!", secretName);
         }
+    }
+
+    public String getSecretName() {
+        return secretName;
     }
 }

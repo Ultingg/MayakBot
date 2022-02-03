@@ -18,7 +18,8 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 @PropertySource(value = "file:../resources/externalsecret.yml")
 public class AkhmatovaBot extends TelegramWebhookBot implements BotsSender {
 
-    private final String secretName = "Akhmatova";
+    @Value("${akhmatova.secretName}")
+    private String secretName;
     @Value("${akhmatova.name}")
     private String botUsername;
     @Value("${akhmatova.token}")
@@ -106,5 +107,8 @@ public class AkhmatovaBot extends TelegramWebhookBot implements BotsSender {
             e.printStackTrace();
             return false;
         }
+    }
+    public String getSecretName() {
+        return secretName;
     }
 }

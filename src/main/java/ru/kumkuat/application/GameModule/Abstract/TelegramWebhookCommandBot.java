@@ -1,5 +1,6 @@
 package ru.kumkuat.application.GameModule.Abstract;
 
+import org.junit.platform.commons.util.StringUtils;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.bots.TelegramWebhookBot;
 import org.telegram.telegrambots.extensions.bots.commandbot.commands.CommandRegistry;
@@ -129,6 +130,10 @@ public abstract class TelegramWebhookCommandBot extends TelegramWebhookBot imple
     }
 
     public boolean isCommand(String message) {
+        if(StringUtils.isBlank(message))
+        {
+            return false;
+        }
         String convertedMessage = message.replace("/","");
         for (var command : this.getRegisteredCommands()) {
             if (command.getCommandIdentifier().equals(convertedMessage)) {

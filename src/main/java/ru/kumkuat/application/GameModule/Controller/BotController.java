@@ -24,7 +24,7 @@ import java.util.List;
 @Component
 public class BotController {
 
-    private final List<TelegramWebhookBot> botCollection;
+    private final List<BotsSender> botCollection;
     private final ResponseService responseService;
     private final UserService userService;
     private final TelegramChatService telegramChatService;
@@ -78,7 +78,7 @@ public class BotController {
                     commandExecute(updateMessage);
                 } else {
                     User user = userService.getUserByTelegramId(updateMessage.getFrom().getId().longValue());
-                    if ((user.isPlaying() &&
+                     if ((user.isPlaying() &&
                             !telegramChatService.isUserAlreadyGetChat(user.getTelegramUserId()))) {
                         Thread myThready = new Thread(new CallBotResponse(updateMessage));
                         myThready.start();
@@ -92,6 +92,7 @@ public class BotController {
         TelegramWebhookCommandBot marshak = (MarshakBot) botCollection.stream().filter(bot -> bot instanceof MarshakBot).findFirst().get();
         marshak.onWebhookUpdateReceived(update);
     }
+
     public void resolveCallbackQueryFromAdminListener(Update update) {
         var marshak = (MarshakBot) botCollection.stream().filter(bot -> bot instanceof MarshakBot).findFirst().get();
         var user = update.getCallbackQuery().getMessage().getFrom();
@@ -116,13 +117,13 @@ public class BotController {
                     e.getStackTrace();
                 }
                 if (botName.equals("Marshak")) {
-                    var marshak = botCollection.stream().filter(bot -> bot.getBotUsername().equals(botName)).findFirst();
+                    var marshak = botCollection.stream().filter(bot -> bot.getSecretName().equals(botName)).findFirst();
                     if (marshak.isPresent()) {
                         sendResponseToUserInPrivate(responseContainer, (TelegramWebhookCommandBot) marshak.get());
                         log.debug("BotController processed reply of {}.", "Marshak");
                     }
                 } else {
-                    var botReplier = botCollection.stream().filter(bot -> bot.getBotUsername().equals(botName)).findFirst();
+                    var botReplier = botCollection.stream().filter(bot -> bot.getSecretName().equals(botName)).findFirst();
                     if (botReplier.isPresent()) {
                         sendResponseToUser(responseContainer, (BotsSender) botReplier.get());
                         log.debug("BotController processed reply of {}.", botName);
