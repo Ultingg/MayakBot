@@ -73,15 +73,25 @@ public class BotController {
         updateValidationService.registerUser(updateMessage.getFrom());
         if (updateMessage.hasText()
                 && (updateMessage.getChat().getType().equals("private"))) {
-            if (commandChecker(updateMessage)) {
-                commandExecute(updateMessage);
-            } else {
+//            if (commandChecker(updateMessage)) {
+//                commandExecute(updateMessage);
+//            } else {
                 User user = userService.getUserByTelegramId(updateMessage.getFrom().getId().longValue());
                 if ((user.isPlaying() && !telegramChatService.isUserAlreadyGetChat(user.getTelegramUserId()))) {
                     Thread myThready = new Thread(new CallBotResponse(updateMessage));
                     myThready.start();
-                }
+//                }
             }
+        }
+    }
+
+    public void resolveCommandMessage(Update update) {
+        Message updateMessage = update.getMessage();
+        updateValidationService.registerUser(updateMessage.getFrom());
+        User user = userService.getUserByTelegramId(updateMessage.getFrom().getId().longValue());
+        if (updateMessage.getChat().getType().equals("private")) {
+            var marshak = (MarshakBot) botCollection.stream().filter(bot -> bot instanceof MarshakBot).findFirst().get();
+            marshak.onWebhookUpdateReceived(update);
         }
     }
 

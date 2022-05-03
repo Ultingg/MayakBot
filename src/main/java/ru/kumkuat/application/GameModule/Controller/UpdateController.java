@@ -27,7 +27,11 @@ public class UpdateController {
         } else if(update.hasPreCheckoutQuery()) {
             botController.resolvePerCheckoutQuery(update);
         }
+        else if(update.getMessage().isCommand()) {
+            botController.resolveCommandMessage(update);
+        }
         else {
+
             botController.resolveUpdatesFromAdminListener(update.getMessage());
         }
     }
