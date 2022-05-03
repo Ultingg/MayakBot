@@ -86,7 +86,8 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
     private InputXSLXCommand inputXSLXCommand;
     @Autowired
     private ValidationReportCommand validationReportCommand;
-
+    @Autowired
+    private PromocodeLogeService promocodeLogeService;
 
     private MarshakBot() {
     }

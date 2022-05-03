@@ -46,9 +46,10 @@ public class PayCommand extends BotCommand {
 
     @Override
     public void execute(AbsSender absSender, User user, Chat chat, String[] arguments) {
+        Long userId = null;
         if (arguments != null && arguments.length > 0) {
             try {
-                var userId = Long.parseLong(arguments[0]);
+                userId = Long.parseLong(arguments[0]);
                 var player = userService.getUserByTelegramId(userId);
                 player.setHasPay(!player.isHasPay());
                 userRepository.save(player);
