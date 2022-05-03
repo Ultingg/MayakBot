@@ -81,7 +81,7 @@ public class ResponseService {
 
     public List<ResponseContainer> ReceiveNextReplies(String chatId, Long userTelegramId, Message message) {
         Scene scene = sceneService.getScene(getSceneId(userTelegramId.intValue()));
-        return ReplyResolver(chatId, scene, userTelegramId, message);
+        return replyResolver(chatId, scene, userTelegramId, message);
     }
 
     private boolean checkIncomingMessage(Message message, Trigger trigger) {
@@ -112,7 +112,7 @@ public class ResponseService {
         return result;
     }
 
-    private List<ResponseContainer> ReplyResolver(String chatId, Scene scene, Long userId, Message message) {  // отправить список контейнеров
+    private List<ResponseContainer> replyResolver(String chatId, Scene scene, Long userId, Message message) {  // отправить список контейнеров
         List<Reply> replyList = scene.getReplyCollection();
         List<ResponseContainer> responseContainers = new ArrayList<>();
         ResponseContainer responseContainer;

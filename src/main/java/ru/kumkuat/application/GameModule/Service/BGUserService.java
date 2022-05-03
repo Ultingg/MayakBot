@@ -109,9 +109,9 @@ public class BGUserService {
     }
 
     private LocalDate getDate() {
-        int year = Integer.valueOf(startDateResource.substring(0, 4));
-        int month = Integer.valueOf(startDateResource.substring(5, 7));
-        int day = Integer.valueOf(startDateResource.substring(8));
+        int year = Integer.parseInt(startDateResource.substring(0, 4));
+        int month = Integer.parseInt(startDateResource.substring(5, 7));
+        int day = Integer.parseInt(startDateResource.substring(8));
         return LocalDate.of(year, month, day);
     }
 
@@ -121,15 +121,9 @@ public class BGUserService {
         List<BGUser> bgUsers = new ArrayList<>();
         bgUserRepository.findAll().forEach(bgUsers::add);
 
-//        List<String> bgUsersNames = bgUsers.stream()
-//                .map(element->element.getTelegramUserName())
-//                .collect(Collectors.toList());
         List<String> usersNames = users.stream()
                 .map(element->element.getName().toLowerCase())
                 .collect(Collectors.toList());
-//        List<String> diffNames = bgUsersNames.stream()
-//                .filter(element -> !usersNames.contains(element))
-//                .collect(Collectors.toList());
         List<BGUser> diffBGUsers = bgUsers.stream()
                 .filter(element -> !usersNames.contains(element.getTelegramUserName().toLowerCase()))
                 .collect(Collectors.toList());

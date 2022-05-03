@@ -48,7 +48,6 @@ public class BotController {
         webhookSetting(marshakBot);
     }
 
-    //beanPreconstruct??? or to bots
     private void webhookSetting(TelegramWebhookBot telegramWebhookBot) {
         try {
             SetWebhook setWebhook = new SetWebhook();
@@ -72,17 +71,15 @@ public class BotController {
 
     public void resolveUpdatesFromAdminListener(Message updateMessage) {
         updateValidationService.registerUser(updateMessage.getFrom());
-        if (updateMessage.hasText()) {
-            if (updateMessage.getChat().getType().equals("private")) {
-                if (commandChecker(updateMessage)) {
-                    commandExecute(updateMessage);
-                } else {
-                    User user = userService.getUserByTelegramId(updateMessage.getFrom().getId().longValue());
-                     if ((user.isPlaying() &&
-                            !telegramChatService.isUserAlreadyGetChat(user.getTelegramUserId()))) {
-                        Thread myThready = new Thread(new CallBotResponse(updateMessage));
-                        myThready.start();
-                    }
+        if (updateMessage.hasText()
+                && (updateMessage.getChat().getType().equals("private"))) {
+            if (commandChecker(updateMessage)) {
+                commandExecute(updateMessage);
+            } else {
+                User user = userService.getUserByTelegramId(updateMessage.getFrom().getId().longValue());
+                if ((user.isPlaying() && !telegramChatService.isUserAlreadyGetChat(user.getTelegramUserId()))) {
+                    Thread myThready = new Thread(new CallBotResponse(updateMessage));
+                    myThready.start();
                 }
             }
         }
