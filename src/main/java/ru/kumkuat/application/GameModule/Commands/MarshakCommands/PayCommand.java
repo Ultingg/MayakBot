@@ -46,7 +46,7 @@ public class PayCommand extends BotCommand {
 
     @Override
     public void execute(AbsSender absSender, User user, Chat chat, String[] arguments) {
-        Long userId = null;
+        Long userId = user.getId().longValue();
         if (arguments != null && arguments.length > 0) {
             try {
                 userId = Long.parseLong(arguments[0]);
@@ -89,15 +89,15 @@ public class PayCommand extends BotCommand {
                 log.info("Invoice sent to {}", chat.getId());
             } catch (TelegramApiException e) {
                 log.info("Exception on creation of invoice ", e);
-
             }
         }
     }
 
     private Integer getActualPriceForCurrentUser(Long id) {
         var currentUser = userService.getUserByTelegramId(id);
-        return currentUser.isPromo()? promoPrice : generalPrice;
+        return currentUser.isPromo() ? promoPrice : generalPrice;
     }
+
     public void sendInfoMessageToAdmin(AbsSender absSender, Long userTelegeramId) {
         try {
             if (userService.IsUserExist(userTelegeramId)) {
@@ -114,12 +114,13 @@ public class PayCommand extends BotCommand {
                 sendMessage.setText(reply);
                 execute(absSender, sendMessage);
             }
-        }  catch (TelegramCommandException e) {
+        } catch (TelegramCommandException e) {
             e.printStackTrace();
             e.getLogMessage(this, "when sending message to Admin chat..");
         }
     }
-    private void execute(AbsSender absSender,SendMessage sendMessage) throws TelegramCommandException {
+
+    private void execute(AbsSender absSender, SendMessage sendMessage) throws TelegramCommandException {
         try {
             absSender.execute(sendMessage);
         } catch (TelegramApiException e) {

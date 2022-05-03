@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramWebhookBot;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updates.SetWebhook;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -12,10 +13,7 @@ import ru.kumkuat.application.GameModule.Abstract.TelegramWebhookCommandBot;
 import ru.kumkuat.application.GameModule.Bot.*;
 import ru.kumkuat.application.GameModule.Collections.ResponseContainer;
 import ru.kumkuat.application.GameModule.Models.User;
-import ru.kumkuat.application.GameModule.Service.ResponseService;
-import ru.kumkuat.application.GameModule.Service.TelegramChatService;
-import ru.kumkuat.application.GameModule.Service.UpdateValidationService;
-import ru.kumkuat.application.GameModule.Service.UserService;
+import ru.kumkuat.application.GameModule.Service.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,14 +26,17 @@ public class BotController {
     private final ResponseService responseService;
     private final UserService userService;
     private final TelegramChatService telegramChatService;
+    private final PromocodeLogeService promocodeLogeService;
     @Autowired
     private UpdateValidationService updateValidationService;
 
     public BotController(MarshakBot marshakBot, Harms harms, MayakBot mayakBot, AkhmatovaBot akhmatovaBot,
-                         Brodskiy brodskiy, ResponseService responseService, UserService userService, TelegramChatService telegramChatService) {
+                         Brodskiy brodskiy, ResponseService responseService, UserService userService, TelegramChatService telegramChatService,
+                         PromocodeLogeService promocodeLogeService) {
         this.responseService = responseService;
         this.userService = userService;
         this.telegramChatService = telegramChatService;
+        this.promocodeLogeService = promocodeLogeService;
 
         botCollection = new ArrayList<>();
         botCollection.add(harms);
@@ -73,14 +74,11 @@ public class BotController {
         updateValidationService.registerUser(updateMessage.getFrom());
         if (updateMessage.hasText()
                 && (updateMessage.getChat().getType().equals("private"))) {
-//            if (commandChecker(updateMessage)) {
-//                commandExecute(updateMessage);
-//            } else {
-                User user = userService.getUserByTelegramId(updateMessage.getFrom().getId().longValue());
-                if ((user.isPlaying() && !telegramChatService.isUserAlreadyGetChat(user.getTelegramUserId()))) {
-                    Thread myThready = new Thread(new CallBotResponse(updateMessage));
-                    myThready.start();
-//                }
+            promoResolve(updateMessage);
+            User user = userService.getUserByTelegramId(updateMessage.getFrom().getId().longValue());
+            if ((user.isPlaying() && !telegramChatService.isUserAlreadyGetChat(user.getTelegramUserId()))) {
+                Thread myThready = new Thread(new CallBotResponse(updateMessage));
+                myThready.start();
             }
         }
     }
@@ -208,7 +206,7 @@ public class BotController {
 
         @Override
         public void run() {
-            System.out.println("Привет из побочного потока!");
+            log.info("Another thread launched!");
             Message incomingMessage = message;
             if (incomingMessage.hasText() && commandChecker(incomingMessage)) {
                 log.debug("Received throw to Marshak.");
@@ -230,6 +228,28 @@ public class BotController {
                 .filter(bot -> ((TelegramWebhookCommandBot) bot).isCommand(message.getText())).findFirst();
         if (!commandBot.isEmpty()) {
             ((TelegramWebhookCommandBot) commandBot.get()).InvokeCommand(message);
+        }
+    }
+
+    private void promoResolve(Message updateMessage) {
+        User user = userService.getUserByTelegramId(updateMessage.getFrom().getId().longValue());
+        var marshak = (MarshakBot) botCollection.stream().filter(bot -> bot instanceof MarshakBot).findFirst().get();
+
+        String message = updateMessage.getText();
+        if (message.equals(promocodeLogeService.getPromocode())) {
+            log.info("User id: {} used promocode",user.getTelegramUserId());
+            user.setPromo(true);
+            userService.save(user);
+            marshak.sendMessage(SendMessage.builder()
+                    .chatId(updateMessage.getChatId().toString())
+                    .text("Промокод принят").build());
+        } else if (message.equals(promocodeLogeService.getFreeCode())) {
+            log.info("User id: {} used FreePFromocode",user.getTelegramUserId());
+            user.setHasPay(true);
+            userService.save(user);
+            marshak.sendMessage(SendMessage.builder()
+                    .chatId(updateMessage.getChatId().toString())
+                    .text("Промокод принят. Вы можете бесплатно пройти по маршруту!").build());
         }
     }
 }

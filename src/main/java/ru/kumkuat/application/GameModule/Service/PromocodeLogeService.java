@@ -32,7 +32,7 @@ public class PromocodeLogeService {
         return promocodeRepository.save(promocodeLog);
     }
 
-    public String getTsystemscode()
+    public String getFreeCode()
     {
         return tsystemscode;
     }

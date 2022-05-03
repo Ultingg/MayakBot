@@ -11,6 +11,7 @@ import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.kumkuat.application.GameModule.Bot.*;
+import ru.kumkuat.application.GameModule.Models.TelegramChat;
 import ru.kumkuat.application.GameModule.Service.SceneService;
 import ru.kumkuat.application.GameModule.Service.TelegramChatService;
 import ru.kumkuat.application.GameModule.Service.UserService;
@@ -49,38 +50,21 @@ public class PlayCommand extends BotCommand {
     public void execute(AbsSender absSender, User user, Chat chat, String[] arguments) {
 
         long userId = user.getId().longValue();
-//        if (userId == marshakBot.getId() && userService.IsUserExist(chat.getId())) {
-//            userId = chat.getId();
-//        }
-
-        //if (userId == chat.getId()) {
-
             log.debug("Marshak ");
             SendMessage replyMessage = new SendMessage();
             replyMessage.setChatId(chat.getId().toString());
             replyMessage.enableHtml(true);
 
             try {
-//                if (!userService.IsUserExist(userId)) {
-//                    try {
-//                        userService.setUserIntoDB(user);
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
-//                    //replyMessage.setText("Вы успешно зарегистрировались!");
-//                    execute(absSender, replyMessage, user);
-//                } else {
                     if ( userService.IsUserHasPayment(userId)) {
                         SendFreeChat(absSender, Long.valueOf(userId));
                     } else {
                         replyMessage.setText("Необходимо внести оплату!");
                         execute(absSender, replyMessage, user);
                     }
-                //}
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        //}
     }
 
     boolean isBotsStarting(AbsSender absSender, Long userId) throws TelegramApiException {
@@ -117,7 +101,7 @@ public class PlayCommand extends BotCommand {
         replyMessage.setChatId(userId.toString());
         replyMessage.enableHtml(true);
         if (userService.IsUserExist(userId.longValue())) {
-            if (!telegramChatService.isUserAlreadyGetChat(userId) ) {
+            if (!telegramChatService.isUserAlreadyGetChat(userId)) {
                 if (isBotsStarting(absSender, Long.valueOf(userId))) {
 
                     if(userService.getUserByTelegramId(userId).getSceneId() < 1) {
@@ -132,31 +116,14 @@ public class PlayCommand extends BotCommand {
                     else  {
                         userService.setPlaying(Long.valueOf(userId), true);
                         replyMessage.setText("Понеслась душа в рай!");
-                        marshakBot.getSendChatCommand().SendFreeChat(absSender, userId); /** Sending Link to chat if User didn't finish the Game **/
+                        marshakBot.getSendChatCommand().sendFreeChat(absSender, userId); /** Sending Link to chat if User didn't finish the Game **/
 
                     }
-//                    if (telegramChatService.isFreeChatHas()) {
-//
-//                        var freeChat = telegramChatService.getFreeChat();
-//                        freeChat.setBusy(true);
-//                        //freeChat.setStartPlayTime(new Date());
-//                        freeChat.setUserId(userId.longValue());
-//                        telegramChatService.saveChatIntoDB(freeChat);
-//
-//                        ExportChatInviteLink exportChatInviteLink = new ExportChatInviteLink(freeChat.getChatId().toString());
-//                        var inviteLink = absSender.execute(exportChatInviteLink);
-//
-//                        replyMessage.setText("Присоединяйся! Для старта напиши \"Привет\"");
-//                        absSender.execute(replyMessage);
-//                        replyMessage.setText(inviteLink);
-//                        absSender.execute(replyMessage);
-//                        //нужно сделать проверку что пользователь играет в беседке, которая зарезирвирована. Что он вошел в беседку.
-//
-//                    } else {
-//                        replyMessage.setText("Нет свободных чатов, попробуйте позже");
-//                        absSender.execute(replyMessage);
-//                    }
                 }
+            } else if (telegramChatService.isUserAlreadyGetChat(userId)) {
+                TelegramChat freeChat = telegramChatService.getChatByUserTelegramId(userId);
+                log.info("User's been invited to chat {}, resending invite link..", freeChat.getChatId());
+                marshakBot.getSendChatCommand().sendLinkToChat(replyMessage, absSender, freeChat, userId);
             } else {
                 replyMessage.setText("Вы уже начали игру. Чтобы начать заново, нужно ее закончить.");
                 absSender.execute(replyMessage);
@@ -168,6 +135,7 @@ public class PlayCommand extends BotCommand {
         try {
             sender.execute(message);
         } catch (TelegramApiException e) {
+            log.error(e.getMessage());
         }
     }
 }
