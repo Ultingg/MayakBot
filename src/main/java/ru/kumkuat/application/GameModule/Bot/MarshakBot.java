@@ -18,6 +18,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.kumkuat.application.GameModule.Abstract.TelegramWebhookCommandBot;
 import ru.kumkuat.application.GameModule.Commands.MarshakCommands.*;
 import ru.kumkuat.application.GameModule.Repository.UserRepository;
+import ru.kumkuat.application.GameModule.Service.PromocodeLogeService;
 import ru.kumkuat.application.GameModule.Service.TelegramChatService;
 import ru.kumkuat.application.GameModule.Service.TimerService;
 import ru.kumkuat.application.GameModule.Service.UserService;
@@ -205,10 +206,12 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
             try {
                 userService.setUserPayment(user.getId(), true);
                 replyMessage.setText("Отлично! Вcе готово, чтобы начать!");
+                promocodeLogeService.pomocodeLogging(user);
                 execute(replyMessage);
                 log.info("Paid was done bu user with id: {}", user.getId());
+
             } catch (Exception e) {
-                e.printStackTrace();
+                log.info("Payment of user {} faild", user.getId(), e);
             }
         }
     }

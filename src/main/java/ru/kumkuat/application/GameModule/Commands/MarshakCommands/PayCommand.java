@@ -29,6 +29,10 @@ public class PayCommand extends BotCommand {
     private UserService userService;
     @Autowired
     private UserRepository userRepository;
+    @Value("${price.general}")
+    private Integer generalPrice;
+    @Value("${price.promo}")
+    private Integer promoPrice;
     @Autowired
     private TelegramChatService telegramChatService;
 
@@ -75,20 +79,24 @@ public class PayCommand extends BotCommand {
             List<LabeledPrice> labeledPrices = new ArrayList<>();
             LabeledPrice labeledPrice = new LabeledPrice();
             labeledPrice.setLabel("Руб");
-            labeledPrice.setAmount(70000);
+            labeledPrice.setAmount(getActualPriceForCurrentUser(userId));
             labeledPrices.add(labeledPrice);
             sendInvoice.setPrices(labeledPrices);
             try {
                 var result = absSender.execute(sendInvoice);
                 System.out.println("result text:" + result.getInvoice().getTitle());
-
+                log.info("Invoice sent to {}", chat.getId());
             } catch (TelegramApiException e) {
-                e.getStackTrace();
-                log.info("Exception while executing pay command.");
+                log.info("Exception on creation of invoice ", e);
+
             }
         }
     }
 
+    private Integer getActualPriceForCurrentUser(Long id) {
+        var currentUser = userService.getUserByTelegramId(id);
+        return currentUser.isPromo()? promoPrice : generalPrice;
+    }
     public void sendInfoMessageToAdmin(AbsSender absSender, Long userTelegeramId) {
         try {
             if (userService.IsUserExist(userTelegeramId)) {

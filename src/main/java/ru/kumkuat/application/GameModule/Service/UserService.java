@@ -7,6 +7,7 @@ import ru.kumkuat.application.GameModule.Models.BGUser;
 import ru.kumkuat.application.GameModule.Models.User;
 import ru.kumkuat.application.GameModule.Repository.UserRepository;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,6 +72,7 @@ public class UserService {
         }
         user.setSceneId(0L);
         user.setTelegramUserId((long) telegramUser.getId());
+        user.setRegistrationStamp(LocalDateTime.now().plusHours(3));
         userRepository.save(user);
         return user.getId();
     }
@@ -81,6 +83,25 @@ public class UserService {
 
     private String badNameConvertingToGoodNameForLastFirstName(String badName) {
         return badName.replaceAll("[a-zA-zа-яА-Я]", "");
+    }
+
+    public void save (User user) {
+        userRepository.save(user);
+    }
+
+    public boolean isUserPromoByTelegramId(Long userTelegramId) {
+        User user = userRepository.getByTelegramUserId(userTelegramId);
+        return user.isPromo();
+    }
+
+    public void setUserPromoFlag(Long userTelegramId, boolean promoFlag) {
+        User user = userRepository.getByTelegramUserId(userTelegramId);
+        if (user != null) {
+            user.setPromo(promoFlag);
+            userRepository.save(user);
+        } else {
+            throw new NullPointerException("User is null");
+        }
     }
 
     public boolean IsUserExist(Long telegramId) {

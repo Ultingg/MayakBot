@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -45,5 +46,11 @@ public class User {
 
     @Column(name = "is_playing")
     private boolean isPlaying;
+
+    @Column(name = "is_promo")
+    private boolean isPromo;
+
+    @Column(name = "registration_stamp")
+    private LocalDateTime registrationStamp;
 
 }
