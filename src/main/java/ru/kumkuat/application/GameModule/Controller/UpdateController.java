@@ -15,27 +15,26 @@ public class UpdateController {
 
     @PostMapping(value = "/")
     public void receivedUpdateFromSimpleListener(@RequestBody Update update) {
-        if(update.hasMessage()){
-            log.info("Incoming update to path '/' from chat with id: {}", update.getMessage().getChatId());
+        if(update.hasMessage()) {
+//            log.info("Incoming update to path '/' from chat with id: {}", Long.valueOf(update.getMessage().getChatId()));
+            botController.resolveUpdatesFromSimpleListener(update.getMessage());
         }
-
-        botController.resolveUpdatesFromSimpleListener(update.getMessage());
     }
 
     @PostMapping(value = "/admin")
     public void receivedUpdateFromAdminListener(@RequestBody Update update) {
         if(update.hasMessage()){
-            log.info("Incoming update to path '/admin' from chat with id: {}", update.getMessage().getChatId());
+//            log.info("Incoming update to path '/admin' from chat with id: {}", Long.valueOf(update.getMessage().getChatId()));
         }
         if (update.hasCallbackQuery()) {
-                log.info("CallbackQuery from chat with id: {}", update.getCallbackQuery().getFrom().getId());
+//                log.info("CallbackQuery from chat with id: {}", Long.valueOf(update.getCallbackQuery().getFrom().getId()));
             botController.resolveCallbackQueryFromAdminListener(update);
         } else if(update.hasPreCheckoutQuery()) {
-            log.info("PerCheckoutQuery from chat with id: {}", update.getPreCheckoutQuery().getFrom().getId());
+//            log.info("PerCheckoutQuery from chat with id: {}",Long.valueOf( update.getPreCheckoutQuery().getFrom().getId()));
             botController.resolvePerCheckoutQuery(update);
         }
         else if(update.getMessage().isCommand()) {
-            log.info("Command from chat with id: {}", update.getMessage().getChatId());
+//            log.info("Command from chat with id: {}", Long.valueOf(update.getMessage().getChatId()));
             botController.resolveCommandMessage(update);
         }
         else {

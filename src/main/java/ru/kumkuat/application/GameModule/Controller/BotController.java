@@ -60,7 +60,6 @@ public class BotController {
     }
 
     public void resolveUpdatesFromSimpleListener(Message updateMessage) {
-        updateValidationService.registerUser(updateMessage.getFrom());
         User user = userService.getUserByTelegramId(updateMessage.getFrom().getId().longValue());
         if (!user.isAdmin()
                 && !updateMessage.getChat().getType().equals("private")
@@ -86,7 +85,6 @@ public class BotController {
     public void resolveCommandMessage(Update update) {
         Message updateMessage = update.getMessage();
         updateValidationService.registerUser(updateMessage.getFrom());
-        User user = userService.getUserByTelegramId(updateMessage.getFrom().getId().longValue());
         if (updateMessage.getChat().getType().equals("private")) {
             var marshak = (MarshakBot) botCollection.stream().filter(bot -> bot instanceof MarshakBot).findFirst().get();
             marshak.onWebhookUpdateReceived(update);

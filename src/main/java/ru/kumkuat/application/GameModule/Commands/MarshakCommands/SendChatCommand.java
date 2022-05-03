@@ -78,18 +78,10 @@ public class SendChatCommand extends BotCommand {
             absSender.execute(unbanChatMember);
         } catch (TelegramApiRequestException ex)
         {
-            log.error("User {} is owner of chat {} and can't be kicked", userId,freeChat.getChatId());
+            log.error("User {} is owner of chat {} and can't be kicked", userId, freeChat.getChatId());
         }
 
             sendLinkToChat(replyMessage, absSender, freeChat, userId);
-//            ExportChatInviteLink exportChatInviteLink = new ExportChatInviteLink(freeChat.getChatId().toString());
-//            var inviteLink = absSender.execute(exportChatInviteLink);
-//            log.info("Invite link to chat id: {} was sended to user: {}", freeChat.getChatId(), userId);
-//
-//            replyMessage.setText("Присоединяйся! Для старта напиши \"Привет\"");
-//            absSender.execute(replyMessage);
-//            replyMessage.setText(inviteLink);
-//            absSender.execute(replyMessage);
             //нужно сделать проверку что пользователь играет в беседке, которая зарезирвирована. Что он вошел в беседку.
 
         } else {
@@ -102,7 +94,7 @@ public class SendChatCommand extends BotCommand {
     public void sendLinkToChat(SendMessage replyMessage, AbsSender absSender, TelegramChat freeChat, Long userId) throws TelegramApiException {
         ExportChatInviteLink exportChatInviteLink = new ExportChatInviteLink(freeChat.getChatId().toString());
         var inviteLink = absSender.execute(exportChatInviteLink);
-        log.info("Invite link to chat id: {} was sended to user: {}", freeChat.getChatId(),userId);
+        log.info("Invite link to chat id: {} was sended to user: {}", freeChat.getChatId(), userId);
 
         replyMessage.setText("Присоединяйся! Для старта напиши \"Привет\"");
         absSender.execute(replyMessage);
