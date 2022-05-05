@@ -60,8 +60,10 @@ public class BotController {
     }
 
     public void resolveUpdatesFromSimpleListener(Message updateMessage) {
-        User user = userService.getUserByTelegramId(updateMessage.getFrom().getId().longValue());
-        if (!user.isAdmin()
+        long id =  updateMessage.getFrom().getId().longValue();
+        log.info("user id from update: {}", id);
+        User user = userService.getUserByTelegramId(id);
+        if (user != null && !user.isAdmin()
                 && !updateMessage.getChat().getType().equals("private")
                 && !commandChecker(updateMessage)) {
             Thread myThready = new Thread(new CallBotResponse(updateMessage));
@@ -207,10 +209,10 @@ public class BotController {
             log.info("Another thread launched!");
             Message incomingMessage = message;
             if (incomingMessage.hasText() && commandChecker(incomingMessage)) {
-                log.debug("Received throw to Marshak.");
+                log.info("Received throw to Marshak.");
                 responseResolver(responseService.messageReceiver(incomingMessage));
             } else {
-                log.debug("Received message.");
+                log.info("Received message.");
                 responseResolver(responseService.messageReceiver(incomingMessage));
             }
         }
@@ -235,14 +237,14 @@ public class BotController {
 
         String message = updateMessage.getText();
         if (message.equals(promocodeLogeService.getPromocode())) {
-            log.info("User id: {} used promocode",user.getTelegramUserId());
+            log.info("User id: {} used promocode", user.getTelegramUserId());
             user.setPromo(true);
             userService.save(user);
             marshak.sendMessage(SendMessage.builder()
                     .chatId(updateMessage.getChatId().toString())
                     .text("Промокод принят").build());
         } else if (message.equals(promocodeLogeService.getFreeCode())) {
-            log.info("User id: {} used FreePFromocode",user.getTelegramUserId());
+            log.info("User id: {} used FreePFromocode", user.getTelegramUserId());
             user.setHasPay(true);
             userService.save(user);
             marshak.sendMessage(SendMessage.builder()

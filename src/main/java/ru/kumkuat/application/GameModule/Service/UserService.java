@@ -2,7 +2,6 @@ package ru.kumkuat.application.GameModule.Service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.kumkuat.application.GameModule.Exceptions.UserServiceException;
 import ru.kumkuat.application.GameModule.Models.BGUser;
 import ru.kumkuat.application.GameModule.Models.User;
 import ru.kumkuat.application.GameModule.Repository.UserRepository;
@@ -23,10 +22,10 @@ public class UserService {
         return userRepository.getById(id);
     }
 
-    public User getUserByTelegramId(Long telegramId) throws UserServiceException {
+    public User getUserByTelegramId(Long telegramId) {
         User user = userRepository.getByTelegramUserId(telegramId);
         if (user == null) {
-            throw new UserServiceException("User is doesn't exist in DB. UserServiceException.");
+            log.info("User with id {} doesn't exist in DB. UserServiceException.", telegramId);
         }
         return user;
     }

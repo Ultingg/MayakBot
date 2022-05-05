@@ -47,19 +47,22 @@ public class ResponseService {
         Long userId = Long.valueOf(message.getFrom().getId());
         User user = userService.getUserByTelegramId(userId);
         Long sceneId = getSceneId(message.getFrom().getId());
+        log.info("Resolving message...");
         if (user.getSceneId() <= sceneService.count() - 1) {
             Scene scene = sceneService.getScene(sceneId);
             Trigger sceneTrigger = scene.getTrigger();
             String chatId = message.getChatId().toString();
-
+            log.info("Resolving message..chatid; {}  checking message...userId: {}",chatId, userId);
                 if (checkIncomingMessage(message, sceneTrigger)) {
+                    log.info("Collectin replies for user {} in chat {}", userId, chatId);
                     responseContainers = ReceiveNextReplies(chatId, userId, message);                 //вернуть такой ответ
                 } else {
                     if (!isTypeIncommingMessageEqualTriggerType(message, sceneTrigger)) {
+                        log.info("Add new message to list of wrong messages.");
                         responseContainers = List.of(configureWrongTriggerMessage(chatId, userId));
                     }
                 }
-
+            log.info("ResponseContainers size: {}", responseContainers.size());
         }
         return responseContainers;
     }
@@ -67,12 +70,16 @@ public class ResponseService {
     private boolean isTypeIncommingMessageEqualTriggerType(Message message, Trigger sceneTrigger) {
         if (isUserNotTriggered(message)) {
             if (message.hasPhoto()) {
+                log.info("message has photo");
                 return sceneTrigger.isHasPicture();
             }
             if (message.hasText()) {
+                log.info("message has text");
+                log.info("scenTriger loation: {} , pictuer: {} ",sceneTrigger.isHasGeolocation(), sceneTrigger.isHasPicture());
                 return !sceneTrigger.isHasGeolocation() && !sceneTrigger.isHasPicture();
             }
             if (message.hasLocation()) {
+                log.info("message has location");
                 return sceneTrigger.isHasGeolocation();
             }
         }
@@ -80,6 +87,7 @@ public class ResponseService {
     }
 
     public List<ResponseContainer> ReceiveNextReplies(String chatId, Long userTelegramId, Message message) {
+        log.info("Reciveing message started...");
         Scene scene = sceneService.getScene(getSceneId(userTelegramId.intValue()));
         return replyResolver(chatId, scene, userTelegramId, message);
     }
@@ -109,6 +117,7 @@ public class ResponseService {
         if (result) {
             triggUser(message);
         }
+        log.info("Message checker boolean : {}", result);
         return result;
     }
 
@@ -116,11 +125,13 @@ public class ResponseService {
         List<Reply> replyList = scene.getReplyCollection();
         List<ResponseContainer> responseContainers = new ArrayList<>();
         ResponseContainer responseContainer;
+        log.info("Configuring replies...");
         for (Reply reply : replyList) {
             responseContainer = configureMessage(reply, chatId, userId);
             responseContainer.setMessage(message);
             responseContainers.add(responseContainer);
         }
+        log.info("Configuration of replies done. There are {} replies in container.", responseContainers.size());
         return responseContainers;
     }
 
@@ -142,6 +153,7 @@ public class ResponseService {
     private boolean isUserNotTriggered(Message message) {
         Long userId = Long.valueOf(message.getFrom().getId());
         User user = userService.getUserByTelegramId(userId);
+        log.info("User {} trigger is {}", userId, user.isTriggered());
         return !user.isTriggered();
     }
 
