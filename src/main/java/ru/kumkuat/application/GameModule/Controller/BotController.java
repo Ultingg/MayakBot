@@ -60,9 +60,9 @@ public class BotController {
     }
 
     public void resolveUpdatesFromSimpleListener(Message updateMessage) {
-        long id =  updateMessage.getFrom().getId().longValue();
-        log.info("user id from update: {}", id);
-        User user = userService.getUserByTelegramId(id);
+        long userId =  userService.getCheckedUserId(updateMessage);
+        log.info("user id from update: {}", userId);
+        User user = userService.getUserByTelegramId(userId);
         if (user != null && !user.isAdmin()
                 && !updateMessage.getChat().getType().equals("private")
                 && !commandChecker(updateMessage)) {

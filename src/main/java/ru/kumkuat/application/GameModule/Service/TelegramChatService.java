@@ -111,6 +111,8 @@ public class TelegramChatService {
 
 
     public Long getUserTelegramIdByChatId(Long chatId) {
-        return telegramChatRepository.getTelegramChatByChatId(chatId).getUserId();
+        TelegramChat chat = telegramChatRepository.getTelegramChatByChatId(chatId);
+        if(chat != null) return chat.getUserId();
+        return null;
     }
 }

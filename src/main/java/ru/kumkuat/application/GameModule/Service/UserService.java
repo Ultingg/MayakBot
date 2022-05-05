@@ -2,6 +2,7 @@ package ru.kumkuat.application.GameModule.Service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.kumkuat.application.GameModule.Models.BGUser;
 import ru.kumkuat.application.GameModule.Models.User;
 import ru.kumkuat.application.GameModule.Repository.UserRepository;
@@ -17,6 +18,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final SceneService sceneService;
     private final BGUserService bgUserService;
+    private final TelegramChatService telegramChatService;
 
     public User getUserByDBId(Long id) {
         return userRepository.getById(id);
@@ -36,10 +38,11 @@ public class UserService {
         return userList;
     }
 
-    public UserService(UserRepository userRepository, SceneService sceneService, BGUserService bgUserService) {
+    public UserService(UserRepository userRepository, SceneService sceneService, BGUserService bgUserService, TelegramChatService telegramChatService) {
         this.userRepository = userRepository;
         this.sceneService = sceneService;
         this.bgUserService = bgUserService;
+        this.telegramChatService = telegramChatService;
     }
 
     public void setUserScene(org.telegram.telegrambots.meta.api.objects.User telegramUser, Integer i) {
@@ -164,5 +167,23 @@ public class UserService {
 
     public void saveUser(User player) {
         userRepository.save(player);
+    }
+
+
+    public Long getCheckedUserId(Message message)
+    {
+        Long messageUserId = message.getFrom().getId().longValue();
+        Long chatId = message.getChatId();
+        Long guestOfChatUserId = telegramChatService.getUserTelegramIdByChatId(chatId);
+        if(guestOfChatUserId != null)
+        {
+            log.info("ChatId is {}, user-guest Id: {}",chatId, guestOfChatUserId);
+            return guestOfChatUserId;
+        } else if(chatId.equals(messageUserId) && message.getChat().getType().equals("private")){
+            log.info("ChatId and user are equals, chat is private");
+        } else {
+            log.debug("GroupAnonymousBot knocking the door, but we will not open");
+        }
+        return chatId;
     }
 }

@@ -44,9 +44,9 @@ public class ResponseService {
 
     public List<ResponseContainer> messageReceiver(Message message) {
         List<ResponseContainer> responseContainers = new ArrayList<>();
-        Long userId = Long.valueOf(message.getFrom().getId());
+        Long userId = userService.getCheckedUserId(message);
         User user = userService.getUserByTelegramId(userId);
-        Long sceneId = getSceneId(message.getFrom().getId());
+        Long sceneId = getSceneId(userId.intValue());
         log.info("Resolving message...");
         if (user.getSceneId() <= sceneService.count() - 1) {
             Scene scene = sceneService.getScene(sceneId);
@@ -151,14 +151,14 @@ public class ResponseService {
     }
 
     private boolean isUserNotTriggered(Message message) {
-        Long userId = Long.valueOf(message.getFrom().getId());
+        Long userId = userService.getCheckedUserId(message);
         User user = userService.getUserByTelegramId(userId);
         log.info("User {} trigger is {}", userId, user.isTriggered());
         return !user.isTriggered();
     }
 
     private void triggUser(Message message) {
-        Long userId = Long.valueOf(message.getFrom().getId());
+        Long userId = userService.getCheckedUserId(message);
         User user = userService.getUserByTelegramId(userId);
         user.setTriggered(true);
         userService.setUserTrigger(userId, true);
@@ -252,7 +252,8 @@ public class ResponseService {
 
     private boolean nickNameSetter(Message message) {
         String nickName = message.getText();
-        userService.setUserNickName(message.getFrom().getId().longValue(), nickName);
+        Long userId = userService.getCheckedUserId(message);
+        userService.setUserNickName(userId, nickName);
         return true;
     }
 
