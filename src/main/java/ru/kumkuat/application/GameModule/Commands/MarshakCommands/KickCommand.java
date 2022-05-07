@@ -12,18 +12,24 @@ import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.kumkuat.application.GameModule.Models.TelegramChat;
+import ru.kumkuat.application.GameModule.Service.SceneService;
 import ru.kumkuat.application.GameModule.Service.TelegramChatService;
 import ru.kumkuat.application.GameModule.Service.UserService;
 
 import java.time.Duration;
 import java.util.Objects;
+
 @Slf4j
 @Service
 public class KickCommand extends BotCommand implements AdminCommand {
+
+
     @Autowired
     private UserService userService;
     @Autowired
     private TelegramChatService telegramChatService;
+    @Autowired
+    private SceneService sceneService;
 
     public KickCommand() {
         super("/kick", "Kick user from playing chats\n");
@@ -48,7 +54,7 @@ public class KickCommand extends BotCommand implements AdminCommand {
             replyMessage.enableHtml(true);
             replyMessage.setText("Вы не обладаете соответствующим уровнем доступа.");
             execute(absSender, replyMessage, user);
-            log.info("Access denied to Kick command for user wit id: {}",userId);
+            log.info("Access denied to Kick command for user wit id: {}", userId);
         }
     }
 
@@ -75,40 +81,57 @@ public class KickCommand extends BotCommand implements AdminCommand {
         Duration duration = Duration.ofSeconds(30);
         kickChatMember.forTimePeriodDuration(duration);
         try {
-            busyChat.setBusy(false);
-            busyChat.setUserId(null);
-            busyChat.setStartPlayTime(null);
-            if (userService.getUserByTelegramId(userId).getSceneId() < 19) {
-                userService.setUserPayment(userId, false);  /** Drop isPay only if User reached the end of the Game   */
-            }
-            telegramChatService.saveChatIntoDB(busyChat);
             if (absSender.execute(kickChatMember)) {
                 ExportChatInviteLink exportChatInviteLink = new ExportChatInviteLink(busyChat.getChatId().toString());
-                SendMessage sendMessage = new SendMessage();
-                sendMessage.setText(absSender.execute(exportChatInviteLink));
-                sendMessage.setChatId(telegramChatService.getAdminChatId());
-                sendMessage.enableHtml(true);
-                absSender.execute(sendMessage);
+                StringBuilder finalMessage = new StringBuilder();
+                finalMessage.append(absSender.execute(exportChatInviteLink));
 
-                var player = userService.getUserByTelegramId(busyChat.getUserId());
-                var name = player.getTelegramUserId();
-                userService.setPlaying(Long.valueOf(player.getTelegramUserId()), false); /** Make isPlaying = false */
-                sendMessage.setText("Пользователь: @" + name + " успешно удален из чата");
-                sendMessage.setChatId(telegramChatService.getAdminChatId());
-                sendMessage.enableHtml(true);
+                procceseUser(userId, finalMessage);
+                cleanChat(busyChat);
+
+                sendNotificationToAdminChat(absSender, finalMessage.toString());
                 log.info("User with id: {} was kicked from chat", userId);
                 return true;
             } else {
                 return false;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            log.info("exception in kickCommand execution");
+        } catch (TelegramApiException e) {
+            log.info("exception in kickCommand execution", e);
             return false;
         }
     }
 
-    void execute(AbsSender sender, SendMessage message, User user) {
+    private void sendNotificationToAdminChat(AbsSender absSender, String notificationText) throws TelegramApiException {
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setText(notificationText);
+        sendMessage.setChatId(telegramChatService.getAdminChatId());
+        sendMessage.enableHtml(true);
+        absSender.execute(sendMessage);
+    }
+
+    private void procceseUser(Long userId, StringBuilder message) {
+        var player = userService.getUserByTelegramId(userId);
+        userService.setPlaying(player.getTelegramUserId(), false); /* Make isPlaying = false */
+
+        String name = player.getName() != null ? player.getName() : "без имени";
+        message.append(String.format("Пользователь: @ %s id: %s успешно удален из чата", name, userId));
+        if (userService.getUserByTelegramId(userId).getSceneId() >= sceneService.count()) {
+            userService.setUserPayment(userId, false);  /* Drop isPay only if User reached the end of the Game   */
+            userService.setUserScene(userId, 0);
+            log.info("User {} finished game", userId);
+        }
+    }
+
+    private void cleanChat(TelegramChat chat) {
+        long chatId = chat.getChatId();
+        chat.setBusy(false);
+        chat.setStartPlayTime(null);
+        chat.setUserId(null);
+        telegramChatService.saveChatIntoDB(chat);
+        log.info("Chat {} was cleaned", chatId);
+    }
+
+    private void execute(AbsSender sender, SendMessage message, User user) {
         try {
             sender.execute(message);
         } catch (TelegramApiException e) {

@@ -17,6 +17,8 @@ import ru.kumkuat.application.GameModule.Models.TelegramChat;
 import ru.kumkuat.application.GameModule.Service.TelegramChatService;
 import ru.kumkuat.application.GameModule.Service.UserService;
 
+import java.util.Date;
+
 @Slf4j
 @Service
 public class SendChatCommand extends BotCommand {
@@ -70,6 +72,7 @@ public class SendChatCommand extends BotCommand {
             var freeChat = telegramChatService.getFreeChat();
             freeChat.setBusy(true);
             freeChat.setUserId(userId.longValue());
+            freeChat.setStartPlayTime(new Date());
             telegramChatService.saveChatIntoDB(freeChat);
         try {
             UnbanChatMember unbanChatMember = new UnbanChatMember();

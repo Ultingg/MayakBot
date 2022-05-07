@@ -45,12 +45,10 @@ public class UserService {
         this.telegramChatService = telegramChatService;
     }
 
-    public void setUserScene(org.telegram.telegrambots.meta.api.objects.User telegramUser, Integer i) {
-        if (telegramUser.getUserName() != null) {
-                var user = userRepository.getByTelegramUserId(telegramUser.getId().longValue());
+    public void setUserScene(Long telegramUserId, Integer i) {
+                var user = userRepository.getByTelegramUserId(telegramUserId);
                 user.setSceneId(i.longValue());
                 userRepository.save(user);
-        }
     }
 
     /*возможно стоит сделать этот метод синхронизированным,

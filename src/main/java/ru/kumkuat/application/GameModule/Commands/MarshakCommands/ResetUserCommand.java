@@ -10,6 +10,7 @@ import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.kumkuat.application.GameModule.Abstract.TelegramWebhookCommandBot;
+import ru.kumkuat.application.GameModule.Bot.MarshakBot;
 import ru.kumkuat.application.GameModule.Service.TelegramChatService;
 import ru.kumkuat.application.GameModule.Service.TimerService;
 import ru.kumkuat.application.GameModule.Service.UserService;
@@ -26,6 +27,7 @@ public class ResetUserCommand extends BotCommand implements IListenerSupport {
     private final UserService userService;
     @Autowired
     private TelegramChatService telegramChatService;
+    private MarshakBot marshakBot;
 
     public ResetUserCommand(UserService userService) {
         super("/reset_user", "Перезагрузить пользователя");
@@ -50,7 +52,7 @@ public class ResetUserCommand extends BotCommand implements IListenerSupport {
                         userService.saveUser(player);
 
                         Timer timer = new Timer(true);
-                        TimerService timerService = new TimerService();
+                        TimerService timerService = new TimerService(telegramChatService, marshakBot);
                         timerService.setTimerOperation(() -> TimerOperation(user, chat));
                         timer.schedule(timerService, 120 * 100);
                     } catch (Exception e) {

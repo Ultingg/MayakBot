@@ -20,10 +20,9 @@ import ru.kumkuat.application.GameModule.Commands.MarshakCommands.*;
 import ru.kumkuat.application.GameModule.Repository.UserRepository;
 import ru.kumkuat.application.GameModule.Service.PromocodeLogeService;
 import ru.kumkuat.application.GameModule.Service.TelegramChatService;
-import ru.kumkuat.application.GameModule.Service.TimerService;
 import ru.kumkuat.application.GameModule.Service.UserService;
 
-import java.util.*;
+import java.util.Date;
 
 @Component
 @Slf4j
@@ -92,71 +91,18 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
     private MarshakBot() {
     }
 
-    public void TimerOperation() {
+    public void sendTimerOperationMessage(int quantityOfKickedUsers) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(telegramChatService.getAdminChatId());
-        sendMessage.setText("Выполнено отложенное задание: " + new Date());
-        this.sendMessage(sendMessage);
-        //var busyChatsList = telegramChatService.getBusyChats();
-//        for (var busyChat :
-//                busyChatsList) {
-//            var player = userService.getUserByTelegramId(busyChat.getUserId());
-//            player.setTriggered(false);
-//            player.setSceneId(0L);
-//            player.setHasPay(false);
-//            player.setPlaying(false);
-//            userRepository.save(player);
-//            //resetUserCommand.execute(this, null, null, new String[]{player.getTelegramUserId().toString()} );
-//        }
-        kickAllCommand.KickAllChatMember(this);
-    }
-
-    private void StartTimer() {
-        //http://java-online.ru/java-calendar.xhtml   //TODO УБРАТЬ ЭТОТ МЕТОД в TIME SERVICE ОН ЗДЕСЬ ГВОЗДИТ
-
-        final String TIMEZONE_msc = "Europe/Moscow";
-
-        //Создаем календари
-        Calendar calendar_curr = new GregorianCalendar();
-        Calendar calendar_midnight = new GregorianCalendar();
-
-        //Инициируем верменные зоны
-        TimeZone tm_curr = TimeZone.getDefault(); //Временная зона сервера
-        TimeZone tm_msk = TimeZone.getTimeZone(TIMEZONE_msc); //Временная зона Москвы
-
-        //Переводим время к москве
-        calendar_midnight.add(Calendar.SECOND, (tm_msk.getRawOffset() - tm_curr.getRawOffset()) / 1000);
-        calendar_curr.add(Calendar.SECOND, (tm_msk.getRawOffset() - tm_curr.getRawOffset()) / 1000);
-
-        //Устанавливаем полночь
-        calendar_midnight.set(Calendar.HOUR_OF_DAY, TimeOffset);
-        calendar_midnight.set(Calendar.MINUTE, 0);
-        calendar_midnight.set(Calendar.SECOND, 0);
-        calendar_midnight.add(Calendar.DAY_OF_WEEK, 1);
-
-        long timeDelay = Math.abs(calendar_curr.getTime().getTime() - calendar_midnight.getTime().getTime());
-
-        Timer timer = new Timer(true);
-        TimerService timerService = new TimerService();
-
-        timerService.setTimerOperation(() -> TimerOperation());
-        timer.scheduleAtFixedRate(timerService, timeDelay, 24 * 60 * 60 * 1000);
-
-        int hours = (int) (timeDelay / 1000) / (60 * 60);
-        int minutes = (int) (((timeDelay / 1000) % (60d * 60d)) / 60);
-
-        SendMessage sendMessage = new SendMessage();
-        sendMessage.setChatId(telegramChatService.getAdminChatId());
-        sendMessage = new SendMessage();
-        sendMessage.setChatId(telegramChatService.getAdminChatId());
-        sendMessage.setText("Очистка беседок через: " + hours + " часов " + minutes + " минут");
+        sendMessage.setText(String.format("Выполнено отложенное задание \"Отчистка чатов\" " +
+                "\nВыпровоженно гостей: %d. Время: %s", quantityOfKickedUsers, new Date()));
         this.sendMessage(sendMessage);
     }
+
 
     @Override
     public void afterPropertiesSet() {
         RegisterCommand();
-        StartTimer();
     }
 
     public void RegisterCommand() {

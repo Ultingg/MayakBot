@@ -90,7 +90,7 @@ public class TelegramChatService {
         throw new TelegramChatServiceException("Invite link or chat tittle are empty!");
     }
 
-    public boolean saveChatIntoDB(TelegramChat telegramChat) throws Exception {
+    public boolean saveChatIntoDB(TelegramChat telegramChat) {
         if (isTelegramChatExist(telegramChat)) {
             telegramChatRepository.save(telegramChat);
             return true;
