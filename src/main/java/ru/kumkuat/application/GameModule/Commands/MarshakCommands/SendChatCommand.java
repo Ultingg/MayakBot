@@ -99,6 +99,12 @@ public class SendChatCommand extends BotCommand {
         var inviteLink = absSender.execute(exportChatInviteLink);
         log.info("Invite link to chat id: {} was sended to user: {}", freeChat.getChatId(), userId);
 
+        ru.kumkuat.application.GameModule.Models.User user = userService.getUserByTelegramId(userId);
+        if(user != null && user.isTriggered()) {
+            user.setTriggered(false);
+            userService.save(user);
+        }
+
         replyMessage.setText("Присоединяйся! Для старта напиши \"Привет\"");
         absSender.execute(replyMessage);
         replyMessage.setText(inviteLink);
