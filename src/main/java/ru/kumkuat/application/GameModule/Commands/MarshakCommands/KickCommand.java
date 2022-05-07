@@ -23,7 +23,6 @@ import java.util.Objects;
 @Service
 public class KickCommand extends BotCommand implements AdminCommand {
 
-
     @Autowired
     private UserService userService;
     @Autowired
@@ -86,7 +85,7 @@ public class KickCommand extends BotCommand implements AdminCommand {
                 StringBuilder finalMessage = new StringBuilder();
                 finalMessage.append(absSender.execute(exportChatInviteLink));
 
-                procceseUser(userId, finalMessage);
+                procceseUser(absSender, userId, finalMessage);
                 cleanChat(busyChat);
 
                 sendNotificationToAdminChat(absSender, finalMessage.toString());
@@ -109,7 +108,7 @@ public class KickCommand extends BotCommand implements AdminCommand {
         absSender.execute(sendMessage);
     }
 
-    private void procceseUser(Long userId, StringBuilder message) {
+    private void procceseUser(AbsSender absSender, Long userId, StringBuilder message) {
         var player = userService.getUserByTelegramId(userId);
         userService.setPlaying(player.getTelegramUserId(), false); /* Make isPlaying = false */
 
@@ -119,7 +118,25 @@ public class KickCommand extends BotCommand implements AdminCommand {
             userService.setUserPayment(userId, false);  /* Drop isPay only if User reached the end of the Game   */
             userService.setUserScene(userId, 0);
             log.info("User {} finished game", userId);
+        } else {
+            notifyUser(absSender, userId);
         }
+
+    }
+
+    private void notifyUser(AbsSender absSender, Long userId) {
+        try {
+            SendMessage sendMessage = new SendMessage();
+            sendMessage.setText( "Вы были выпровожены из чата. Но так как вы не дошли до конца,\n" +
+                    "то можете продолжить в любой момент просто нажав \"Начать Прогулку\".");
+            sendMessage.setChatId(userId.toString());
+            sendMessage.enableHtml(true);
+            absSender.execute(sendMessage);
+            log.info("User {} was notified", userId);
+        } catch (TelegramApiException ee) {
+            log.warn("Notifaction of user faild", ee);
+        }
+
     }
 
     private void cleanChat(TelegramChat chat) {
