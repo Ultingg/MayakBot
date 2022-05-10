@@ -84,6 +84,12 @@ public class BotController {
         }
     }
 
+    public void resolveSuccessfulPayment(Update update)
+    {
+        var marshak = (MarshakBot) botCollection.stream().filter(bot -> bot instanceof MarshakBot).findFirst().get();
+        marshak.onWebhookUpdateReceived(update);
+    }
+
     public void resolveCommandMessage(Update update) {
         Message updateMessage = update.getMessage();
         updateValidationService.registerUser(updateMessage.getFrom());

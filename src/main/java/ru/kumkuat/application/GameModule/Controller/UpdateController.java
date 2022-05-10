@@ -17,16 +17,16 @@ public class UpdateController {
     @PostMapping(value = "/listener")
     public void receivedUpdateFromSimpleListener(@RequestBody Update update) {
 
-        if(update.hasMessage()) {
-            boolean bot =  update.getMessage().hasViaBot();
+        if (update.hasMessage()) {
+            boolean bot = update.getMessage().hasViaBot();
             log.info("update sended by bot: {}", bot);
             log.info("Incoming update to path '/listener' from chat with id: {}  from user {}", update.getMessage().getChatId(), update.getMessage().getFrom().getId());
-           try {
-               botController.resolveUpdatesFromSimpleListener(update.getMessage());
-           }catch (HttpMessageNotReadableException e){
-               log.info("CATCHED SOME STRANSGE EXCEPTION");
-          // }
-        }
+            try {
+                botController.resolveUpdatesFromSimpleListener(update.getMessage());
+            } catch (HttpMessageNotReadableException e) {
+                log.info("CATCHED SOME STRANSGE EXCEPTION");
+                // }
+            }
         }
     }
 
@@ -44,9 +44,12 @@ public class UpdateController {
             if (update.getMessage().isCommand()) {
                 log.info("Command from chat with id: {}", update.getMessage().getChatId());
                 botController.resolveCommandMessage(update);
+            } else if (update.getMessage().hasSuccessfulPayment()) {
+                botController.resolveSuccessfulPayment(update);
             } else {
                 botController.resolveUpdatesFromAdminListener(update.getMessage());
             }
         }
     }
 }
+
