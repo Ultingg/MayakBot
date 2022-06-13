@@ -96,7 +96,7 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
     public void sendTimerOperationMessage(int quantityOfKickedUsers) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(telegramChatService.getAdminChatId());
-        sendMessage.setText(String.format("Выполнено отложенное задание \"Отчистка чатов\" " +
+        sendMessage.setText(String.format("Выполнено отложенное задание \"Очистка чатов\" " +
                 "\nВыпровоженно гостей: %d. Время: %s", quantityOfKickedUsers, new Date()));
         this.sendMessage(sendMessage);
     }

@@ -67,34 +67,35 @@ public class PlayCommand extends BotCommand {
             }
     }
 
-    boolean isBotsStarting(AbsSender absSender, Long userId) throws TelegramApiException {
-        SendMessage replyMessage = new SendMessage();
-        replyMessage.setChatId(userId.toString());
-        replyMessage.enableHtml(true);
-        boolean result = true;
-        String reply = "";
-        if (!harms.isBotsStarting(userId.toString())) {
-            reply += /*"\n@" + harms.getBotUsername() + */"\nХармс не активирован";
-            result = false;
-        }
-        if (!akhmatovaBot.isBotsStarting(userId.toString())) {
-            reply += /*"\n@" + akhmatovaBot.getBotUsername() + */"\nАхматова не активирована";
-            result = false;
-        }
-        if (!brodskiy.isBotsStarting(userId.toString())) {
-            reply += /*"\n@" + brodskiy.getBotUsername() + */"\nБродский не активирован";
-            result = false;
-        }
-        if (!mayakBot.isBotsStarting(userId.toString())) {
-            reply += /*"\n@" + mayakBot.getBotUsername() + */"\nМаяковский не активирован";
-            result = false;
-        }
-        if (!result) {
-            replyMessage.setText(reply);
-            absSender.execute(replyMessage);
-        }
-        return result;
-    }
+//    boolean isBotsStarting(AbsSender absSender, Long userId) throws TelegramApiException {
+//        SendMessage replyMessage = new SendMessage();
+//        replyMessage.setChatId(userId.toString());
+//        replyMessage.enableHtml(true);
+//        boolean result = true;
+//        String reply = "";
+//        //закомментил QMUD-59 проверку активации ботов
+////        if (!harms.isBotsStarting(userId.toString())) {
+////            reply += /*"\n@" + harms.getBotUsername() + */"\nХармс не активирован";
+////            result = false;
+////        }
+////        if (!akhmatovaBot.isBotsStarting(userId.toString())) {
+////            reply += /*"\n@" + akhmatovaBot.getBotUsername() + */"\nАхматова не активирована";
+////            result = false;
+////        }
+////        if (!brodskiy.isBotsStarting(userId.toString())) {
+////            reply += /*"\n@" + brodskiy.getBotUsername() + */"\nБродский не активирован";
+////            result = false;
+////        }
+////        if (!mayakBot.isBotsStarting(userId.toString())) {
+////            reply += /*"\n@" + mayakBot.getBotUsername() + */"\nМаяковский не активирован";
+////            result = false;
+////        }
+//        if (!result) {
+//            replyMessage.setText(reply);
+//            absSender.execute(replyMessage);
+//        }
+//        return result;
+//    }
 /** What will happend when user end the game and press Start Promenad, but didn't pay again? */
     void SendFreeChat(AbsSender absSender, Long userId) throws Exception {
         SendMessage replyMessage = new SendMessage();
@@ -102,7 +103,7 @@ public class PlayCommand extends BotCommand {
         replyMessage.enableHtml(true);
         if (userService.IsUserExist(userId.longValue())) {
             if (!telegramChatService.isUserAlreadyGetChat(userId)) {
-                if (isBotsStarting(absSender, Long.valueOf(userId))) {
+//                if (isBotsStarting(absSender, Long.valueOf(userId))) {
 
                     if(userService.getUserByTelegramId(userId).getSceneId() < 1) {
                         userService.setPlaying(Long.valueOf(userId), true);
@@ -119,7 +120,7 @@ public class PlayCommand extends BotCommand {
                         marshakBot.getSendChatCommand().sendFreeChat(absSender, userId); /** Sending Link to chat if User didn't finish the Game **/
 
                     }
-                }
+//                }
             } else if (telegramChatService.isUserAlreadyGetChat(userId)) {
                 TelegramChat freeChat = telegramChatService.getChatByUserTelegramId(userId);
                 log.info("User's been invited to chat {}, resending invite link..", freeChat.getChatId());
