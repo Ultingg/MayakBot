@@ -104,7 +104,8 @@ public class TelegramChatService {
     }
 
     public TelegramChat getChatByUserTelegramId(Long telegramUserId) throws Exception {
-        var userchat = getAll().stream().filter(chat -> chat.getUserId().equals(telegramUserId)).findFirst();
+        var userchat = getAll().stream().filter(chat -> chat.getUserId() != null
+                && telegramUserId.equals(chat.getUserId())).findFirst();
         return userchat.orElseThrow(Exception::new);
     }
 
