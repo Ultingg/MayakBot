@@ -9,8 +9,6 @@ import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import ru.kumkuat.application.GameModule.Repository.UserRepository;
-import ru.kumkuat.application.GameModule.Service.TelegramChatService;
 import ru.kumkuat.application.GameModule.Service.UserService;
 
 @Slf4j
@@ -42,11 +40,11 @@ public class SetSceneNumberCommand extends BotCommand {
                         player.setTriggered(false);
                         userService.saveUser(player);
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        log.error("User wasn't found in DB by it's id.", e);
                     }
                 //}
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error("Error whit trying get arguments from message.", e);
             }
         }
     }
@@ -55,6 +53,7 @@ public class SetSceneNumberCommand extends BotCommand {
         try {
             sender.execute(message);
         } catch (TelegramApiException e) {
+            log.error("Error while executing SetSceneCommand", e);
         }
     }
 }

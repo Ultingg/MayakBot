@@ -6,7 +6,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.User;
 import ru.kumkuat.application.GameModule.Models.PromocodeLog;
-import ru.kumkuat.application.GameModule.Repository.PromocodeRepository;
+import ru.kumkuat.application.GameModule.Repository.PromocodeLoggingRepository;
 
 import java.time.LocalDateTime;
 
@@ -21,15 +21,15 @@ public class PromocodeLogeService {
     private String tsystemscode;
 
     private final UserService userService;
-    private final PromocodeRepository promocodeRepository;
+    private final PromocodeLoggingRepository promocodeLoggingRepository;
 
-    public PromocodeLogeService(UserService userService, PromocodeRepository promocodeRepository) {
+    public PromocodeLogeService(UserService userService, PromocodeLoggingRepository promocodeLoggingRepository) {
         this.userService = userService;
-        this.promocodeRepository = promocodeRepository;
+        this.promocodeLoggingRepository = promocodeLoggingRepository;
     }
 
     public PromocodeLog save(PromocodeLog promocodeLog) {
-        return promocodeRepository.save(promocodeLog);
+        return promocodeLoggingRepository.save(promocodeLog);
     }
 
     public String getFreeCode()

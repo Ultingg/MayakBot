@@ -87,6 +87,8 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
     private ValidationReportCommand validationReportCommand;
     @Autowired
     private PromocodeLogeService promocodeLogeService;
+    @Autowired
+    private GeneratePCCommand generatePCCommand;
 
     private MarshakBot() {
     }
@@ -119,6 +121,7 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
         register(sendMailCommand);
         register(inputXSLXCommand);
         register(validationReportCommand);
+        register(generatePCCommand);
 
         for (var command :
                 getRegisteredCommands()) {

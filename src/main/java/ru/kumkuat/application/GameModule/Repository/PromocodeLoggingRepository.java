@@ -5,6 +5,6 @@ import org.springframework.stereotype.Repository;
 import ru.kumkuat.application.GameModule.Models.PromocodeLog;
 
 @Repository
-public interface PromocodeRepository extends CrudRepository<PromocodeLog, Long> {
+public interface PromocodeLoggingRepository extends CrudRepository<PromocodeLog, Long> {
 
 }

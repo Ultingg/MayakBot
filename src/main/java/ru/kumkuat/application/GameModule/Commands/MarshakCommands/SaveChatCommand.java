@@ -1,5 +1,6 @@
 package ru.kumkuat.application.GameModule.Commands.MarshakCommands;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.extensions.bots.commandbot.commands.BotCommand;
@@ -12,7 +13,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.kumkuat.application.GameModule.Exceptions.TelegramChatServiceException;
 import ru.kumkuat.application.GameModule.Service.TelegramChatService;
 import ru.kumkuat.application.GameModule.Service.UserService;
-
+@Slf4j
 @Service
 public class SaveChatCommand extends BotCommand implements AdminCommand {
     @Autowired
@@ -70,6 +71,7 @@ public class SaveChatCommand extends BotCommand implements AdminCommand {
         try {
             sender.execute(message);
         } catch (TelegramApiException e) {
+            log.error("Error while executing SaveChatCommand", e);
         }
     }
 }

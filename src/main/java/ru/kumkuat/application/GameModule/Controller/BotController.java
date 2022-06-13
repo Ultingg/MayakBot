@@ -27,16 +27,18 @@ public class BotController {
     private final UserService userService;
     private final TelegramChatService telegramChatService;
     private final PromocodeLogeService promocodeLogeService;
+    private final PromocodeService promocodeService;
     @Autowired
     private UpdateValidationService updateValidationService;
 
     public BotController(MarshakBot marshakBot, Harms harms, MayakBot mayakBot, AkhmatovaBot akhmatovaBot,
                          Brodskiy brodskiy, ResponseService responseService, UserService userService, TelegramChatService telegramChatService,
-                         PromocodeLogeService promocodeLogeService) {
+                         PromocodeLogeService promocodeLogeService, PromocodeService promocodeService) {
         this.responseService = responseService;
         this.userService = userService;
         this.telegramChatService = telegramChatService;
         this.promocodeLogeService = promocodeLogeService;
+        this.promocodeService = promocodeService;
 
         botCollection = new ArrayList<>();
         botCollection.add(harms);
@@ -249,7 +251,7 @@ public class BotController {
             marshak.sendMessage(SendMessage.builder()
                     .chatId(updateMessage.getChatId().toString())
                     .text("Промокод принят").build());
-        } else if (message.equals(promocodeLogeService.getFreeCode())) {
+        } else if (promocodeService.checkPromocode(message)) {
             log.info("User id: {} used FreePFromocode", user.getTelegramUserId());
             user.setHasPay(true);
             userService.save(user);
