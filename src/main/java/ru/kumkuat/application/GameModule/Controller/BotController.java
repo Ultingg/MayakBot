@@ -257,7 +257,7 @@ public class BotController {
             userService.save(user);
             marshak.sendMessage(SendMessage.builder()
                     .chatId(updateMessage.getChatId().toString())
-                    .text("Промокод принят. Вы можете бесплатно пройти по маршруту!").build());
+                    .text("Промокод принят. Вы можете бесплатно пройти по маршруту! Нажмите \"Начать прогулку\".").build());
         }
     }
 }
