@@ -1,4 +1,4 @@
-package ru.kumkuat.application.GameModule.Models;
+package ru.kumkuat.application.GameModule.Promocode.Model;
 
 
 import lombok.Getter;
@@ -26,5 +26,8 @@ public class DisposablePromocode {
 
     @Column(name = "promocode_used")
     private LocalDateTime promocodeUsed;
+
+    @Column(name = "is_sent")
+    private boolean isSent;
 
 }

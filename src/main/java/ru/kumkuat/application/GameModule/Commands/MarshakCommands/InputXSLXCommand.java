@@ -3,6 +3,7 @@ package ru.kumkuat.application.GameModule.Commands.MarshakCommands;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.extensions.bots.commandbot.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.methods.GetFile;
@@ -14,6 +15,7 @@ import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.kumkuat.application.GameModule.Abstract.TelegramWebhookCommandBot;
 import ru.kumkuat.application.GameModule.Bot.MarshakBot;
+import ru.kumkuat.application.GameModule.Service.GeneralXLSXReader;
 import ru.kumkuat.application.GameModule.Service.UserService;
 import ru.kumkuat.application.GameModule.Service.XLSXBGListReaderService;
 
@@ -27,11 +29,16 @@ import java.net.URL;
 @Service
 
 public class InputXSLXCommand extends BotCommand {
-    private String path = "../resources/input_bg_users.xlsx";
+    private String path = "../resources/input_bg_usersti.xlsx";
     @Autowired
     private MarshakBot marshakBot;
     @Autowired
     private XLSXBGListReaderService xlsxbgListReaderService;
+
+    @Autowired
+    @Qualifier(value = "timePadOrder")
+    private GeneralXLSXReader xLSXTimePadListReaderService;
+
 
     private final UserService userService;
 
@@ -87,7 +94,10 @@ public class InputXSLXCommand extends BotCommand {
 //                if (!userService.IsUserExist(userId)) {
 //
 //                } else {
-                    int usersAdded = xlsxbgListReaderService.XLSXBGParser(path);
+                xLSXTimePadListReaderService.fillHeaderProperty();
+                int usersAdded = xLSXTimePadListReaderService.XLSXBGParser(path);
+//                    xlsxbgListReaderService.fillHeaderProperty();
+//                    int usersAdded = xlsxbgListReaderService.XLSXBGParser(path);
                     String message = usersAdded > 0 ?
                             String.format("Пользователи %d успешно добавлены!", usersAdded):
                             String.format("Пользователи не добавлены!");

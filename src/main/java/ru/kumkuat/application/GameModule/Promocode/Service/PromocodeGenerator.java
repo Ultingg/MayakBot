@@ -1,4 +1,4 @@
-package ru.kumkuat.application.GameModule.Service;
+package ru.kumkuat.application.GameModule.Promocode.Service;
 
 import org.springframework.stereotype.Component;
 

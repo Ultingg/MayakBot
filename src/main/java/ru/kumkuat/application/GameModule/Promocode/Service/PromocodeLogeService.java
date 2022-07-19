@@ -1,12 +1,13 @@
-package ru.kumkuat.application.GameModule.Service;
+package ru.kumkuat.application.GameModule.Promocode.Service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.User;
-import ru.kumkuat.application.GameModule.Models.PromocodeLog;
-import ru.kumkuat.application.GameModule.Repository.PromocodeLoggingRepository;
+import ru.kumkuat.application.GameModule.Promocode.Model.PromocodeLog;
+import ru.kumkuat.application.GameModule.Promocode.Repository.PromocodeLoggingRepository;
+import ru.kumkuat.application.GameModule.Service.UserService;
 
 import java.time.LocalDateTime;
 

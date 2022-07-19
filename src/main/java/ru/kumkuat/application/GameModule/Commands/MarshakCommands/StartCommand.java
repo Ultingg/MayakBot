@@ -78,15 +78,6 @@ public class StartCommand extends BotCommand {
             sendMessage(absSender, user, chat.getId().toString(), greetingFour);
             sendMessage(absSender, user, chat.getId().toString(), greetingFive);
 
-//            InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
-//            List<List<InlineKeyboardButton>> listButtonCollections = new ArrayList<>();
-//            listButtonCollections.add(getInlineBotButton("Бродский", brodskiy));
-//            listButtonCollections.add(getInlineBotButton("Маяковский", mayakBot));
-//            listButtonCollections.add(getInlineBotButton("Хармс", harms));
-//            listButtonCollections.add(getInlineBotButton("Ахматова", akhmatovaBot));
-//            markup.setKeyboard(listButtonCollections);
-//            sendMessageWithKeyBoard(absSender, user, chat.getId().toString(), markup, botGreeting);
-
             List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
             rowList.add(getRowOfInlineButtonWithCallback(payButtonName, "pay"));
             rowList.add(getRowOfInlineButtonWithCallback(startWalkButtonName,"play"));
@@ -138,14 +129,6 @@ public class StartCommand extends BotCommand {
         execute(absSender, replyMessage, user);
     }
 
-//    private List<InlineKeyboardButton> getInlineBotButton(String text, TelegramWebhookBot bot) {
-//        List<InlineKeyboardButton> inlineKeyboardButtonCollection = new ArrayList<>();
-//        InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
-//        inlineKeyboardButton.setText(text);
-//        inlineKeyboardButton.setUrl("https://t.me/".concat(bot.getBotUsername().concat("?start")));
-//        inlineKeyboardButtonCollection.add(inlineKeyboardButton);
-//        return  inlineKeyboardButtonCollection;
-//    }
     private List<InlineKeyboardButton> getRowOfInlineButtonWithCallback(String text, String callback) {
         List<InlineKeyboardButton> keyboardButtonsRow = new ArrayList<>();
         var Button21 = new InlineKeyboardButton();

@@ -1,4 +1,4 @@
-package ru.kumkuat.application.GameModule.Models;
+package ru.kumkuat.application.GameModule.Promocode.Model;
 
 
 import lombok.Data;

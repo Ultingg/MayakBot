@@ -1,6 +1,8 @@
 package ru.kumkuat.application.GameModule.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
@@ -12,9 +14,11 @@ import javax.mail.internet.MimeMessage;
 import java.util.Date;
 
 @Controller
+@PropertySource(value = "file:../resources/externalsecret.yml")
 public class MailController {
 
-    private final String mailAdress = "teatr.prospektspb@gmail.com";
+    @Value("${email.address}")
+    private  String EMAIL;
 
     @Autowired
     private JavaMailSender emailSender;
@@ -28,7 +32,7 @@ public class MailController {
                 try {
                     MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
                     messageHelper.setTo(mailRecipient);
-                    messageHelper.setFrom(mailAdress);
+                    messageHelper.setFrom(EMAIL);
                     messageHelper.setSubject(subject);
                     messageHelper.setSentDate(new Date());
                     messageHelper.setText(text, true);

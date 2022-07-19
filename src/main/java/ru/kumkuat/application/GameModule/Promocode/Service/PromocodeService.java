@@ -1,7 +1,7 @@
-package ru.kumkuat.application.GameModule.Service;
+package ru.kumkuat.application.GameModule.Promocode.Service;
 
 
-import ru.kumkuat.application.GameModule.Models.DisposablePromocode;
+import ru.kumkuat.application.GameModule.Promocode.Model.DisposablePromocode;
 
 /**
  * Interface to service {@link DisposablePromocode} operations: creating, checking and saving
@@ -24,4 +24,11 @@ public interface PromocodeService {
      * @return new DisposalPormocode.
      */
     DisposablePromocode createNewDisposalPormocode();
+
+    /**
+     * Get disposal promocode from db, mark it as sent.
+     * If there are no codes in db creates new one mark as sent and returns it.
+     * @return disposalPromocode.
+     */
+    DisposablePromocode getDisposalPromocode();
 }

@@ -13,6 +13,8 @@ import ru.kumkuat.application.GameModule.Abstract.TelegramWebhookCommandBot;
 import ru.kumkuat.application.GameModule.Bot.*;
 import ru.kumkuat.application.GameModule.Collections.ResponseContainer;
 import ru.kumkuat.application.GameModule.Models.User;
+import ru.kumkuat.application.GameModule.Promocode.Service.PromocodeLogeService;
+import ru.kumkuat.application.GameModule.Promocode.Service.PromocodeService;
 import ru.kumkuat.application.GameModule.Service.*;
 
 import java.util.ArrayList;

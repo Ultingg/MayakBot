@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>ProSpectSpb</title>
+</head>
+<body>
+<p>Уважаемый(ая), <span th:text="${user}" !></span>!</p>
+<p>Вы успешно зарегистрированы как участник спектакля-прогулки «Проспект Поэтов».</p>
+<p>Дата проведения мероприятия: 23.07.2022</p>
+
+<p>Время начала: <b th:text="${starttime}"></b></p>
+<p>В назначенное время Вы сможете присоединиться к чату игры по адресу: <a href="https://t.me/ProSpektSpbBot">https://t.me/ProSpektSpbBot</a></p>
+<p>Для начала прогулки ввдеите промокод: <b th:text="${promocode}">.</b></p>
+<p>Бот сообщит о принятии промокода, после чего можно нажимать "Начать прогулку".</p>
+<p>Увидимся на маршруте!</p>
+</body>
+</html>

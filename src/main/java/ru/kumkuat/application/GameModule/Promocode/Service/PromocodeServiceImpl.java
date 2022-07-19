@@ -1,11 +1,12 @@
-package ru.kumkuat.application.GameModule.Service;
+package ru.kumkuat.application.GameModule.Promocode.Service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.kumkuat.application.GameModule.Models.DisposablePromocode;
-import ru.kumkuat.application.GameModule.Repository.DisposablePromocodeRepository;
+import ru.kumkuat.application.GameModule.Promocode.Model.DisposablePromocode;
+import ru.kumkuat.application.GameModule.Promocode.Repository.DisposablePromocodeRepository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -26,10 +27,8 @@ public class PromocodeServiceImpl implements PromocodeService {
         DisposablePromocode disposablePromocode = promocodeRepository.getByValue(value);
         if (disposablePromocode != null) {
             if (!disposablePromocode.isUsed()) {
-                disposablePromocode.setUsed(true);
-                disposablePromocode.setPromocodeUsed(LocalDateTime.now());
                 try {
-                    promocodeRepository.save(disposablePromocode);
+                    markAsUsedPromocode(disposablePromocode);
                     log.info("Promocode value:{}, id:{} confirmed. It's status changed to \"used\".", disposablePromocode.getValue(), disposablePromocode.getId());
                 } catch (Exception e) {
                     log.error("Some shit has happened with changing promocode value:{}!!!", value);
@@ -49,11 +48,45 @@ public class PromocodeServiceImpl implements PromocodeService {
     @Override
     public DisposablePromocode createNewDisposalPormocode() {
         DisposablePromocode disposablePromocode = createNewDisposalPromocode();
-        DisposablePromocode newDisposablePromocode =  promocodeRepository.save(disposablePromocode);
+        DisposablePromocode newDisposablePromocode = promocodeRepository.save(disposablePromocode);
         log.info("Promocode with value {} was created.", newDisposablePromocode.getValue());
         return newDisposablePromocode;
     }
 
+    @Override
+    public DisposablePromocode getDisposalPromocode() {
+        List<DisposablePromocode> listOfNotSentPromocodes = promocodeRepository.getDisposablePromocodesNotSent();
+        if (!listOfNotSentPromocodes.isEmpty()) {
+            DisposablePromocode firstPromocode = listOfNotSentPromocodes.get(0);
+            try{
+                markAsSentPromocode(firstPromocode);
+            }  catch (Exception e) {
+            log.error("Some shit has happened with changing promocode value:{}!!!", firstPromocode.getValue());
+        }
+            log.info("Promocode {} was provided", firstPromocode.getValue());
+            return firstPromocode;
+        } else {
+            DisposablePromocode newPromocode = createNewDisposalPormocode();
+            try{
+                markAsSentPromocode(newPromocode);
+            }  catch (Exception e) {
+                log.error("Some shit has happened with changing promocode value:{}!!!", newPromocode.getValue());
+            }
+            log.info("Promocode {} was provided", newPromocode.getValue());
+            return newPromocode;
+        }
+    }
+
+    private void markAsUsedPromocode(DisposablePromocode promocode) {
+        promocode.setUsed(true);
+        promocode.setPromocodeUsed(LocalDateTime.now());
+        promocodeRepository.save(promocode);
+    }
+
+    private void markAsSentPromocode(DisposablePromocode promocode) {
+        promocode.setSent(true);
+        promocodeRepository.save(promocode);
+    }
 
     private DisposablePromocode createNewDisposalPromocode() {
         String value = generator.generateValueForDisposalPromocode();
