@@ -31,4 +31,10 @@ public interface PromocodeService {
      * @return disposalPromocode.
      */
     DisposablePromocode getDisposalPromocode();
+
+    /**
+     * Create new pormocode save it to DB, mark as unused, but sent.
+     * @return
+     */
+    DisposablePromocode getNewDisposalMarkedPromocode();
 }

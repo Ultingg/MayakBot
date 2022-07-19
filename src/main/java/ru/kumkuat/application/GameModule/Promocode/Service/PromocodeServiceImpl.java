@@ -77,6 +77,12 @@ public class PromocodeServiceImpl implements PromocodeService {
         }
     }
 
+    public DisposablePromocode getNewDisposalMarkedPromocode() {
+        DisposablePromocode markedPromocode = createNewDisposalPormocode();
+        markAsSentPromocode(markedPromocode);
+        return markedPromocode;
+    }
+
     private void markAsUsedPromocode(DisposablePromocode promocode) {
         promocode.setUsed(true);
         promocode.setPromocodeUsed(LocalDateTime.now());
@@ -93,6 +99,7 @@ public class PromocodeServiceImpl implements PromocodeService {
         DisposablePromocode disposablePromocode = new DisposablePromocode();
         disposablePromocode.setValue(value);
         disposablePromocode.setUsed(false);
+        disposablePromocode.setSent(false);
         return disposablePromocode;
     }
 }
