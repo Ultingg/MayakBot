@@ -42,10 +42,9 @@ public class SendMailCommand extends BotCommand {
                 for (int i = 0; i < amountOfLetters; i++) {
                     Context context = new Context();
                     context.setVariable("user", timePadOrder.getFirstName() + " " + timePadOrder.getLastName());
-                    context.setVariable("starttime", "13:00");
                     context.setVariable("promocode", promocodeService.getDisposalPromocode().getValue());
                     var text = templateEngine.process("Emails/WelcomeCode.html", context);
-                    mailController.sendSimpleEmail(timePadOrder.getEmail(), "ProSpectSpb", text);
+                    mailController.sendSimpleEmail(timePadOrder.getEmail(), "Важная информация для старта спектакля «Проспект Поэтов»", text);
                 }
                 timePadOrder.setIsNotified(true);
                 timPadOrderService.save(timePadOrder);

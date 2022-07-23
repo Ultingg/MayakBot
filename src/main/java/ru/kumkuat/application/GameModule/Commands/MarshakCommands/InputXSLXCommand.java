@@ -14,10 +14,7 @@ import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.kumkuat.application.GameModule.Abstract.TelegramWebhookCommandBot;
-import ru.kumkuat.application.GameModule.Bot.MarshakBot;
 import ru.kumkuat.application.GameModule.Service.GeneralXLSXReader;
-import ru.kumkuat.application.GameModule.Service.UserService;
-import ru.kumkuat.application.GameModule.Service.XLSXBGListReaderService;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,21 +27,13 @@ import java.net.URL;
 
 public class InputXSLXCommand extends BotCommand {
     private String path = "../resources/input_bg_usersti.xlsx";
-    @Autowired
-    private MarshakBot marshakBot;
-    @Autowired
-    private XLSXBGListReaderService xlsxbgListReaderService;
 
     @Autowired
     @Qualifier(value = "timePadOrder")
     private GeneralXLSXReader xLSXTimePadListReaderService;
 
-
-    private final UserService userService;
-
-    public InputXSLXCommand(UserService userService) {
+    public InputXSLXCommand() {
         super("/input_xslx", "Импорт екселя");
-        this.userService = userService;
     }
 
     @Override
@@ -77,38 +66,23 @@ public class InputXSLXCommand extends BotCommand {
 
     @Override
     public void execute(AbsSender absSender, User user, Chat chat, String[] arguments) {
-
-        long userId = user.getId().longValue();
-//        if (userId == marshakBot.getId() && userService.IsUserExist(chat.getId())) {
-//            userId = chat.getId();
-//        }
-
-        //if (userId == chat.getId()) {
-
             log.debug("Marshak ");
             SendMessage replyMessage = new SendMessage();
             replyMessage.setChatId(chat.getId().toString());
             replyMessage.enableHtml(true);
 
             try {
-//                if (!userService.IsUserExist(userId)) {
-//
-//                } else {
                 xLSXTimePadListReaderService.fillHeaderProperty();
                 int usersAdded = xLSXTimePadListReaderService.XLSXBGParser(path);
-//                    xlsxbgListReaderService.fillHeaderProperty();
-//                    int usersAdded = xlsxbgListReaderService.XLSXBGParser(path);
                     String message = usersAdded > 0 ?
                             String.format("Пользователи %d успешно добавлены!", usersAdded):
                             String.format("Пользователи не добавлены!");
 
                     replyMessage.setText(message);
                     execute(absSender, replyMessage, user);
-                //}
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        //}
     }
 
     void execute(AbsSender sender, SendMessage message, User user) {
