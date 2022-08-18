@@ -5,8 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import ru.kumkuat.application.GameModule.ApplicationContextProvider;
-import ru.kumkuat.application.GameModule.Bot.*;
+import ru.kumkuat.application.gameModule.ApplicationContextProvider;
+import ru.kumkuat.application.gameModule.bot.*;
 
 
 @SpringBootApplication

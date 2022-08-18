@@ -18,7 +18,7 @@
         <org.mapstruct.version>1.4.1.Final</org.mapstruct.version>
         <java.version>11</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <telegrambots.version>5.0.1</telegrambots.version>
+        <telegrambots.version>6.1.0</telegrambots.version>
     </properties>
 
     <dependencies>
@@ -130,10 +130,15 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
-        <!-- thymeleaf -->
+        <!-- template builders -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+            <version>2.3.28</version>
         </dependency>
     </dependencies>
 
