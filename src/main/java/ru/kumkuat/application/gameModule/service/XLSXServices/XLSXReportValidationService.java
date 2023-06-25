@@ -1,4 +1,4 @@
-package ru.kumkuat.application.gameModule.service;
+package ru.kumkuat.application.gameModule.service.XLSXServices;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;

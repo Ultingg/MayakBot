@@ -1,6 +1,7 @@
 package ru.kumkuat.application.gameModule.controller;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramWebhookBot;
@@ -20,9 +21,10 @@ import ru.kumkuat.application.gameModule.service.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Slf4j
 @Component
 public class BotController {
+
+    Logger log = LoggerFactory.getLogger(BotController.class.getName());
 
     private final List<BotsSender> botCollection;
     private final ResponseService responseService;
@@ -96,8 +98,9 @@ public class BotController {
 
     public void resolveCommandMessage(Update update) {
         Message updateMessage = update.getMessage();
+        User user = userService.getUserByTelegramId(updateMessage.getFrom().getId());
         updateValidationService.registerUser(updateMessage.getFrom());
-        if (updateMessage.getChat().getType().equals("private")) {
+        if (updateMessage.getChat().getType().equals("private") || (user !=null &&  user.isAdmin())) {
             var marshak = (MarshakBot) botCollection.stream().filter(bot -> bot instanceof MarshakBot).findFirst().get();
             marshak.onWebhookUpdateReceived(update);
         }
@@ -117,6 +120,7 @@ public class BotController {
     }
 
     public void responseResolver(List<ResponseContainer> responseContainers) {
+        
         if (!responseContainers.isEmpty()) {
             boolean wrongMessage = false;
             long userId = responseContainers.get(0).getUserId();

@@ -1,15 +1,13 @@
 package ru.kumkuat.application.gameModule.collections;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.*;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
 
-@Setter
-@Getter
+@Data
 @Component
 public class ResponseContainer {
 

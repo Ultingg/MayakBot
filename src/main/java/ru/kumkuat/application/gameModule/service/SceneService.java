@@ -3,6 +3,7 @@ package ru.kumkuat.application.gameModule.service;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import ru.kumkuat.application.gameModule.collections.Scene;
+import ru.kumkuat.application.gameModule.service.XLSXServices.XLSXScenarioReaderService;
 
 import java.util.List;
 
