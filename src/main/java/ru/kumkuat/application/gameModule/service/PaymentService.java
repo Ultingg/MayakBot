@@ -29,6 +29,7 @@ public class PaymentService {
         payment.setPaidTime(LocalDateTime.now());
         ru.kumkuat.application.gameModule.models.User client = userService.getUserByTelegramId(telegramId);
         payment.setSum((long) sum);
+        payment.setPromo(client.isPromo());
         payment.setPayer(client);
         long paymentId = 0;
         try {
