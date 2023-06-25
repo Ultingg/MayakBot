@@ -6,9 +6,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import ru.kumkuat.application.GameModule.Models.BGUser;
-import ru.kumkuat.application.GameModule.Repository.BGUserRepository;
-import ru.kumkuat.application.GameModule.Service.BGUserService;
+import ru.kumkuat.application.gameModule.models.BGUser;
+import ru.kumkuat.application.gameModule.repository.BGUserRepository;
+import ru.kumkuat.application.gameModule.service.BGUserService;
 
 import java.time.LocalTime;
 
