@@ -1,4 +1,4 @@
-package ru.kumkuat.application.gameModule.service;
+package ru.kumkuat.application.gameModule.service.XLSXServices;
 
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -8,6 +8,10 @@ import ru.kumkuat.application.gameModule.collections.Reply;
 import ru.kumkuat.application.gameModule.collections.Scene;
 import ru.kumkuat.application.gameModule.collections.Trigger;
 import ru.kumkuat.application.gameModule.models.Geolocation;
+import ru.kumkuat.application.gameModule.service.AudioService;
+import ru.kumkuat.application.gameModule.service.GeolocationDatabaseService;
+import ru.kumkuat.application.gameModule.service.PictureService;
+import ru.kumkuat.application.gameModule.service.StickerService;
 
 import java.io.File;
 import java.io.FileInputStream;

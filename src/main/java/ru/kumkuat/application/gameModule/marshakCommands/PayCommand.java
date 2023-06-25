@@ -46,9 +46,9 @@ public class PayCommand extends BotCommand {
 
     @Override
     public void execute(AbsSender absSender, User user, Chat chat, String[] arguments) {
-        Long userId = user.getId().longValue();
+        Long userId = chat.getId().longValue();
         if (arguments != null && arguments.length > 0) {
-            try {
+            try { ///тут видимо установка isPaid=true через команду...
                 userId = Long.parseLong(arguments[0]);
                 var player = userService.getUserByTelegramId(userId);
                 player.setHasPay(!player.isHasPay());
@@ -59,7 +59,7 @@ public class PayCommand extends BotCommand {
                 replyMessage.setText("Оплата успешно проведена!");
 
                 absSender.execute(replyMessage);
-                sendInfoMessageToAdmin(absSender, user.getId().longValue());
+                sendInfoMessageToAdmin(absSender, userId);
             } catch (TelegramApiException e) {
                 e.printStackTrace();
                 log.info("Exception while executing pay command, when pay is success.");

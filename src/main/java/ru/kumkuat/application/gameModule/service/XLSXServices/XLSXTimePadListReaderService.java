@@ -1,4 +1,4 @@
-package ru.kumkuat.application.gameModule.service;
+package ru.kumkuat.application.gameModule.service.XLSXServices;
 
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -6,6 +6,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 import ru.kumkuat.application.gameModule.promocode.Model.TimePadOrder;
 import ru.kumkuat.application.gameModule.promocode.Service.TimPadOrderService;
+import ru.kumkuat.application.gameModule.service.GeneralXLSXReader;
 
 import java.io.File;
 import java.io.FileInputStream;
