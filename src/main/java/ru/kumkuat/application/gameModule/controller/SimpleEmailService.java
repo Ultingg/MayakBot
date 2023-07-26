@@ -11,7 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.mail.internet.MimeMessage;
 import java.util.Date;
 
 @Slf4j
@@ -28,20 +27,18 @@ public class SimpleEmailService {
     @ResponseBody
     @RequestMapping("/mail")
     public void sendSimpleEmail(String mailRecipient, String subject, String text) {
-        MimeMessagePreparator preparator = new MimeMessagePreparator() {
-            public void prepare(MimeMessage mimeMessage) {
-                System.setProperty("mail.mime.splitlongparameters", "false");
-                try {
-                    MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
-                    messageHelper.setTo(mailRecipient);
-                    messageHelper.setFrom(EMAIL);
-                    messageHelper.setSubject(subject);
-                    messageHelper.setSentDate(new Date());
-                    messageHelper.setText(text, true);
-
-                } catch (Exception ex) {
-
-                }
+        MimeMessagePreparator preparator = mimeMessage -> {
+            System.setProperty("mail.mime.splitlongparameters", "false");
+            try {
+                MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+                messageHelper.setTo(mailRecipient);
+                messageHelper.setFrom(EMAIL);
+                messageHelper.setSubject(subject);
+                messageHelper.setSentDate(new Date());
+                messageHelper.setText(text, true);
+            log.info("Email was sent to "+ mailRecipient);
+            } catch (Exception ex) {
+            log.error(ex.getMessage());
             }
         };
         this.emailSender.send(preparator);
