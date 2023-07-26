@@ -17,7 +17,9 @@ public interface TimPadOrderRepository extends CrudRepository<TimePadOrder, Long
 
     boolean existsByOrderNumber(Long orderNumber);
 
-    @Query(value = "SELECT * FROM tporder  where is_notified = 0",
+    @Query(value = "SELECT * FROM tporder  where is_notified = false",
             nativeQuery = true)
     List<TimePadOrder> getAllNotNotifiedOrders();
+
+    List<TimePadOrder> getAllByIsNotifiedFalse();
 }

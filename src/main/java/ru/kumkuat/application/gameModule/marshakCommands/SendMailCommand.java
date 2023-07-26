@@ -11,7 +11,7 @@ import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
-import ru.kumkuat.application.gameModule.controller.MailController;
+import ru.kumkuat.application.gameModule.controller.SimpleEmailService;
 import ru.kumkuat.application.gameModule.mail.MailService;
 import ru.kumkuat.application.gameModule.promocode.Service.PromocodeService;
 import ru.kumkuat.application.gameModule.promocode.Service.TimPadOrderService;
@@ -22,7 +22,7 @@ import ru.kumkuat.application.gameModule.promocode.Service.TimPadOrderService;
 public class SendMailCommand extends BotCommand {
 
     @Autowired
-    private MailController mailController;
+    private SimpleEmailService simpleEmailService;
     @Autowired
     private TemplateEngine templateEngine;
     @Autowired
@@ -48,7 +48,7 @@ public class SendMailCommand extends BotCommand {
                     context.setVariable("user", timePadOrder.getFirstName() + " " + timePadOrder.getLastName());
                     context.setVariable("promocode", promocodeService.getDisposalPromocode().getValue());
                     String text = templateEngine.process("Emails/WelcomeCode.html", context);
-                    mailController.sendSimpleEmail(timePadOrder.getEmail(), "Важная информация для старта спектакля «Проспект Поэтов»", text);
+                    simpleEmailService.sendSimpleEmail(timePadOrder.getEmail(), "Важная информация для старта спектакля «Проспект Поэтов»", text);
                 }
                 timePadOrder.setIsNotified(true);
                 timPadOrderService.save(timePadOrder);
