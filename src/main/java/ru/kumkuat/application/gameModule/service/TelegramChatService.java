@@ -12,6 +12,7 @@ import ru.kumkuat.application.gameModule.repository.TelegramChatRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
 @Slf4j
 @Service
 @PropertySource(value = "file:../resources/externalsecret.yml")
@@ -24,7 +25,6 @@ public class TelegramChatService {
 
     public TelegramChatService(TelegramChatRepository telegramChatRepository) {
         this.telegramChatRepository = telegramChatRepository;
-        //cleanAll();
     }
 
     public String getAdminChatId() {
@@ -105,21 +105,18 @@ public class TelegramChatService {
         }
     }
 
-    public void cleanAll() {
-        telegramChatRepository.deleteAll();
-    }
-
     public TelegramChat getChatByUserTelegramId(Long telegramUserId) throws Exception {
         var userchat = getAll().stream().filter(chat -> chat.getUserId() != null
                 && telegramUserId.equals(chat.getUserId())).findFirst();
         return userchat.orElseThrow(Exception::new);
     }
 
-
-
     public Long getUserTelegramIdByChatId(Long chatId) {
         TelegramChat chat = telegramChatRepository.getTelegramChatByChatId(chatId);
-        if(chat != null) return chat.getUserId();
+        if (chat != null) return chat.getUserId();
         return null;
+    }
+    public TelegramChat getChatByTelegramChatId(Long telegramChatId) {
+        return telegramChatRepository.getTelegramChatByChatId(telegramChatId);
     }
 }

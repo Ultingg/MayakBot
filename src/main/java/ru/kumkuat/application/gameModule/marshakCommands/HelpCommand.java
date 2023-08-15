@@ -10,6 +10,7 @@ import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.kumkuat.application.gameModule.exceptions.TelegramCommandException;
+import ru.kumkuat.application.gameModule.models.TelegramChat;
 import ru.kumkuat.application.gameModule.service.TelegramChatService;
 import ru.kumkuat.application.gameModule.service.UserService;
 @Slf4j
@@ -81,8 +82,8 @@ public class HelpCommand extends ManCommand {
                 reply += "username: " + userdb.getName() + "\n";
 
                 if(telegramChatService.isUserAlreadyGetChat(userTelegeramId)){
-                    var chatdb = telegramChatService.getChatByUserTelegramId(userTelegeramId);
-                    reply += "чат телеграм id: " + chatdb.getUserId() + "\n";
+                    TelegramChat chatdb = telegramChatService.getChatByUserTelegramId(userTelegeramId);
+                    reply += "чат телеграм id: " + chatdb.getChatId() + "\n";
                     reply += "чат id: " + chatdb.getId() + "\n";
                 }
                 log.info("User with id: " + userdb.getId() + "asked for HELP");
