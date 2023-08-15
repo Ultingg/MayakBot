@@ -36,7 +36,7 @@ public class ApiController {
         return ResponseEntity.ok(xmlParseService.parseXmlFile());
     }
 
-    @PostMapping("/send_mail")
+    @PostMapping("/send-mail")
     public ResponseEntity<List<String>> sendMailTimePadCustomers() {
         log.info("API request /send_email");
         return ResponseEntity.ok(emailService.sendMail());
