@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.kumkuat.application.gameModule.api.services.ChatDetector;
 import ru.kumkuat.application.gameModule.api.services.EmailService;
 import ru.kumkuat.application.gameModule.api.services.XMLParseService;
-import ru.kumkuat.application.gameModule.service.TelegramChatService;
 
 import java.util.List;
 
@@ -18,14 +17,12 @@ public class ApiController {
 
     private final XMLParseService xmlParseService;
     private final EmailService emailService;
-    private final TelegramChatService telegramChatService;
     private final ChatDetector detector;
 
 
-    public ApiController(XMLParseService xmlParseService, EmailService emailService, TelegramChatService telegramChatService, ChatDetector detector) {
+    public ApiController(XMLParseService xmlParseService, EmailService emailService, ChatDetector detector) {
         this.xmlParseService = xmlParseService;
         this.emailService = emailService;
-        this.telegramChatService = telegramChatService;
         this.detector = detector;
     }
 
