@@ -1,8 +1,6 @@
 package ru.kumkuat.application.gameModule.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import ru.kumkuat.application.gameModule.bot.MarshakBot;
@@ -15,14 +13,10 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
-@PropertySource(value = "file:../resources/externalsecret.yml")
 public class TimerService extends TimerTask {
 
-    @Value("${time.schedule}")
-    private final static String CRON = "0 0 0 * * *";
-    private final static String CRON2 = "0 * * ? * *"; // для тестирования
-    @Value("${time.schedule.days}")
-    private static long DAY_OF_CHATTING = 3L;
+    private final static String CRON ="0 0 1 * * *";
+    private final static long DAY_OF_CHATTING = 3L;
 
     private IUseTimer iUseTimer;
     private final TelegramChatService telegramChatService;
@@ -43,7 +37,7 @@ public class TimerService extends TimerTask {
         }
     }
 
-    @Scheduled(cron = CRON2)
+    @Scheduled(cron = CRON, zone = "Europe/Moscow")
     public void checkAndKickUserFromChat() {
         int counter = 0;
         log.info("Time service start checking chats for users to kick out...");

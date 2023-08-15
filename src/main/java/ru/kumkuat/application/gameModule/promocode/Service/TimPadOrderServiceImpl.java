@@ -50,6 +50,6 @@ public class TimPadOrderServiceImpl implements TimPadOrderService {
 
     @Override
     public List<TimePadOrder> getAllNotNotifiedOrders() {
-        return repository.getAllNotNotifiedOrders();
+        return repository.getAllByIsNotifiedFalse();
     }
 }
