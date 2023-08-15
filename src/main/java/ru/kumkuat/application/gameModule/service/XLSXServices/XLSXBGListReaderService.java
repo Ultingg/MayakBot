@@ -1,4 +1,4 @@
-package ru.kumkuat.application.gameModule.service;
+package ru.kumkuat.application.gameModule.service.XLSXServices;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -8,6 +8,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 import ru.kumkuat.application.gameModule.models.BGUser;
+import ru.kumkuat.application.gameModule.service.BGUserService;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,15 +23,13 @@ import java.util.Map;
 public class XLSXBGListReaderService {
 
     private final BGUserService bgUserService;
-    private final UserService userService;
     private final Map<String, String> matchPropertyToHeader = new HashMap<>();
 
     private FileInputStream file;
     private Workbook workbook;
 
-    public XLSXBGListReaderService(BGUserService bgUserService, UserService userService) throws IOException {
+    public XLSXBGListReaderService(BGUserService bgUserService) throws IOException {
         this.bgUserService = bgUserService;
-        this.userService = userService;
 
         matchPropertyToHeader.put("email", "E-mail");
         matchPropertyToHeader.put("preferredTime", "Желаемое время начала");

@@ -14,7 +14,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.kumkuat.application.gameModule.models.BGUser;
 import ru.kumkuat.application.gameModule.service.BGUserService;
 import ru.kumkuat.application.gameModule.service.UserService;
-import ru.kumkuat.application.gameModule.service.XLSXReportValidationService;
+import ru.kumkuat.application.gameModule.service.XLSXServices.XLSXReportValidationService;
 
 import java.util.List;
 @Slf4j

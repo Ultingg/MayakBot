@@ -19,6 +19,7 @@ import ru.kumkuat.application.gameModule.Abstract.TelegramWebhookCommandBot;
 import ru.kumkuat.application.gameModule.marshakCommands.*;
 import ru.kumkuat.application.gameModule.promocode.Service.PromocodeLogeService;
 import ru.kumkuat.application.gameModule.repository.UserRepository;
+import ru.kumkuat.application.gameModule.service.PaymentService;
 import ru.kumkuat.application.gameModule.service.TelegramChatService;
 import ru.kumkuat.application.gameModule.service.UserService;
 
@@ -91,6 +92,8 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
     private GeneratePCCommand generatePCCommand;
     @Autowired
     private GenerateMarkedCodeCommand generateMarkedCodeCommand;
+    @Autowired
+    private PaymentService paymentService;
 
     private MarshakBot() {
     }
@@ -161,12 +164,18 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
                 replyMessage.setText("Отлично! Вcе готово, чтобы начать!");
                 promocodeLogeService.pomocodeLogging(user);
                 execute(replyMessage);
-                log.info("Paid was done bu user with id: {}", user.getId());
+                paymentService.processPayment(update);
+                log.info("Paid was done by user with id: {}", user.getId());
 
             } catch (Exception e) {
                 log.info("Payment of user {} faild", user.getId(), e);
             }
         }
+    }
+
+    @Override
+    public String getBotUsername() {
+        return botUsername;
     }
 
     @Override
@@ -243,5 +252,15 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
 
     public String getSecretName() {
         return secretName;
+    }
+
+    @Override
+    public String getBotToken() {
+        return botToken;
+    }
+
+    @Override
+    public String getBotPath() {
+        return botPath;
     }
 }
