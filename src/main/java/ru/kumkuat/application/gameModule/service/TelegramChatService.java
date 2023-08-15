@@ -1,5 +1,6 @@
 package ru.kumkuat.application.gameModule.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
@@ -11,7 +12,7 @@ import ru.kumkuat.application.gameModule.repository.TelegramChatRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
+@Slf4j
 @Service
 @PropertySource(value = "file:../resources/externalsecret.yml")
 public class TelegramChatService {
@@ -31,11 +32,13 @@ public class TelegramChatService {
     }
 
     public List<TelegramChat> getAll() {
+        log.info("getting all chats");
         List<TelegramChat> telegramChatList = new ArrayList<>();
         Iterable<TelegramChat> repoCollection = telegramChatRepository.findAll();
         for (TelegramChat telegramChat : repoCollection) {
             telegramChatList.add(telegramChat);
         }
+        log.info("getting all chats finished");
         return telegramChatList;
     }
 
@@ -45,9 +48,12 @@ public class TelegramChatService {
     }
 
     public ArrayList<TelegramChat> getBusyChats() {
+        log.info("Filter busy chats...");
         var busyChats = getAll().stream().filter(chat -> chat.isBusy());
+
         List<TelegramChat> busyChatsList = busyChats.collect(Collectors.toList());
-        return new ArrayList<TelegramChat>(busyChatsList);
+        log.info("Filter busy chats finished");
+        return new ArrayList<>(busyChatsList);
     }
 
     public TelegramChat getChatById(Long id) throws Exception {

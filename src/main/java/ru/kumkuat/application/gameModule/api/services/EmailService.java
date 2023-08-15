@@ -1,5 +1,6 @@
 package ru.kumkuat.application.gameModule.api.services;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -8,6 +9,9 @@ import ru.kumkuat.application.gameModule.promocode.Model.TimePadOrder;
 import ru.kumkuat.application.gameModule.promocode.Service.PromocodeService;
 import ru.kumkuat.application.gameModule.promocode.Service.TimPadOrderService;
 
+import java.util.ArrayList;
+import java.util.List;
+@Slf4j
 @Service
 public class EmailService {
 
@@ -27,7 +31,9 @@ public class EmailService {
     }
 
 
-    public String sendMail() {
+    public List<String> sendMail() {
+        log.info("Sending emails for timePadOrders started.");
+        List<String> emailSent = new ArrayList<>();
         for (TimePadOrder timePadOrder : timPadOrderService.getAllNotNotifiedOrders()) {
             int amountOfLetters = timePadOrder.getAmountTickets();
             for (int i = 0; i < amountOfLetters; i++) {
@@ -36,11 +42,14 @@ public class EmailService {
                 context.setVariable("promocode", promocodeService.getDisposalPromocode().getValue());
                 String text = templateEngine.process("Emails/WelcomeCode.html", context);
                 simpleEmailService.sendSimpleEmail(timePadOrder.getEmail(), "Важная информация для старта спектакля «Проспект Поэтов»", text);
+
+                emailSent.add(timePadOrder.getEmail());
             }
             timePadOrder.setIsNotified(true);
             timPadOrderService.save(timePadOrder);
         }
-        return "success";
+        log.info("Sending emails for timePadOrders finished.");
+        return emailSent;
     }
 
 
