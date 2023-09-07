@@ -49,7 +49,7 @@ public class PlayCommand extends BotCommand {
     @Override
     public void execute(AbsSender absSender, User user, Chat chat, String[] arguments) {
 
-        long userId = chat.getId().longValue();
+        long userId = chat.getId();
         log.debug("Marshak ");
         SendMessage replyMessage = new SendMessage();
         replyMessage.setChatId(chat.getId().toString());
@@ -57,7 +57,7 @@ public class PlayCommand extends BotCommand {
 
         try {
             if (userService.IsUserHasPayment(userId)) {
-                SendFreeChat(absSender, Long.valueOf(userId));
+                SendFreeChat(absSender, userId);
             } else {
                 replyMessage.setText("Необходимо внести оплату!");
                 execute(absSender, replyMessage, user);
