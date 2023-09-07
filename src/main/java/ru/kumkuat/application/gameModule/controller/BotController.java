@@ -258,7 +258,7 @@ public class BotController {
                     .chatId(updateMessage.getChatId().toString())
                     .text("Промокод принят").build());
         } else if (promocodeService.checkPromocode(message)) {
-            log.info("User id: {} used FreePFromocode", user.getTelegramUserId());
+            log.info("User id: {} used FreePromocode", user.getTelegramUserId());
             user.setHasPay(true);
             userService.save(user);
             marshak.sendMessage(SendMessage.builder()
