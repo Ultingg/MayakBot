@@ -1,6 +1,8 @@
 package ru.kumkuat.application.gameModule.promocode.Service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import ru.kumkuat.application.gameModule.promocode.Model.DisposablePromocode;
 import ru.kumkuat.application.gameModule.promocode.Repository.DisposablePromocodeRepository;
@@ -10,8 +12,11 @@ import java.util.List;
 
 @Slf4j
 @Service
+@PropertySource(value = "file:../resources/promocode.yml")
 public class PromocodeServiceImpl implements PromocodeService {
 
+    @Value("${freeCode}")
+    private String freeCode;
 
     private final DisposablePromocodeRepository promocodeRepository;
     private final PromocodeGenerator generator;
@@ -24,6 +29,10 @@ public class PromocodeServiceImpl implements PromocodeService {
 
     @Override
     public boolean checkPromocode(String value) {
+        if(checkFreePromocode(value)){
+            log.info("Was used freePromocode: " + value);
+            return checkFreePromocode(value);
+        }
         DisposablePromocode disposablePromocode = promocodeRepository.getByValue(value);
         if (disposablePromocode != null) {
             if (!disposablePromocode.isUsed()) {
@@ -101,5 +110,9 @@ public class PromocodeServiceImpl implements PromocodeService {
         disposablePromocode.setUsed(false);
         disposablePromocode.setSent(false);
         return disposablePromocode;
+    }
+
+    private boolean checkFreePromocode(String value) {
+        return value.equals(freeCode);
     }
 }
