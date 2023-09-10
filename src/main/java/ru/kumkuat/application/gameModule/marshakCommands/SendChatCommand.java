@@ -132,7 +132,7 @@ public class SendChatCommand extends BotCommand {
                 .append(telegramId)
                 .append(" и name: ")
                 .append(userName)
-                .append(" отправлен в чат поссылке")
+                .append(" отправлен в чат поссылке: ")
                 .append(inviteLink);
         replyMessage.setText(text.toString());
         replyMessage.setChatId(adminChatId);
