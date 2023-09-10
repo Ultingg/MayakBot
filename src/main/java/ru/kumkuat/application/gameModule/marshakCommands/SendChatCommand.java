@@ -139,10 +139,4 @@ public class SendChatCommand extends BotCommand {
         replyMessage.enableHtml(true);
         absSender.execute(replyMessage);
     }
-    void execute(AbsSender sender, SendMessage message, User user) {
-        try {
-            sender.execute(message);
-        } catch (TelegramApiException e) {
-        }
-    }
 }
