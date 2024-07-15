@@ -3,7 +3,10 @@ package ru.kumkuat.application.gameModule.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import ru.kumkuat.application.gameModule.bot.MarshakBot;
+import ru.kumkuat.application.gameModule.marshakCommands.KickCommand;
+import ru.kumkuat.application.gameModule.marshakCommands.SendChatCommand;
 import ru.kumkuat.application.gameModule.models.TelegramChat;
 
 import java.util.Date;
@@ -44,16 +47,18 @@ public class TimerService extends TimerTask {
         Date currentDate = new Date();
         List<TelegramChat> busyChats = telegramChatService.getBusyChats();
         log.info("{} busy chats was founded by service", busyChats.size());
+        KickCommand kickCommand = (KickCommand)marshakBot.getCommands()
+                .stream().filter(command -> command instanceof SendChatCommand).findFirst().get();
         for (TelegramChat chat : busyChats) {
             if (checkDifferenceInDays(currentDate, chat.getStartPlayTime())) {
                 Long userId = chat.getUserId();
                 if (userId != null) {
-                    marshakBot.getKickAllCommand().KickChatMember(marshakBot, userId);
+                    kickCommand.KickChatMember(marshakBot, userId);
                     counter++;
                 }
             }
         }
-        if(counter > 0) marshakBot.sendTimerOperationMessage(counter);
+        if(counter > 0) sendTimerOperationMessage(counter);
     }
 
     private boolean checkDifferenceInDays(Date currentDate, Date chatStartedDate) {
@@ -65,4 +70,16 @@ public class TimerService extends TimerTask {
     public void setTimerOperation(IUseTimer iUseTimer) {
         this.iUseTimer = iUseTimer;
     }
+
+
+
+    private void sendTimerOperationMessage(int quantityOfKickedUsers) {
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(telegramChatService.getAdminChatId());
+        sendMessage.setText(String.format("Выполнено отложенное задание \"Очистка чатов\" " +
+                "\nВыпровоженно гостей: %d. Время: %s", quantityOfKickedUsers, new Date()));
+
+        marshakBot.sendMessage(sendMessage);
+    }
+
 }

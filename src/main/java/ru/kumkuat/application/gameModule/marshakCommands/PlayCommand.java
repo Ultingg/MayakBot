@@ -1,7 +1,6 @@
 package ru.kumkuat.application.gameModule.marshakCommands;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.extensions.bots.commandbot.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -10,7 +9,6 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import ru.kumkuat.application.gameModule.bot.*;
 import ru.kumkuat.application.gameModule.models.TelegramChat;
 import ru.kumkuat.application.gameModule.service.SceneService;
 import ru.kumkuat.application.gameModule.service.TelegramChatService;
@@ -20,25 +18,17 @@ import ru.kumkuat.application.gameModule.service.UserService;
 @Service
 public class PlayCommand extends BotCommand {
 
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private TelegramChatService telegramChatService;
-    @Autowired
-    private MarshakBot marshakBot;
-    @Autowired
-    private Harms harms;
-    @Autowired
-    private AkhmatovaBot akhmatovaBot;
-    @Autowired
-    private Brodskiy brodskiy;
-    @Autowired
-    private MayakBot mayakBot;
-    @Autowired
-    private SceneService sceneService;
+    private final UserService userService;
+    private final TelegramChatService telegramChatService;
+    private final SceneService sceneService;
+    private final SendChatCommand sendChatCommand;
 
-    public PlayCommand() {
+    public PlayCommand(UserService userService, TelegramChatService telegramChatService, SceneService sceneService, SendChatCommand sendChatCommand) {
         super("/play", "После этой команды начнется игра");
+        this.userService = userService;
+        this.telegramChatService = telegramChatService;
+        this.sceneService = sceneService;
+        this.sendChatCommand = sendChatCommand;
     }
 
     @Override
@@ -87,13 +77,13 @@ public class PlayCommand extends BotCommand {
                          чтобы сюда пользователь не попадал, а пока закроем дырку так.  */ else {
                     userService.setPlaying(Long.valueOf(userId), true);
                     replyMessage.setText("Понеслась душа в рай!");
-                    marshakBot.getSendChatCommand().sendFreeChat(absSender, userId); /** Sending Link to chat if User didn't finish the Game **/
+                    sendChatCommand.sendFreeChat(absSender, userId);/** Sending Link to chat if User didn't finish the Game **/
 
                 }
             } else if (telegramChatService.isUserAlreadyGetChat(userId)) {
                 TelegramChat freeChat = telegramChatService.getChatByUserTelegramId(userId);
                 log.info("User's been invited to chat {}, resending invite link..", freeChat.getChatId());
-                marshakBot.getSendChatCommand().sendLinkToChat(replyMessage, absSender, freeChat, userId);
+                sendChatCommand.sendLinkToChat(replyMessage, absSender, freeChat, userId);
             } else {
                 replyMessage.setText("Вы уже начали игру. Чтобы начать заново, нужно ее закончить.");
                 absSender.execute(replyMessage);

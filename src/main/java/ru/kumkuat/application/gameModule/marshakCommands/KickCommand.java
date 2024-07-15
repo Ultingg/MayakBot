@@ -23,6 +23,7 @@ import java.util.Objects;
 @Service
 public class KickCommand extends BotCommand implements AdminCommand {
 
+
     @Autowired
     private UserService userService;
     @Autowired

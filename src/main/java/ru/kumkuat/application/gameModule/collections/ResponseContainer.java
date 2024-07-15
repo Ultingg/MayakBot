@@ -2,7 +2,6 @@ package ru.kumkuat.application.gameModule.collections;
 
 import lombok.Data;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.*;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
@@ -13,7 +12,6 @@ public class ResponseContainer {
 
     private int timingOfReply;
     private Long userId;
-    private BotApiMethod botApi;
     private SendMessage sendMessage;
     private SendLocation sendLocation;
     private SendPhoto sendPhoto;

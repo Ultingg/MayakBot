@@ -1,6 +1,5 @@
 package ru.kumkuat.application.gameModule.bot;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.extensions.bots.commandbot.commands.IBotCommand;
 import org.telegram.telegrambots.meta.api.methods.AnswerPreCheckoutQuery;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.*;
@@ -16,20 +16,19 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.kumkuat.application.gameModule.Abstract.TelegramWebhookCommandBot;
-import ru.kumkuat.application.gameModule.marshakCommands.*;
+import ru.kumkuat.application.gameModule.marshakCommands.IListenerSupport;
 import ru.kumkuat.application.gameModule.promocode.Service.PromocodeLogeService;
 import ru.kumkuat.application.gameModule.repository.UserRepository;
 import ru.kumkuat.application.gameModule.service.PaymentService;
 import ru.kumkuat.application.gameModule.service.TelegramChatService;
 import ru.kumkuat.application.gameModule.service.UserService;
 
-import java.util.Date;
+import java.util.List;
 
 @Component
 @Slf4j
 @Setter
 @Getter
-@AllArgsConstructor
 @PropertySource(value = "file:../resources/externalsecret.yml")
 public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender, InitializingBean {
 
@@ -47,63 +46,23 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
     private int TimeOffset;
 
     @Autowired
-    private TelegramChatService telegramChatService;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private Harms harms;
-    @Autowired
-    private AkhmatovaBot akhmatovaBot;
-    @Autowired
-    private Brodskiy brodskiy;
-    @Autowired
-    private MayakBot mayakBot;
-    @Autowired
-    private HelpCommand helpCommand;
-    @Autowired
-    private PayCommand payCommand;
-    @Autowired
-    private SaveChatCommand saveChatCommand;
-    @Autowired
-    private KickCommand kickAllCommand;
-    @Autowired
-    private StartCommand startCommand;
-    @Autowired
-    private PlayCommand playCommand;
-    @Autowired
-    private PlayMarathonCommand playMarathonCommand;
-    @Autowired
-    private SendChatCommand sendChatCommand;
-    @Autowired
-    private ResetUserCommand resetUserCommand;
-    @Autowired
-    private SetSceneNumberCommand setSceneNumberCommand;
-    @Autowired
-    private SendMailCommand sendMailCommand;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private InputXSLXCommand inputXSLXCommand;
-    @Autowired
-    private ValidationReportCommand validationReportCommand;
-    @Autowired
-    private PromocodeLogeService promocodeLogeService;
-    @Autowired
-    private GeneratePCCommand generatePCCommand;
-    @Autowired
-    private GenerateMarkedCodeCommand generateMarkedCodeCommand;
-    @Autowired
-    private PaymentService paymentService;
+    private final List<IBotCommand> commands;
 
-    private MarshakBot() {
-    }
+    private final TelegramChatService telegramChatService;
+    private final UserService userService;
+    private final PaymentService paymentService;
+    private final UserRepository userRepository;
+    private final PromocodeLogeService promocodeLogeService;
 
-    public void sendTimerOperationMessage(int quantityOfKickedUsers) {
-        SendMessage sendMessage = new SendMessage();
-        sendMessage.setChatId(telegramChatService.getAdminChatId());
-        sendMessage.setText(String.format("Выполнено отложенное задание \"Очистка чатов\" " +
-                "\nВыпровоженно гостей: %d. Время: %s", quantityOfKickedUsers, new Date()));
-        this.sendMessage(sendMessage);
+    private MarshakBot(List<IBotCommand> commands, TelegramChatService telegramChatService,
+                       UserService userService, PaymentService paymentService,
+                       UserRepository userRepository, PromocodeLogeService promocodeLogeService) {
+        this.commands = commands;
+        this.telegramChatService = telegramChatService;
+        this.userService = userService;
+        this.paymentService = paymentService;
+        this.userRepository = userRepository;
+        this.promocodeLogeService = promocodeLogeService;
     }
 
 
@@ -113,21 +72,7 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
     }
 
     public void RegisterCommand() {
-        register(playCommand);
-        register(payCommand);
-        register(playMarathonCommand);
-        register(saveChatCommand);
-        register(kickAllCommand);
-        register(startCommand);
-        register(helpCommand);
-        register(sendChatCommand);
-        register(resetUserCommand);
-        register(setSceneNumberCommand);
-        register(sendMailCommand);
-        register(inputXSLXCommand);
-        register(validationReportCommand);
-        register(generatePCCommand);
-        register(generateMarkedCodeCommand);
+        commands.forEach(this::register);
 
         for (var command :
                 getRegisteredCommands()) {
@@ -180,10 +125,8 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
 
     @Override
     public void sendLocation(SendLocation sendLocation) {
-        log.debug("{} get SendLocationMessage!", secretName);
         try {
             execute(sendLocation);
-            log.debug("{} send SendLocationMessage!", secretName);
         } catch (TelegramApiException e) {
             log.debug("{} failed sending SendLocationMessage!", secretName);
             e.getStackTrace();
@@ -192,10 +135,8 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
 
     @Override
     public void sendVoice(SendVoice sendVoice) {
-        log.debug("{} get SendVoiceMessage!", secretName);
         try {
             execute(sendVoice);
-            log.debug("{} send SendVoiceMessage!", secretName);
         } catch (TelegramApiException e) {
             e.getStackTrace();
             log.debug("{} failed sending SendVoiceMessage!", secretName);
@@ -204,10 +145,8 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
 
     @Override
     public void sendPicture(SendPhoto sendPhoto) {
-        log.debug("{} get SendPhotoMessage!", secretName);
         try {
             execute(sendPhoto);
-            log.debug("{} send SendPhotoMessage!", secretName);
         } catch (TelegramApiException e) {
             e.getStackTrace();
             log.debug("{} failed sending SendPhotoMessage!", secretName);
@@ -216,11 +155,9 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
 
     @Override
     public void sendMessage(SendMessage sendMessage) {
-        log.debug("{} get SendTextMessage!", secretName);
         try {
 
             execute(sendMessage);
-            log.debug("{} send SendTextMessage!", secretName);
         } catch (TelegramApiException e) {
             e.getStackTrace();
             log.debug("{} failed sending SendTextMessage!", secretName);
@@ -229,10 +166,8 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
 
     @Override
     public void sendSticker(SendSticker sendSticker) {
-        log.debug("{} get SendTextMessage!", secretName);
         try {
             execute(sendSticker);
-            log.debug("{} send SendTextMessage!", secretName);
         } catch (TelegramApiException e) {
             e.getStackTrace();
             log.debug("{} failed sending SendTextMessage!", secretName);
@@ -240,10 +175,8 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
     }
 
     public void sendDocument(SendDocument sendDocument) {
-        log.debug("{} get SendDocument!", secretName);
         try {
             execute(sendDocument);
-            log.debug("{} send SendDocument!", secretName);
         } catch (TelegramApiException e) {
             e.getStackTrace();
             log.debug("{} failed sending SendDocument!", secretName);

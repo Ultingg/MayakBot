@@ -1,7 +1,6 @@
 package ru.kumkuat.application.gameModule.marshakCommands;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.extensions.bots.commandbot.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -10,7 +9,6 @@ import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.kumkuat.application.gameModule.Abstract.TelegramWebhookCommandBot;
-import ru.kumkuat.application.gameModule.bot.MarshakBot;
 import ru.kumkuat.application.gameModule.service.BGUserService;
 import ru.kumkuat.application.gameModule.service.UserService;
 
@@ -24,8 +22,6 @@ public class PlayMarathonCommand extends BotCommand implements IListenerSupport 
     private final List<TelegramWebhookCommandBot> listeners = new ArrayList<>();
     private final UserService userService;
     private final BGUserService bgUserService;
-    @Autowired
-    private MarshakBot marshakBot;
 
 
     public PlayMarathonCommand(UserService userService, BGUserService bgUserService) {
@@ -46,7 +42,6 @@ public class PlayMarathonCommand extends BotCommand implements IListenerSupport 
         //if (userId == chat.getId()) {
             String username = chat.getUserName();
 
-            log.debug("Marshak ");
             SendMessage replyMessage = new SendMessage();
             replyMessage.setChatId(chat.getId().toString());
             replyMessage.enableHtml(true);

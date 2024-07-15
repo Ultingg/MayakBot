@@ -234,8 +234,8 @@ public class ResponseService {
         return responseContainer;
     }
 
-    private Long getSceneId(Long userTelegeramId) throws NullPointerException {
-        Long userId = Long.valueOf(userTelegeramId);
+    private Long getSceneId(Long userTelegramId) throws NullPointerException {
+        Long userId = userTelegramId;
         User user = null;
         try {
             user = userService.getUserByTelegramId(userId);

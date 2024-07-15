@@ -4,21 +4,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.bots.TelegramWebhookBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.methods.updates.SetWebhook;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.kumkuat.application.gameModule.Abstract.TelegramWebhookCommandBot;
-import ru.kumkuat.application.gameModule.bot.*;
+import ru.kumkuat.application.gameModule.bot.BotsSender;
+import ru.kumkuat.application.gameModule.bot.MarshakBot;
 import ru.kumkuat.application.gameModule.collections.ResponseContainer;
 import ru.kumkuat.application.gameModule.models.User;
 import ru.kumkuat.application.gameModule.promocode.Service.PromocodeLogeService;
 import ru.kumkuat.application.gameModule.promocode.Service.PromocodeService;
-import ru.kumkuat.application.gameModule.service.*;
+import ru.kumkuat.application.gameModule.service.ResponseService;
+import ru.kumkuat.application.gameModule.service.TelegramChatService;
+import ru.kumkuat.application.gameModule.service.UpdateValidationService;
+import ru.kumkuat.application.gameModule.service.UserService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -26,6 +26,7 @@ public class BotController {
 
     Logger log = LoggerFactory.getLogger(BotController.class.getName());
 
+    @Autowired
     private final List<BotsSender> botCollection;
     private final ResponseService responseService;
     private final UserService userService;
@@ -35,35 +36,16 @@ public class BotController {
     @Autowired
     private UpdateValidationService updateValidationService;
 
-    public BotController(MarshakBot marshakBot, Harms harms, MayakBot mayakBot, AkhmatovaBot akhmatovaBot,
-                         Brodskiy brodskiy, ResponseService responseService, UserService userService, TelegramChatService telegramChatService,
+    public BotController(List<BotsSender> botCollection, ResponseService responseService, UserService userService, TelegramChatService telegramChatService,
                          PromocodeLogeService promocodeLogeService, PromocodeService promocodeService) {
+        this.botCollection = botCollection;
         this.responseService = responseService;
         this.userService = userService;
         this.telegramChatService = telegramChatService;
         this.promocodeLogeService = promocodeLogeService;
         this.promocodeService = promocodeService;
-
-        botCollection = new ArrayList<>();
-        botCollection.add(harms);
-        botCollection.add(mayakBot);
-        botCollection.add(akhmatovaBot);
-        botCollection.add(brodskiy);
-        botCollection.add(marshakBot);
-
-        webhookSetting(brodskiy);
-        webhookSetting(marshakBot);
     }
 
-    private void webhookSetting(TelegramWebhookBot telegramWebhookBot) {
-        try {
-            SetWebhook setWebhook = new SetWebhook();
-            setWebhook.setUrl(telegramWebhookBot.getBotPath());
-            telegramWebhookBot.execute(setWebhook);
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-        }
-    }
 
     public void resolveUpdatesFromSimpleListener(Message updateMessage) {
         long userId =  userService.getCheckedUserId(updateMessage);
@@ -177,6 +159,7 @@ public class BotController {
 
     private void sendResponseToUserInPrivate(ResponseContainer responseContainer, TelegramWebhookCommandBot
             telegramWebhookBot) {
+        /* возможно можно применить паттерн проектирования Посетитель, Цепочка обязанностей */
         var botsSender = (BotsSender) telegramWebhookBot;
         if (responseContainer.hasGeolocation()) {
             var sendLocation = responseContainer.getSendLocation();
@@ -223,6 +206,7 @@ public class BotController {
             log.info("Another thread launched!");
             Message incomingMessage = message;
             if (incomingMessage.hasText() && commandChecker(incomingMessage)) {
+                /*зачем тут проверка если далее обработка одинаковая*/
                 log.info("Received throw to Marshak.");
                 responseResolver(responseService.messageReceiver(incomingMessage));
             } else {

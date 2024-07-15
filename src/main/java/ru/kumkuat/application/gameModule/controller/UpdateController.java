@@ -27,8 +27,7 @@ public class UpdateController {
             try {
                 botController.resolveUpdatesFromSimpleListener(update.getMessage());
             } catch (HttpMessageNotReadableException e) {
-                log.info("CATCHED SOME STRANSGE EXCEPTION");
-                // }
+                log.info("CATCHED SOME STRANGE EXCEPTION");
             }
         }
     }

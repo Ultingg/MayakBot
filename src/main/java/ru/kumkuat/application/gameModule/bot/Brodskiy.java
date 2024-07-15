@@ -2,20 +2,26 @@ package ru.kumkuat.application.gameModule.bot;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramWebhookBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.*;
+import org.telegram.telegrambots.meta.api.methods.updates.SetWebhook;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+
+import javax.annotation.PostConstruct;
 
 @Data
 @Slf4j
 @Component
 @PropertySource(value = "file:../resources/externalsecret.yml")
 public class Brodskiy extends TelegramWebhookBot implements BotsSender {
+    private final static Logger logger = LoggerFactory.getLogger(Brodskiy.class);
 
     @Value("${brodskiy.secretName}")
     private String secretName;
@@ -26,78 +32,73 @@ public class Brodskiy extends TelegramWebhookBot implements BotsSender {
     @Value("${brodskiy.path}")
     private String BotPath;
 
+    @PostConstruct
+    void settingUp() {
+        try {
+            SetWebhook setWebhook = new SetWebhook();
+            setWebhook.setUrl(this.getBotPath());
+            this.execute(setWebhook);
+            logger.info("Brodskiy Post construct finished");
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public BotApiMethod onWebhookUpdateReceived(Update update) {
         return new SendMessage();
     }
+
     @Override
     public void sendLocation(SendLocation sendLocation) {
-        log.debug("{} get SendLocationMessage!", secretName);
         try {
-            execute(sendLocation);
-            log.debug("{} send SendLocationMessage!", secretName);
+            executeAsync(sendLocation);
         } catch (TelegramApiException e) {
-            log.debug("{} failed sending SendLocationMessage!", secretName);
+            log.error("{} failed sending SendLocationMessage!", secretName);
             e.getStackTrace();
         }
     }
+
     @Override
     public void sendVoice(SendVoice sendVoice) {
-        log.debug("{} get SendVoiceMessage!", secretName);
         try {
-            execute(sendVoice);
-            log.debug("{} send SendVoiceMessage!", secretName);
-        } catch (TelegramApiException e) {
+            executeAsync(sendVoice);
+        } catch (Exception e) {
             e.getStackTrace();
             log.debug("{} failed sending SendVoiceMessage!", secretName);
         }
     }
+
     @Override
     public void sendPicture(SendPhoto sendPhoto) {
-        log.debug("{} get SendPhotoMessage!", secretName);
         try {
-            execute(sendPhoto);
-            log.debug("{} send SendPhotoMessage!", secretName);
-        } catch (TelegramApiException e) {
+            executeAsync(sendPhoto);
+        } catch (Exception e) {
             e.getStackTrace();
             log.debug("{} failed sending SendPhotoMessage!", secretName);
         }
     }
+
     @Override
     public void sendMessage(SendMessage sendMessage) {
-        log.debug("{} get SendTextMessage!", secretName);
         try {
-            execute(sendMessage);
-            log.debug("{} send SendTextMessage!", secretName);
-        } catch (TelegramApiException e) {
-            e.getStackTrace();
-            log.debug("{} failed sending SendTextMessage!", secretName);
-        }
-    }
-    @Override
-    public void sendSticker(SendSticker sendSticker) {
-        log.debug("{} get SendTextMessage!", secretName);
-        try {
-            execute(sendSticker);
-            log.debug("{} send SendTextMessage!", secretName);
+            executeAsync(sendMessage);
         } catch (TelegramApiException e) {
             e.getStackTrace();
             log.debug("{} failed sending SendTextMessage!", secretName);
         }
     }
 
-    public boolean isBotsStarting(String UserId) {
-        SendMessage checkMessage = new SendMessage();
-        checkMessage.setText("Проверка");
-        checkMessage.setChatId(UserId);
+    @Override
+    public void sendSticker(SendSticker sendSticker) {
         try {
-            this.execute(checkMessage);
-            return true;
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-            return false;
+            executeAsync(sendSticker);
+        } catch (Exception e) {
+            e.getStackTrace();
+            log.debug("{} failed sending SendTextMessage!", secretName);
         }
     }
+
     public String getSecretName() {
         return secretName;
     }

@@ -14,7 +14,6 @@ import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
-import ru.kumkuat.application.gameModule.bot.MarshakBot;
 import ru.kumkuat.application.gameModule.models.TelegramChat;
 import ru.kumkuat.application.gameModule.service.TelegramChatService;
 import ru.kumkuat.application.gameModule.service.UserService;
@@ -34,8 +33,7 @@ public class SendChatCommand extends BotCommand {
     private UserService userService;
     @Autowired
     private TelegramChatService telegramChatService;
-    @Autowired
-    private MarshakBot marshakBot;
+
 
 
     public SendChatCommand() {
