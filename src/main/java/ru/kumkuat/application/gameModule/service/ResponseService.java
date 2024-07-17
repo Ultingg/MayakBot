@@ -28,11 +28,12 @@ public class ResponseService {
     private final TriggerService triggerService;
     private final UserService userService;
     private final StickerService stickerService;
+    private final FileCacheService fileCacheService;
 
     public ResponseService(SceneService sceneService, PictureService pictureService,
                            AudioService audioService,
                            GeolocationDatabaseService geolocationDatabaseService,
-                           TriggerService triggerService, UserService userService, StickerService stickerService) {
+                           TriggerService triggerService, UserService userService, StickerService stickerService, FileCacheService fileCacheService) {
         this.sceneService = sceneService;
         this.pictureService = pictureService;
         this.audioService = audioService;
@@ -40,6 +41,7 @@ public class ResponseService {
         this.triggerService = triggerService;
         this.userService = userService;
         this.stickerService = stickerService;
+        this.fileCacheService = fileCacheService;
     }
 
     public List<ResponseContainer> messageReceiver(Message message) {
@@ -52,16 +54,16 @@ public class ResponseService {
             Scene scene = sceneService.getScene(sceneId);
             Trigger sceneTrigger = scene.getTrigger();
             String chatId = message.getChatId().toString();
-            log.info("Resolving message..chatid; {}  checking message...userId: {}",chatId, userId);
-                if (checkIncomingMessage(message, sceneTrigger)) {
-                    log.info("Collectin replies for user {} in chat {}", userId, chatId);
-                    responseContainers = ReceiveNextReplies(chatId, userId, message);                 //вернуть такой ответ
-                } else {
-                    if (!isTypeIncommingMessageEqualTriggerType(message, sceneTrigger)) {
-                        log.info("Add new message to list of wrong messages.");
-                        responseContainers = List.of(configureWrongTriggerMessage(chatId, userId));
-                    }
+            log.info("Resolving message..chatid; {}  checking message...userId: {}", chatId, userId);
+            if (checkIncomingMessage(message, sceneTrigger)) {
+                log.info("Collectin replies for user {} in chat {}", userId, chatId);
+                responseContainers = ReceiveNextReplies(chatId, userId, message);                 //вернуть такой ответ
+            } else {
+                if (!isTypeIncommingMessageEqualTriggerType(message, sceneTrigger)) {
+                    log.info("Add new message to list of wrong messages.");
+                    responseContainers = List.of(configureWrongTriggerMessage(chatId, userId));
                 }
+            }
             log.info("ResponseContainers size: {}", responseContainers.size());
         }
         return responseContainers;
@@ -75,7 +77,7 @@ public class ResponseService {
             }
             if (message.hasText()) {
                 log.info("message has text");
-                log.info("scenTriger loation: {} , pictuer: {} ",sceneTrigger.isHasGeolocation(), sceneTrigger.isHasPicture());
+                log.info("scenTriger loation: {} , pictuer: {} ", sceneTrigger.isHasGeolocation(), sceneTrigger.isHasPicture());
                 return !sceneTrigger.isHasGeolocation() && !sceneTrigger.isHasPicture();
             }
             if (message.hasLocation()) {
@@ -183,15 +185,7 @@ public class ResponseService {
             responseContainer.setSendPhoto(sendPhoto);
         }
         if (reply.hasAudio()) {
-            log.debug("Reply has audio.");
-            Long audioId = reply.getAudioId();
-            String pathToAudio = audioService.getPathToAudio(audioId);
-            File fileFromDb = new File(pathToAudio);
-            InputFile audioFile = new InputFile(fileFromDb);
-
-            SendVoice sendVoice = new SendVoice();
-            sendVoice.setChatId(chatId);
-            sendVoice.setVoice(audioFile);
+            SendVoice sendVoice = getSendVoice(reply, chatId);
             responseContainer.setSendVoice(sendVoice);
         }
         if (reply.hasGeolocation()) {
@@ -232,6 +226,26 @@ public class ResponseService {
         }
         log.debug("Response container created.");
         return responseContainer;
+    }
+
+    private SendVoice getSendVoice(Reply reply, String chatId) {
+        log.info("Reply has audio.");
+        Long audioId = reply.getAudioId();
+        InputFile audioFile;
+        if(fileCacheService.isFileInCache(audioId)){
+            audioFile = fileCacheService.getFile(audioId);
+        } else {
+            log.info("audio downloaded to cache id: " + audioId);
+            String pathToAudio = audioService.getPathToAudio(audioId);
+            File fileFromDb = new File(pathToAudio);
+            audioFile = new InputFile(fileFromDb);
+            fileCacheService.putFile(audioId, audioFile);
+        }
+
+        SendVoice sendVoice = new SendVoice();
+        sendVoice.setChatId(chatId);
+        sendVoice.setVoice(audioFile);
+        return sendVoice;
     }
 
     private Long getSceneId(Long userTelegeramId) throws NullPointerException {
