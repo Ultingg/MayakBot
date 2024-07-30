@@ -7,10 +7,7 @@ import org.telegram.telegrambots.meta.api.methods.send.*;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Location;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import ru.kumkuat.application.gameModule.collections.Reply;
-import ru.kumkuat.application.gameModule.collections.ResponseContainer;
-import ru.kumkuat.application.gameModule.collections.Scene;
-import ru.kumkuat.application.gameModule.collections.Trigger;
+import ru.kumkuat.application.gameModule.collections.*;
 import ru.kumkuat.application.gameModule.models.Geolocation;
 import ru.kumkuat.application.gameModule.models.User;
 
@@ -171,68 +168,112 @@ public class ResponseService {
         responseContainer.setTimingOfReply(reply.getTiming());
         responseContainer.setBotName(reply.getBotName());
         responseContainer.setUserId(userId);
-
+//TODO сделать рефакторинг отдельный сервис генерации responseContainer применить паттерн
         if (reply.hasPicture()) {
-            log.debug("Reply has picture.");
-            Long pictureId = reply.getPictureId();
-            String pathToPicture = pictureService.getPathToPicture(pictureId);
-            File fileFromDb = new File(pathToPicture);
-            InputFile pictureFile = new InputFile(fileFromDb);
-
-            SendPhoto sendPhoto = new SendPhoto();
-            sendPhoto.setChatId(chatId);
-            sendPhoto.setPhoto(pictureFile);
-            responseContainer.setSendPhoto(sendPhoto);
+            setPictureToReply(reply, chatId, responseContainer);
         }
         if (reply.hasAudio()) {
             SendVoice sendVoice = getSendVoice(reply, chatId);
             responseContainer.setSendVoice(sendVoice);
         }
         if (reply.hasGeolocation()) {
-            log.debug("Reply has geolocation.");
-            Long geolocationId = reply.getGeolocationId();
-            Geolocation geolocation = geolocationDatabaseService.getGeolocationById(geolocationId);
-            Double latitudeToSend = geolocation.getLatitude();
-            Double longitudeToSend = geolocation.getLongitude();
-
-            SendLocation sendLocation = new SendLocation();
-            sendLocation.setChatId(chatId);
-            sendLocation.setLatitude(latitudeToSend);
-            sendLocation.setLongitude(longitudeToSend);
-
-            responseContainer.setSendLocation(sendLocation);
+            setGeolocationToReply(reply, chatId, responseContainer);
         }
         if (reply.hasText()) {
-            log.debug("Reply has text.");
-            String textToSend = reply.getTextMessage();
-            textToSend = EmojiParser.parseToUnicode(textToSend);
-            textToSend = nickNameInserting(textToSend, Long.valueOf(userId));
-            SendMessage sendMessage = new SendMessage();
-            sendMessage.setText(textToSend);
-            sendMessage.setChatId(chatId);
-            responseContainer.setSendMessage(sendMessage);
+            setTextToReply(reply, chatId, userId, responseContainer);
         }
         if (reply.hasSticker()) {
-            log.debug("Reply has sticker.");
-            Long stickerId = reply.getStickerId();
-            String pathToSticker = stickerService.getPathToSticker(stickerId);
-            File fileFromDb = new File(pathToSticker);
-            InputFile stickerFile = new InputFile(fileFromDb);
-
-            SendSticker sendSticker = new SendSticker();
-            sendSticker.setSticker(stickerFile);
-            sendSticker.setChatId(chatId);
-            responseContainer.setSendSticker(sendSticker);
+            setStiсkerToReply(reply, chatId, responseContainer);
+        }
+        if (reply.hasPinnedMessage()) {
+            setPinnedMessage(reply, chatId, responseContainer, userId);
         }
         log.debug("Response container created.");
         return responseContainer;
+    }
+
+    private void setPinnedMessage(Reply reply, String chatId, ResponseContainer responseContainer, Long userId) {
+        log.debug("Reply has sticker.");
+        PinnedMessage pinnedMessage = reply.getPinnedMessage();
+        PinnedMessageDTO pinnedMessageDTO = new PinnedMessageDTO();
+        if (pinnedMessage.hasPicture()) {
+            long pictureId = pinnedMessage.getPictureId();
+            SendPhoto sendPhoto = getSendPhoto(pictureId, chatId);
+            pinnedMessageDTO.setSendPhoto(sendPhoto);
+        } else {
+            SendMessage sendMessage = getSendMessage(reply, chatId, userId);
+            pinnedMessageDTO.setSendMessage(sendMessage);
+        }
+        responseContainer.setPinnedMessageDTO(pinnedMessageDTO);
+    }
+
+    private void setStiсkerToReply(Reply reply, String chatId, ResponseContainer responseContainer) {
+        log.debug("Reply has sticker.");
+        Long stickerId = reply.getStickerId();
+        String pathToSticker = stickerService.getPathToSticker(stickerId);
+        File fileFromDb = new File(pathToSticker);
+        InputFile stickerFile = new InputFile(fileFromDb);
+
+        SendSticker sendSticker = new SendSticker();
+        sendSticker.setSticker(stickerFile);
+        sendSticker.setChatId(chatId);
+        responseContainer.setSendSticker(sendSticker);
+    }
+
+    private void setTextToReply(Reply reply, String chatId, Long userId, ResponseContainer responseContainer) {
+        log.debug("Reply has text.");
+        SendMessage sendMessage = getSendMessage(reply, chatId, userId);
+        responseContainer.setSendMessage(sendMessage);
+    }
+
+    private SendMessage getSendMessage(Reply reply, String chatId, Long userId) {
+        String textToSend = reply.getTextMessage();
+        textToSend = EmojiParser.parseToUnicode(textToSend);
+        textToSend = nickNameInserting(textToSend, Long.valueOf(userId));
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setText(textToSend);
+        sendMessage.setChatId(chatId);
+        return sendMessage;
+    }
+
+    private void setGeolocationToReply(Reply reply, String chatId, ResponseContainer responseContainer) {
+        log.debug("Reply has geolocation.");
+        Long geolocationId = reply.getGeolocationId();
+        Geolocation geolocation = geolocationDatabaseService.getGeolocationById(geolocationId);
+        Double latitudeToSend = geolocation.getLatitude();
+        Double longitudeToSend = geolocation.getLongitude();
+
+        SendLocation sendLocation = new SendLocation();
+        sendLocation.setChatId(chatId);
+        sendLocation.setLatitude(latitudeToSend);
+        sendLocation.setLongitude(longitudeToSend);
+
+        responseContainer.setSendLocation(sendLocation);
+    }
+
+    private void setPictureToReply(Reply reply, String chatId, ResponseContainer responseContainer) {
+        log.debug("Reply has picture.");
+        Long pictureId = reply.getPictureId();
+        SendPhoto sendPhoto = getSendPhoto(pictureId, chatId);
+        responseContainer.setSendPhoto(sendPhoto);
+    }
+
+    private SendPhoto getSendPhoto(long pictureId, String chatId) {
+        String pathToPicture = pictureService.getPathToPicture(pictureId);
+        File fileFromDb = new File(pathToPicture);
+        InputFile pictureFile = new InputFile(fileFromDb);
+
+        SendPhoto sendPhoto = new SendPhoto();
+        sendPhoto.setChatId(chatId);
+        sendPhoto.setPhoto(pictureFile);
+        return sendPhoto;
     }
 
     private SendVoice getSendVoice(Reply reply, String chatId) {
         log.info("Reply has audio.");
         Long audioId = reply.getAudioId();
         InputFile audioFile;
-        if(fileCacheService.isFileInCache(audioId)){
+        if (fileCacheService.isFileInCache(audioId)) {
             audioFile = fileCacheService.getFile(audioId);
         } else {
             log.info("audio downloaded to cache id: " + audioId);

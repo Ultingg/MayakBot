@@ -4,6 +4,7 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
+import ru.kumkuat.application.gameModule.collections.PinnedMessage;
 import ru.kumkuat.application.gameModule.collections.Reply;
 import ru.kumkuat.application.gameModule.collections.Scene;
 import ru.kumkuat.application.gameModule.collections.Trigger;
@@ -60,7 +61,7 @@ public class XLSXScenarioReaderService {
                 for (int cellCount = 0; cellCount < numberO; cellCount++) {
 
                     Cell cell = cellIterator.next();
-                    switch (cellCount) {
+                    switch (cellCount) {//перебераем еолонки по порякдку
                         case 0:
                             if (numberOfScene != cell.getNumericCellValue()) {
                                 numberOfScene = cell.getNumericCellValue();
@@ -69,26 +70,7 @@ public class XLSXScenarioReaderService {
                             }
                             break;
                         case 1:
-                            if (cell.getCellType() == CellType.STRING ||
-                                    (cell.getCellType() == CellType.NUMERIC && cell.getNumericCellValue() != 0.0)) {
-                                Trigger newTrigger = new Trigger();
-                                if (cell.getCellType() == CellType.STRING) {
-                                    if (cell.getStringCellValue().equals("picture")) {
-                                        newTrigger.setHasPicture(true);
-                                    }
-                                    if (cell.getStringCellValue().contains("geolocation")) {
-                                        String triggerToDB = cell.getStringCellValue().replace("geolocation, ", "");
-                                        Geolocation geolocationToDB = geolocationSpliterator(triggerToDB);
-                                        geolocationDatabaseService.setGeolocationIntoDB(geolocationToDB);
-                                        newTrigger.setGeolocationId(1L);
-                                    } else {
-                                        newTrigger.setText(cell.getStringCellValue());
-                                    }
-                                }
-                                if (cell.getCellType() == CellType.NUMERIC)
-                                    newTrigger.setText(String.valueOf(cell.getNumericCellValue()));
-                                tempScene.setTrigger(newTrigger);
-                            }
+                            setSceneTrigger(tempScene, cell);
                             break;
                         case 2:
                             tempReply = new Reply();
@@ -98,29 +80,7 @@ public class XLSXScenarioReaderService {
                             type = cell.getStringCellValue();
                             break;
                         case 4:
-                            if (type.equals("message")) {
-                                tempReply.setTextMessage(cell.getStringCellValue());
-                            }
-                            if (type.equals("picture")) {
-                                String picturePath = cell.getStringCellValue();
-                                long pictureId = pictureService.setPictureIntoDB(picturePath);
-                                tempReply.setPictureId(pictureId);
-                            }
-                            if (type.equals("geolocation")) {
-                                Geolocation geolocation = geolocationSpliterator(cell.getStringCellValue());
-                                long geolocationId = geolocationDatabaseService.setGeolocationIntoDB(geolocation);
-                                tempReply.setGeolocationId(geolocationId);
-                            }
-                            if (type.equals("audio")) {
-                                String audioPath = cell.getStringCellValue();
-                                long audioId = audioService.setAudioIntoDB(audioPath);
-                                tempReply.setAudioId(audioId);
-                            }
-                            if (type.equals("sticker")) {
-                                String stickerPath = cell.getStringCellValue();
-                                long stickerId = stickerService.setStickerToDB(stickerPath);
-                                tempReply.setStickerId(stickerId);
-                            }
+                            setSceneReplyValueByType(tempReply, type, cell);
                             break;
                         case 5:
                             tempReply.setTiming((int) cell.getNumericCellValue());
@@ -133,6 +93,70 @@ public class XLSXScenarioReaderService {
             header = false;
         }
         return scenes;
+    }
+
+    private void setSceneReplyValueByType(Reply tempReply, String type, Cell cell) {
+        if (type.equals("message")) {
+            tempReply.setTextMessage(cell.getStringCellValue());
+        }
+        if (type.equals("picture")) {
+            String picturePath = cell.getStringCellValue();
+            long pictureId = pictureService.setPictureIntoDB(picturePath);
+            tempReply.setPictureId(pictureId);
+        }
+        if (type.equals("geolocation")) {
+            Geolocation geolocation = geolocationSpliterator(cell.getStringCellValue());
+            long geolocationId = geolocationDatabaseService.setGeolocationIntoDB(geolocation);
+            tempReply.setGeolocationId(geolocationId);
+        }
+        if (type.equals("audio")) {
+            String audioPath = cell.getStringCellValue();
+            long audioId = audioService.setAudioIntoDB(audioPath);
+            tempReply.setAudioId(audioId);
+        }
+        if (type.equals("sticker")) {
+            String stickerPath = cell.getStringCellValue();
+            long stickerId = stickerService.setStickerToDB(stickerPath);
+            tempReply.setStickerId(stickerId);
+        }
+        if(type.equals("pinned")) {
+            setPinnedMessageToReply(tempReply, cell);
+        }
+    }
+
+    private void setPinnedMessageToReply(Reply tempReply, Cell cell) {
+        PinnedMessage pinnedMessage = new PinnedMessage();
+        String value = cell.getStringCellValue();
+        if (value.contains("picture")) {
+            long pictureId = pictureService.setPictureIntoDB(value);
+            pinnedMessage.setPictureValue(pictureId);
+        } else {
+            pinnedMessage.setTextValue(value);
+        }
+        tempReply.setPinnedMessage(pinnedMessage);
+    }
+
+    private void setSceneTrigger(Scene tempScene, Cell cell) {
+        if (cell.getCellType() == CellType.STRING ||
+                (cell.getCellType() == CellType.NUMERIC && cell.getNumericCellValue() != 0.0)) {
+            Trigger newTrigger = new Trigger();
+            if (cell.getCellType() == CellType.STRING) {
+                if (cell.getStringCellValue().equals("picture")) {
+                    newTrigger.setHasPicture(true);
+                }
+                if (cell.getStringCellValue().contains("geolocation")) {
+                    String triggerToDB = cell.getStringCellValue().replace("geolocation, ", "");
+                    Geolocation geolocationToDB = geolocationSpliterator(triggerToDB);
+                    geolocationDatabaseService.setGeolocationIntoDB(geolocationToDB);
+                    newTrigger.setGeolocationId(1L);
+                } else {
+                    newTrigger.setText(cell.getStringCellValue());
+                }
+            }
+            if (cell.getCellType() == CellType.NUMERIC)
+                newTrigger.setText(String.valueOf(cell.getNumericCellValue()));
+            tempScene.setTrigger(newTrigger);
+        }
     }
 
     public Geolocation geolocationSpliterator(String geolocationString) {

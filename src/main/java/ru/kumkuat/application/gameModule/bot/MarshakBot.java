@@ -11,11 +11,14 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.AnswerPreCheckoutQuery;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
+import org.telegram.telegrambots.meta.api.methods.pinnedmessages.PinChatMessage;
 import org.telegram.telegrambots.meta.api.methods.send.*;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.kumkuat.application.gameModule.Abstract.TelegramWebhookCommandBot;
+import ru.kumkuat.application.gameModule.collections.PinnedMessageDTO;
 import ru.kumkuat.application.gameModule.marshakCommands.*;
 import ru.kumkuat.application.gameModule.promocode.Service.PromocodeLogeService;
 import ru.kumkuat.application.gameModule.repository.UserRepository;
@@ -218,9 +221,30 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
     public void sendMessage(SendMessage sendMessage) {
         log.debug("{} get SendTextMessage!", secretName);
         try {
-
             execute(sendMessage);
             log.debug("{} send SendTextMessage!", secretName);
+        } catch (TelegramApiException e) {
+            e.getStackTrace();
+            log.debug("{} failed sending SendTextMessage!", secretName);
+        }
+    }
+
+    public Integer sendPrePinnedMessage(SendMessage sendMessage) {
+        try {
+            Message execute = execute(sendMessage);
+            Integer messageId = execute.getMessageId();
+            log.debug("{} send SendTextMessage!", secretName);
+            return messageId;
+        } catch (TelegramApiException e) {
+            e.getStackTrace();
+            log.debug("{} failed sending SendTextMessage!", secretName);
+        }
+        return null;
+    }
+
+    public void pinMesassge(PinChatMessage pinChatMessage) {
+        try {
+            execute(pinChatMessage);
         } catch (TelegramApiException e) {
             e.getStackTrace();
             log.debug("{} failed sending SendTextMessage!", secretName);
@@ -249,6 +273,32 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
             log.debug("{} failed sending SendDocument!", secretName);
         }
     }
+
+    public void sendPinnedMessage(PinnedMessageDTO pinnedMessageDTO) {
+        try {
+            long chatId;
+            Message message;
+            if (pinnedMessageDTO.hasMessage()) {
+                SendMessage sendMessage = pinnedMessageDTO.getSendMessage();
+                chatId = Long.valueOf(sendMessage.getChatId());
+                message = execute(sendMessage);
+            } else {
+                SendPhoto sendPhoto = pinnedMessageDTO.getSendPhoto();
+                chatId = Long.valueOf(sendPhoto.getChatId());
+                message = execute(sendPhoto);
+            }
+            int messageId = message.getMessageId();
+            PinChatMessage pinChatMessage = PinChatMessage.builder()
+                    .chatId(chatId)
+                    .disableNotification(true)
+                    .messageId(messageId).build();
+            execute(pinChatMessage);
+
+        } catch (TelegramApiException e) {
+            e.getStackTrace();
+        }
+    }
+
 
     public String getSecretName() {
         return secretName;

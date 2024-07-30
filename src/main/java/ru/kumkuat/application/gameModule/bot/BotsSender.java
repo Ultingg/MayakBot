@@ -2,6 +2,7 @@ package ru.kumkuat.application.gameModule.bot;
 
 import org.telegram.telegrambots.meta.api.methods.send.*;
 import org.telegram.telegrambots.meta.generics.BotOptions;
+import ru.kumkuat.application.gameModule.collections.PinnedMessageDTO;
 
 public interface BotsSender extends BotOptions {
 
@@ -16,4 +17,6 @@ public interface BotsSender extends BotOptions {
     void sendMessage(SendMessage sendMessage);
 
     void sendSticker(SendSticker sendSticker);
+
+    void sendPinnedMessage(PinnedMessageDTO pinnedMessageDTO);
 }
