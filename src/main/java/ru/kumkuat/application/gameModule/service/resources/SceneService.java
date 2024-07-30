@@ -1,4 +1,4 @@
-package ru.kumkuat.application.gameModule.service;
+package ru.kumkuat.application.gameModule.service.resources;
 
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;

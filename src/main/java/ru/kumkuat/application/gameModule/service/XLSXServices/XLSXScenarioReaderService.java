@@ -9,10 +9,10 @@ import ru.kumkuat.application.gameModule.collections.Reply;
 import ru.kumkuat.application.gameModule.collections.Scene;
 import ru.kumkuat.application.gameModule.collections.Trigger;
 import ru.kumkuat.application.gameModule.models.Geolocation;
-import ru.kumkuat.application.gameModule.service.AudioService;
-import ru.kumkuat.application.gameModule.service.GeolocationDatabaseService;
-import ru.kumkuat.application.gameModule.service.PictureService;
-import ru.kumkuat.application.gameModule.service.StickerService;
+import ru.kumkuat.application.gameModule.service.resources.AudioService;
+import ru.kumkuat.application.gameModule.service.resources.GeolocationDatabaseService;
+import ru.kumkuat.application.gameModule.service.resources.PictureService;
+import ru.kumkuat.application.gameModule.service.resources.StickerService;
 
 import java.io.File;
 import java.io.FileInputStream;

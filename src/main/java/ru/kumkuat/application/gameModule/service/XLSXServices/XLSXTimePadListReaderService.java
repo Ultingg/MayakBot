@@ -5,7 +5,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 import ru.kumkuat.application.gameModule.promocode.Model.TimePadOrder;
-import ru.kumkuat.application.gameModule.promocode.Service.TimPadOrderService;
+import ru.kumkuat.application.gameModule.promocode.Service.TimePadOrderService;
 import ru.kumkuat.application.gameModule.service.GeneralXLSXReader;
 
 import java.io.File;
@@ -15,12 +15,12 @@ import java.io.FileInputStream;
 @PropertySource(value = "file:../resources/externalsecret.yml")
 public class XLSXTimePadListReaderService extends GeneralXLSXReader {
 
-    private final TimPadOrderService timePadUserService;
+    private final TimePadOrderService timePadUserService;
 
     private FileInputStream file;
     private Workbook workbook;
 
-    public XLSXTimePadListReaderService(TimPadOrderService timePadUserService) {
+    public XLSXTimePadListReaderService(TimePadOrderService timePadUserService) {
         this.timePadUserService = timePadUserService;
     }
 

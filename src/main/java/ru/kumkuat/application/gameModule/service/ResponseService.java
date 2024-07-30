@@ -10,6 +10,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.kumkuat.application.gameModule.collections.*;
 import ru.kumkuat.application.gameModule.models.Geolocation;
 import ru.kumkuat.application.gameModule.models.User;
+import ru.kumkuat.application.gameModule.service.resources.*;
 
 import java.io.File;
 import java.util.ArrayList;

@@ -6,6 +6,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.kumkuat.application.gameModule.models.BGUser;
 import ru.kumkuat.application.gameModule.models.User;
 import ru.kumkuat.application.gameModule.repository.UserRepository;
+import ru.kumkuat.application.gameModule.service.resources.SceneService;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

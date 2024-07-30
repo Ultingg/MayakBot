@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * General interface to operate with Users
  */
-public interface TimPadOrderService {
+public interface TimePadOrderService {
 
 
     TimePadOrder getOrderById(Long id);

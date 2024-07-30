@@ -4,10 +4,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
-import ru.kumkuat.application.gameModule.controller.SimpleEmailService;
+import ru.kumkuat.application.gameModule.mail.SimpleEmailService;
 import ru.kumkuat.application.gameModule.promocode.Model.TimePadOrder;
 import ru.kumkuat.application.gameModule.promocode.Service.PromocodeService;
-import ru.kumkuat.application.gameModule.promocode.Service.TimPadOrderService;
+import ru.kumkuat.application.gameModule.promocode.Service.TimePadOrderService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,21 +20,21 @@ public class EmailService {
     private final TemplateEngine templateEngine;
     private final PromocodeService promocodeService;
 
-    private final TimPadOrderService timPadOrderService;
+    private final TimePadOrderService timePadOrderService;
 
     public EmailService(SimpleEmailService simpleEmailService, TemplateEngine templateEngine, PromocodeService promocodeService,
-                        TimPadOrderService timPadOrderService) {
+                        TimePadOrderService timePadOrderService) {
         this.simpleEmailService = simpleEmailService;
         this.templateEngine = templateEngine;
         this.promocodeService = promocodeService;
-        this.timPadOrderService = timPadOrderService;
+        this.timePadOrderService = timePadOrderService;
     }
 
 
     public List<String> sendMail() {
         log.info("Sending emails for timePadOrders started.");
         List<String> emailSent = new ArrayList<>();
-        for (TimePadOrder timePadOrder : timPadOrderService.getAllNotNotifiedOrders()) {
+        for (TimePadOrder timePadOrder : timePadOrderService.getAllNotNotifiedOrders()) {
             int amountOfLetters = timePadOrder.getAmountTickets();
             for (int i = 0; i < amountOfLetters; i++) {
                 Context context = new Context();
@@ -46,7 +46,7 @@ public class EmailService {
                 emailSent.add(timePadOrder.getEmail());
             }
             timePadOrder.setIsNotified(true);
-            timPadOrderService.save(timePadOrder);
+            timePadOrderService.save(timePadOrder);
         }
         log.info("Sending emails for timePadOrders finished.");
         return emailSent;
