@@ -68,6 +68,32 @@ public class SimpleEmailService {
         return emailToSend;
     }
 
+    /**
+     * Method get all users from tpOrder table that are not notified and send them letter.
+     * After that it marks them as notified.
+     */
+    public int processMailSendingWithTime() {
+        logger.info("Email with time sending start");
+        List<TimePadOrder> orders = timePadOrderService.getAllNotNotifiedOrders();
+        int emailToSend = orders.size();
+        logger.info("Emails to send: " + emailToSend);
+        for (var timePadOrder : orders) {
+            int amountOfLetters = timePadOrder.getAmountTickets();
+            for (int i = 0; i < amountOfLetters; i++) {
+                Context context = new Context();
+                context.setVariable("time", timePadOrder.getTime() );
+                context.setVariable("promocode", promocodeService.getDisposalPromocode().getValue());
+                String text = templateEngine.process("Emails/WelcomeCode2.html", context);
+                sendSimpleEmail(timePadOrder.getEmail(), "Важная информация для старта спектакля «Проспект Поэтов»", text);
+            }
+            timePadOrder.setIsNotified(true);
+            timePadOrderService.save(timePadOrder);
+        }
+
+        logger.info("Email with time  sending finished");
+        return emailToSend;
+    }
+
     public void sendSimpleEmail(String mailRecipient, String subject, String text) {
         MimeMessagePreparator preparator = mimeMessage -> {
             System.setProperty("mail.mime.splitlongparameters", "false");

@@ -105,10 +105,18 @@ public class TelegramChatService {
         }
     }
 
-    public TelegramChat getChatByUserTelegramId(Long telegramUserId) throws Exception {
+    public TelegramChat getChatByUserTelegramId(Long telegramUserId) {
         var userchat = getAll().stream().filter(chat -> chat.getUserId() != null
                 && telegramUserId.equals(chat.getUserId())).findFirst();
-        return userchat.orElseThrow(Exception::new);
+        return userchat.orElseThrow(() ->
+                new TelegramChatServiceException("User hasn't assigned chat. User id" + telegramUserId));
+    }
+
+    public void cleanChatByUserTelegramId(Long telegramUserId){
+        TelegramChat  chat = getChatByUserTelegramId(telegramUserId);
+        chat.setBusy(false);
+        chat.setUserId(null);
+        telegramChatRepository.save(chat);
     }
 
     public Long getUserTelegramIdByChatId(Long chatId) {
@@ -116,6 +124,7 @@ public class TelegramChatService {
         if (chat != null) return chat.getUserId();
         return null;
     }
+
     public TelegramChat getChatByTelegramChatId(Long telegramChatId) {
         return telegramChatRepository.getTelegramChatByChatId(telegramChatId);
     }

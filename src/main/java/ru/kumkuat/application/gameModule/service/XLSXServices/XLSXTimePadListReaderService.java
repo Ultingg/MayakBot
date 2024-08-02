@@ -32,6 +32,7 @@ public class XLSXTimePadListReaderService extends GeneralXLSXReader {
         matchPropertyToHeader.put("amountTickets", "Количество билетов");
         matchPropertyToHeader.put("firstName", "Имя");
         matchPropertyToHeader.put("lastName", "Фамилия");
+        matchPropertyToHeader.put("time", "Дата");
     }
 
     @Override
