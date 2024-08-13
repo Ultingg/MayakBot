@@ -1,70 +1,60 @@
 package ru.kumkuat.application.gameModule.marshakCommands;
 
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.extensions.bots.commandbot.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.bots.AbsSender;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.Context;
-import ru.kumkuat.application.gameModule.controller.SimpleEmailService;
 import ru.kumkuat.application.gameModule.mail.MailService;
-import ru.kumkuat.application.gameModule.promocode.Service.PromocodeService;
-import ru.kumkuat.application.gameModule.promocode.Service.TimPadOrderService;
+import ru.kumkuat.application.gameModule.mail.SimpleEmailService;
 
+/**
+ * Service for sending mail.
+ */
 @Slf4j
 @Service
-
 public class SendMailCommand extends BotCommand {
+    private final static Logger logger = LoggerFactory.getLogger(SendChatCommand.class);
 
-    @Autowired
-    private SimpleEmailService simpleEmailService;
-    @Autowired
-    private TemplateEngine templateEngine;
-    @Autowired
-    private TimPadOrderService timPadOrderService;
-    @Autowired
-    private PromocodeService promocodeService;
+    private final SimpleEmailService simpleEmailService;
+    private final MailService mailService;
 
-    @Autowired
-    private MailService mailService;
-
-    public SendMailCommand() {
+    public SendMailCommand(SimpleEmailService simpleEmailService,
+                           MailService mailService) {
         super("/send_mail", "Направить пользователю письмо на почту");
+        this.simpleEmailService = simpleEmailService;
+        this.mailService = mailService;
     }
 
+    @SneakyThrows
     @Override
     public void execute(AbsSender absSender, User user, Chat chat, String[] arguments) {
+        logger.info("SendMail command start");
         if (arguments != null && arguments.length > 0 && arguments[0].equals("all")) {
-            for (var timePadOrder :
-                    timPadOrderService.getAllNotNotifiedOrders()) {
-               int amountOfLetters = timePadOrder.getAmountTickets();
-                for (int i = 0; i < amountOfLetters; i++) {
-                    Context context = new Context();
-                    context.setVariable("user", timePadOrder.getFirstName() + " " + timePadOrder.getLastName());
-                    context.setVariable("promocode", promocodeService.getDisposalPromocode().getValue());
-                    String text = templateEngine.process("Emails/WelcomeCode.html", context);
-                    simpleEmailService.sendSimpleEmail(timePadOrder.getEmail(), "Важная информация для старта спектакля «Проспект Поэтов»", text);
-                }
-                timePadOrder.setIsNotified(true);
-                timPadOrderService.save(timePadOrder);
-            }
+            int emailSent = simpleEmailService.processMailSending();
+            notifyAdmin(absSender, chat, emailSent);
         }
+        logger.info("SendMail command finished");
+    }
+
+    private void notifyAdmin(AbsSender absSender, Chat chat, int emailSent) throws org.telegram.telegrambots.meta.exceptions.TelegramApiException {
+        SendMessage replyMessage = new SendMessage();
+        replyMessage.setChatId(chat.getId().toString());
+        replyMessage.enableHtml(true);
+        String message = emailSent > 0 ?
+                String.format("Писем успешно отправлено: %d !", emailSent):
+                String.format("Письма не отправлены=!");
+
+        replyMessage.setText(message);
+        absSender.execute(replyMessage);
     }
 
     private String getTextForMessage() {
-       return mailService.sendWelcomeMail();
-    }
-
-
-    void execute(AbsSender sender, SendMessage message, User user) {
-        try {
-            sender.execute(message);
-        } catch (TelegramApiException e) {
-        }
+        return mailService.sendWelcomeMail();
     }
 }

@@ -26,7 +26,7 @@ import java.net.URL;
 @Service
 
 public class InputXSLXCommand extends BotCommand {
-    private String path = "../resources/input_bg_usersti.xlsx";
+    private String path = "../resources/input_bg_usersti2.xlsx";
 
     @Autowired
     @Qualifier(value = "timePadOrder")

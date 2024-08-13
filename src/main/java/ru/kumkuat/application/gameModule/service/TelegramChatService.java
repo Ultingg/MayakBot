@@ -65,6 +65,11 @@ public class TelegramChatService {
         return getAll().stream().anyMatch(chat -> !chat.isBusy());
     }
 
+
+    private boolean isTelegramChatExist(Long telegramChatId) {
+        return telegramChatRepository.existsTelegramChatByChatId(telegramChatId);
+    }
+
     public boolean isTelegramChatExist(TelegramChat telegramChat) {
         if (telegramChat.getId() != null) {
             return getAll().stream().anyMatch(chat -> chat.getId().equals(telegramChat.getId()));
@@ -78,26 +83,27 @@ public class TelegramChatService {
         return getAll().stream().anyMatch(chat -> chat.getUserId() != null && chat.getUserId() == userId.longValue());
     }
 
-    public long setChatIntoDB(Chat chat) throws Exception {
-        if (chat.getInviteLink() != null && !chat.getTitle().isEmpty()) {
+    public long setChatIntoDB(Chat chat) {
+        validateChat(chat);
+        if (!isTelegramChatExist(chat.getId())) {
             TelegramChat telegramChat = new TelegramChat();
             telegramChat.setBusy(false);
             telegramChat.setName(chat.getTitle());
             telegramChat.setChatId(chat.getId());
-            if (!isTelegramChatExist(telegramChat)) {
-                Long ChatId = Long.valueOf(getAll().size()) + 1;
-                telegramChat.setId(ChatId);
-                telegramChatRepository.save(telegramChat);
-                return telegramChat.getId();
-            } else {
+            return telegramChatRepository.save(telegramChat).getChatId();
+        } else {
                 throw new TelegramChatServiceException("Telegram chat already exist!");
             }
+    }
+
+    private void validateChat(Chat chat) {
+        if (chat.getInviteLink() == null && chat.getTitle().isEmpty()) {
+            throw new TelegramChatServiceException("Invite link or chat tittle are empty!");
         }
-        throw new TelegramChatServiceException("Invite link or chat tittle are empty!");
     }
 
     public boolean saveChatIntoDB(TelegramChat telegramChat) {
-        if (isTelegramChatExist(telegramChat)) {
+        if (isTelegramChatExist(telegramChat.getChatId())) {
             telegramChatRepository.save(telegramChat);
             return true;
         } else {
@@ -105,10 +111,18 @@ public class TelegramChatService {
         }
     }
 
-    public TelegramChat getChatByUserTelegramId(Long telegramUserId) throws Exception {
+    public TelegramChat getChatByUserTelegramId(Long telegramUserId) {
         var userchat = getAll().stream().filter(chat -> chat.getUserId() != null
                 && telegramUserId.equals(chat.getUserId())).findFirst();
-        return userchat.orElseThrow(Exception::new);
+        return userchat.orElseThrow(() ->
+                new TelegramChatServiceException("User hasn't assigned chat. User id" + telegramUserId));
+    }
+
+    public void cleanChatByUserTelegramId(Long telegramUserId) {
+        TelegramChat chat = getChatByUserTelegramId(telegramUserId);
+        chat.setBusy(false);
+        chat.setUserId(null);
+        telegramChatRepository.save(chat);
     }
 
     public Long getUserTelegramIdByChatId(Long chatId) {
@@ -116,6 +130,7 @@ public class TelegramChatService {
         if (chat != null) return chat.getUserId();
         return null;
     }
+
     public TelegramChat getChatByTelegramChatId(Long telegramChatId) {
         return telegramChatRepository.getTelegramChatByChatId(telegramChatId);
     }

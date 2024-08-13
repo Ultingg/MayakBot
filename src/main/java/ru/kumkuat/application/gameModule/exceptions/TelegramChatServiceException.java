@@ -1,6 +1,6 @@
 package ru.kumkuat.application.gameModule.exceptions;
 
-public class TelegramChatServiceException extends Exception {
+public class TelegramChatServiceException extends RuntimeException {
 
     public TelegramChatServiceException() {
         super();

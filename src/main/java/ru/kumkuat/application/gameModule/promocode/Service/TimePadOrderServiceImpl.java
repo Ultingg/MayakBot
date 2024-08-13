@@ -10,11 +10,11 @@ import java.util.List;
 
 @Slf4j
 @Service
-public class TimPadOrderServiceImpl implements TimPadOrderService {
+public class TimePadOrderServiceImpl implements TimePadOrderService {
 
     private final TimPadOrderRepository repository;
 
-    public TimPadOrderServiceImpl(TimPadOrderRepository repository) {
+    public TimePadOrderServiceImpl(TimPadOrderRepository repository) {
         this.repository = repository;
     }
 

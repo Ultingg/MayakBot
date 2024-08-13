@@ -12,7 +12,7 @@ import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.kumkuat.application.gameModule.bot.*;
 import ru.kumkuat.application.gameModule.models.TelegramChat;
-import ru.kumkuat.application.gameModule.service.SceneService;
+import ru.kumkuat.application.gameModule.service.resources.SceneService;
 import ru.kumkuat.application.gameModule.service.TelegramChatService;
 import ru.kumkuat.application.gameModule.service.UserService;
 

@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramWebhookBot;
+import org.telegram.telegrambots.meta.api.methods.pinnedmessages.PinChatMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updates.SetWebhook;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -12,11 +13,15 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.kumkuat.application.gameModule.Abstract.TelegramWebhookCommandBot;
 import ru.kumkuat.application.gameModule.bot.*;
+import ru.kumkuat.application.gameModule.collections.PinnedMessageDTO;
 import ru.kumkuat.application.gameModule.collections.ResponseContainer;
 import ru.kumkuat.application.gameModule.models.User;
 import ru.kumkuat.application.gameModule.promocode.Service.PromocodeLogeService;
 import ru.kumkuat.application.gameModule.promocode.Service.PromocodeService;
-import ru.kumkuat.application.gameModule.service.*;
+import ru.kumkuat.application.gameModule.service.ResponseService;
+import ru.kumkuat.application.gameModule.service.TelegramChatService;
+import ru.kumkuat.application.gameModule.service.UpdateValidationService;
+import ru.kumkuat.application.gameModule.service.UserService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +71,7 @@ public class BotController {
     }
 
     public void resolveUpdatesFromSimpleListener(Message updateMessage) {
-        long userId =  userService.getCheckedUserId(updateMessage);
+        long userId = userService.getCheckedUserId(updateMessage);
         log.info("user id from update: {}", userId);
         User user = userService.getUserByTelegramId(userId);
         if (user != null && !user.isAdmin()
@@ -90,8 +95,7 @@ public class BotController {
         }
     }
 
-    public void resolveSuccessfulPayment(Update update)
-    {
+    public void resolveSuccessfulPayment(Update update) {
         var marshak = (MarshakBot) botCollection.stream().filter(bot -> bot instanceof MarshakBot).findFirst().get();
         marshak.onWebhookUpdateReceived(update);
     }
@@ -100,7 +104,7 @@ public class BotController {
         Message updateMessage = update.getMessage();
         User user = userService.getUserByTelegramId(updateMessage.getFrom().getId());
         updateValidationService.registerUser(updateMessage.getFrom());
-        if (updateMessage.getChat().getType().equals("private") || (user !=null &&  user.isAdmin())) {
+        if (updateMessage.getChat().getType().equals("private") || (user != null && user.isAdmin())) {
             var marshak = (MarshakBot) botCollection.stream().filter(bot -> bot instanceof MarshakBot).findFirst().get();
             marshak.onWebhookUpdateReceived(update);
         }
@@ -120,7 +124,7 @@ public class BotController {
     }
 
     public void responseResolver(List<ResponseContainer> responseContainers) {
-        
+
         if (!responseContainers.isEmpty()) {
             boolean wrongMessage = false;
             long userId = responseContainers.get(0).getUserId();
@@ -173,7 +177,14 @@ public class BotController {
         if (responseContainer.hasSticker()) {
             botsSender.sendSticker(responseContainer.getSendSticker());
         }
+        if(responseContainer.hasPinnedMessage()){
+            PinnedMessageDTO pinnedMessageDTO = responseContainer.getPinnedMessageDTO();
+            botsSender.sendPinnedMessage(pinnedMessageDTO);
+        }
     }
+
+
+
 
     private void sendResponseToUserInPrivate(ResponseContainer responseContainer, TelegramWebhookCommandBot
             telegramWebhookBot) {
@@ -198,9 +209,9 @@ public class BotController {
                 var command = telegramWebhookBot.getRegisteredCommand(responseContainer.getSendMessage().getText());
                 String[] arguments = new String[]{responseContainer.getMessage().getText()};
                 var message = responseContainer.getMessage();
-                message.setText(responseContainer.getSendMessage().getText());
                 command.processMessage(telegramWebhookBot, message, arguments);
             } else {
+//                responseContainer.getSendMessage().setChatId(responseContainer.getUserId().toString());
                 botsSender.sendMessage(responseContainer.getSendMessage());
             }
         }
@@ -208,6 +219,10 @@ public class BotController {
             var sendSticker = responseContainer.getSendSticker();
             sendSticker.setChatId(responseContainer.getUserId().toString());
             botsSender.sendSticker(sendSticker);
+        }
+        if(responseContainer.hasPinnedMessage()){
+            PinnedMessageDTO pinnedMessageDTO = responseContainer.getPinnedMessageDTO();
+            botsSender.sendPinnedMessage(pinnedMessageDTO);
         }
     }
 
@@ -265,6 +280,26 @@ public class BotController {
                     .chatId(updateMessage.getChatId().toString())
                     .text("Промокод принят. Вы можете бесплатно пройти по маршруту! Нажмите \"Начать прогулку\".").build());
         }
+    }
+
+
+    public void tetst(Update update) {
+        Long chatId = update.getMessage().getChatId();
+
+        SendMessage sendMessage = SendMessage.builder()
+                .chatId(update.getMessage().getChatId().toString())
+                .text("Это сообзение должно быть запиненно!").build();
+
+        var marhsak =(MarshakBot) botCollection.stream().filter(bot -> bot.getSecretName().equals("Marshak")).findFirst().get();
+
+        Integer messageId = marhsak.sendPrePinnedMessage(sendMessage);
+        PinChatMessage pinChatMessage = PinChatMessage.builder()
+                .chatId(chatId)
+                .disableNotification(true)
+                .messageId(messageId).build();
+
+        marhsak.pinMesassge(pinChatMessage);
+
     }
 }
 

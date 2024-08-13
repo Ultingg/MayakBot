@@ -22,6 +22,11 @@ public class ResponseContainer {
     private String botName;
     private Message message;
     private boolean wrongMessage;
+    private PinnedMessageDTO pinnedMessageDTO;
+
+    public boolean hasPinnedMessage(){
+        return pinnedMessageDTO != null;
+    }
 
     public boolean hasPicture() {
         return sendPhoto != null;

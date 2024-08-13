@@ -22,4 +22,5 @@ public class TimePadOrder {
     private String orderStatus;
     private Integer amountTickets;
     private Boolean isNotified;
+    private String time;
 }

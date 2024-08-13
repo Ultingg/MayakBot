@@ -9,4 +9,6 @@ public interface TelegramChatRepository extends CrudRepository<TelegramChat, Lon
     TelegramChat getById(Long id);
 
     TelegramChat getTelegramChatByChatId(Long id);
+
+    boolean existsTelegramChatByChatId(Long id);
 }

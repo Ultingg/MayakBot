@@ -50,8 +50,6 @@ public class StartCommand extends BotCommand {
     private String greetingFour;
     @Value("${message.greeting.five}")
     private String greetingFive;
-    @Value("${message.greeting.bots}")
-    private String botGreeting;
     @Value("${message.greeting.pay_start}")
     private String payStartMessage;
     @Value("${message.greeting.pay_button}")
