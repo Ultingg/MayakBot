@@ -13,6 +13,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.kumkuat.application.gameModule.exceptions.TelegramChatServiceException;
 import ru.kumkuat.application.gameModule.service.TelegramChatService;
 import ru.kumkuat.application.gameModule.service.UserService;
+
 @Slf4j
 @Service
 public class SaveChatCommand extends BotCommand implements AdminCommand {
@@ -37,27 +38,27 @@ public class SaveChatCommand extends BotCommand implements AdminCommand {
                 GetChat getChat = new GetChat();
                 getChat.setChatId(chat.getId().toString());
 
-                try {
-                    var chatInfo = absSender.execute(getChat);
+                var chatInfo = absSender.execute(getChat);
 
-                    var tittle = chatInfo.getTitle();
-                    var inviteLink = chatInfo.getInviteLink();
+                var tittle = chatInfo.getTitle();
+                var inviteLink = chatInfo.getInviteLink();
 
-                    if (inviteLink != null && tittle != null) {
-                        System.out.println(tittle);
-                        System.out.println(inviteLink);
-                        telegramChatService.setChatIntoDB(chatInfo);
-                        replyMessage.setText("Ссылка записана: " + inviteLink);
-                    } else {
-                        replyMessage.setText("Не удалось получить ссылку");
-                    }
-                } catch (TelegramChatServiceException ex) {
-                    replyMessage.setText(ex.getMessage());
-                } catch (TelegramApiException ex) {
-                    replyMessage.setText("Чат не добавлен, возникли неполадки.");
+                if (inviteLink != null && tittle != null) {
+                    System.out.println(tittle);
+                    System.out.println(inviteLink);
+                    telegramChatService.setChatIntoDB(chatInfo);
+                    replyMessage.setText("Ссылка записана: " + inviteLink);
+                } else {
+                    replyMessage.setText("Не удалось получить ссылку");
                 }
+            } catch (TelegramChatServiceException ex) {
+                replyMessage.setText(ex.getMessage());
+                log.error(ex.getMessage());
+            } catch (TelegramApiException ex) {
+                replyMessage.setText("Чат не добавлен, возникли неполадки.");
+                log.error(ex.getMessage());
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error(e.getMessage());
                 replyMessage.setText("Чат не добавлен, возникли неполадки.");
             }
         } else {
