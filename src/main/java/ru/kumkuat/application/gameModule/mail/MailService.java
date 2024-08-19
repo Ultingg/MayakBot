@@ -19,7 +19,7 @@ public class MailService {
 
 
 
-                return welcomeMailSender.getHtmlMessage("welcomeCode2.ftl", properties);
+                return welcomeMailSender.getHtmlMessage("welcomeCode2.html", properties);
     }
 
 }

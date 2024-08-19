@@ -55,7 +55,7 @@ public class ApiController {
     public ResponseEntity<CommonResponse> sendEmailsWithTime() {
         log.info("API request send-email");
         try {
-            int emailSent = mailService.processMailSendingWithTime();
+            int emailSent = mailService.sendPromoMail();
             return ResponseEntity.ok().body(new CommonResponse(true,
                     new String[]{String.format("Email with time sending finished. Emails were sent %d", emailSent)}));
         } catch (Exception e) {

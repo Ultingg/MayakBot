@@ -41,7 +41,6 @@ public class SimpleEmailService {
     }
 
 
-
     /**
      * Method get all users from tpOrder table that are not notified and send them letter.
      * After that it marks them as notified.
@@ -81,11 +80,29 @@ public class SimpleEmailService {
             int amountOfLetters = timePadOrder.getAmountTickets();
             for (int i = 0; i < amountOfLetters; i++) {
                 Context context = new Context();
-                context.setVariable("time", timePadOrder.getTime() );
+                context.setVariable("time", timePadOrder.getTime());
                 context.setVariable("promocode", promocodeService.getDisposalPromocode().getValue());
                 String text = templateEngine.process("Emails/WelcomeCode2.html", context);
                 sendSimpleEmail(timePadOrder.getEmail(), "Важная информация для старта спектакля «Проспект Поэтов»", text);
             }
+            timePadOrder.setIsNotified(true);
+            timePadOrderService.save(timePadOrder);
+        }
+
+        logger.info("Email with time  sending finished");
+        return emailToSend;
+    }
+
+
+    public int sendPromoMail() {
+        logger.info("Email with time sending start");
+        List<TimePadOrder> orders = timePadOrderService.getAllNotNotifiedOrders();
+        int emailToSend = orders.size();
+        String text = templateEngine.process("Emails/promoMail.html", new Context());
+        logger.info("Emails to send: " + emailToSend);
+        for (var timePadOrder : orders) {
+
+            sendSimpleEmail(timePadOrder.getEmail(), "Анонс следующего спектакля «Проспект Поэтов»", text);
             timePadOrder.setIsNotified(true);
             timePadOrderService.save(timePadOrder);
         }
