@@ -16,7 +16,7 @@ import java.util.List;
  */
 @Slf4j
 @Service
-public class SimpleUpdateExecutor extends Executor {
+public class SimpleUpdateExecutor {
     private final static String MARSHAK = "Marshak";
     @Autowired
     private List<BotsSender> botCollection;
