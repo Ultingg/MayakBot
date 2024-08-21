@@ -64,7 +64,15 @@ public class ResponseService {
             }
             log.info("ResponseContainers size: {}", responseContainers.size());
         }
-        return responseContainers;
+        return markLastReply(responseContainers);
+    }
+
+
+    private List<ResponseContainer> markLastReply(List<ResponseContainer> list) {
+        if (!list.isEmpty()) {
+            list.get(list.size() - 1).setLastMessage(true);
+        }
+        return list;
     }
 
     private boolean isTypeIncommingMessageEqualTriggerType(Message message, Trigger sceneTrigger) {
