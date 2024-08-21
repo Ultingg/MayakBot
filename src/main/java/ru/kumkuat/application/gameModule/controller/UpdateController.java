@@ -60,11 +60,5 @@ public class UpdateController {
             }
         }
     }
-
-
-    @PostMapping(value = "/test")
-    public void receivedUpdateFromTest(@RequestBody Update update) {
-        botController.tetst(update);
-    }
 }
 

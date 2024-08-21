@@ -5,11 +5,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramWebhookBot;
-import org.telegram.telegrambots.meta.api.methods.pinnedmessages.PinChatMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updates.SetWebhook;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.kumkuat.application.gameModule.Abstract.TelegramWebhookCommandBot;
 import ru.kumkuat.application.gameModule.bot.*;
@@ -36,7 +34,7 @@ public class BotController {
 
     private final ResponseOperatorService responseOperatorService;
 
-    public BotController(MarshakBot marshakBot, Harms harms, MayakBot mayakBot, AkhmatovaBot akhmatovaBot,
+    public BotController(MarshakBot marshakBot,
                          Brodskiy brodskiy, UserService userService, TelegramChatService telegramChatService,
                          PromocodeLogeService promocodeLogeService, PromocodeService promocodeService, ResponseOperatorService responseOperatorService) {
         this.userService = userService;
@@ -44,13 +42,6 @@ public class BotController {
         this.promocodeLogeService = promocodeLogeService;
         this.promocodeService = promocodeService;
         this.responseOperatorService = responseOperatorService;
-
-//        botCollection = new ArrayList<>();
-//        botCollection.add(harms);
-//        botCollection.add(mayakBot);
-//        botCollection.add(akhmatovaBot);
-//        botCollection.add(brodskiy);
-//        botCollection.add(marshakBot);
 
         webhookSetting(brodskiy);
         webhookSetting(marshakBot);
@@ -120,26 +111,6 @@ public class BotController {
                     .chatId(updateMessage.getChatId().toString())
                     .text("Промокод принят. Вы можете бесплатно пройти по маршруту! Нажмите \"Начать прогулку\".").build());
         }
-    }
-
-
-    public void tetst(Update update) {
-        Long chatId = update.getMessage().getChatId();
-
-        SendMessage sendMessage = SendMessage.builder()
-                .chatId(update.getMessage().getChatId().toString())
-                .text("Это сообзение должно быть запиненно!").build();
-
-        var marhsak =(MarshakBot) botCollection.stream().filter(bot -> bot.getSecretName().equals("Marshak")).findFirst().get();
-
-        Integer messageId = marhsak.sendPrePinnedMessage(sendMessage);
-        PinChatMessage pinChatMessage = PinChatMessage.builder()
-                .chatId(chatId)
-                .disableNotification(true)
-                .messageId(messageId).build();
-
-        marhsak.pinMesassge(pinChatMessage);
-
     }
 }
 

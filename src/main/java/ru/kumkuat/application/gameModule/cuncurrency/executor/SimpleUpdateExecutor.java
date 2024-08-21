@@ -22,8 +22,9 @@ public class SimpleUpdateExecutor extends Executor {
     }
 
     public void execute(ResponseContainer update, BotsSender bot) throws InterruptedException {
-        log.info("Обработка update началась. Время: " + update.getTimingOfReply());
+        log.info("Обработка update началась. Время: " + update.getTimingOfReply() + ". Cообщение для userId: " +  update.getUserId());
         String botName = bot.getSecretName();
+
         if (botName.equals(MARSHAK)) {
             sendResponseToUserInPrivate(update, (TelegramWebhookCommandBot) bot);
         } else {
@@ -34,26 +35,35 @@ public class SimpleUpdateExecutor extends Executor {
             Long userId = update.getUserId();
             userService.moveUserToNextScene(userId);
         }
-        System.out.println("====================== " + update.getMessage().getText() + " ======================");
         log.info("Обработка update закончилась");
     }
 
     private void sendResponseToUser(ResponseContainer responseContainer, BotsSender botsSender) {
 
+        if (responseContainer.hasText()) {
+            botsSender.sendMessage(responseContainer.getSendMessage());
+            return;
+        }
+        sendSimpleMessages(responseContainer, botsSender);
+    }
+
+    private void sendSimpleMessages(ResponseContainer responseContainer, BotsSender botsSender) {
         if (responseContainer.hasGeolocation()) {
             botsSender.sendLocation(responseContainer.getSendLocation());
+            return;
         }
         if (responseContainer.hasAudio()) {
             botsSender.sendVoice(responseContainer.getSendVoice());
+            return;
         }
         if (responseContainer.hasPicture()) {
             botsSender.sendPicture(responseContainer.getSendPhoto());
+            return;
         }
-        if (responseContainer.hasText()) {
-            botsSender.sendMessage(responseContainer.getSendMessage());
-        }
+
         if (responseContainer.hasSticker()) {
             botsSender.sendSticker(responseContainer.getSendSticker());
+            return;
         }
         if (responseContainer.hasPinnedMessage()) {
             PinnedMessageDTO pinnedMessageDTO = responseContainer.getPinnedMessageDTO();
@@ -64,21 +74,6 @@ public class SimpleUpdateExecutor extends Executor {
     private void sendResponseToUserInPrivate(ResponseContainer responseContainer, TelegramWebhookCommandBot
             telegramWebhookBot) {
         var botsSender = (BotsSender) telegramWebhookBot;
-        if (responseContainer.hasGeolocation()) {
-            var sendLocation = responseContainer.getSendLocation();
-            sendLocation.setChatId(responseContainer.getUserId().toString());
-            botsSender.sendLocation(sendLocation);
-        }
-        if (responseContainer.hasAudio()) {
-            var sendVoice = responseContainer.getSendVoice();
-            sendVoice.setChatId(responseContainer.getUserId().toString());
-            botsSender.sendVoice(sendVoice);
-        }
-        if (responseContainer.hasPicture()) {
-            var sendPhoto = responseContainer.getSendPhoto();
-            sendPhoto.setChatId(responseContainer.getUserId().toString());
-            botsSender.sendPicture(sendPhoto);
-        }
         if (responseContainer.hasText()) {
             if (telegramWebhookBot.isCommand(responseContainer.getSendMessage().getText())) {
                 var command = telegramWebhookBot.getRegisteredCommand(responseContainer.getSendMessage().getText());
@@ -86,19 +81,11 @@ public class SimpleUpdateExecutor extends Executor {
                 var message = responseContainer.getMessage();
                 command.processMessage(telegramWebhookBot, message, arguments);
             } else {
-//                responseContainer.getSendMessage().setChatId(responseContainer.getUserId().toString());
                 botsSender.sendMessage(responseContainer.getSendMessage());
             }
+            return;
         }
-        if (responseContainer.hasSticker()) {
-            var sendSticker = responseContainer.getSendSticker();
-            sendSticker.setChatId(responseContainer.getUserId().toString());
-            botsSender.sendSticker(sendSticker);
-        }
-        if (responseContainer.hasPinnedMessage()) {
-            PinnedMessageDTO pinnedMessageDTO = responseContainer.getPinnedMessageDTO();
-            botsSender.sendPinnedMessage(pinnedMessageDTO);
-        }
+        sendSimpleMessages(responseContainer, botsSender);
     }
 
 }
