@@ -1,6 +1,7 @@
 package ru.kumkuat.application.gameModule.cuncurrency.executor;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.kumkuat.application.gameModule.Abstract.TelegramWebhookCommandBot;
 import ru.kumkuat.application.gameModule.bot.BotsSender;
@@ -8,27 +9,32 @@ import ru.kumkuat.application.gameModule.collections.PinnedMessageDTO;
 import ru.kumkuat.application.gameModule.collections.ResponseContainer;
 import ru.kumkuat.application.gameModule.service.UserService;
 
+import java.util.List;
+
 /**
- * Логика обработки контейнера сообщения
+ * Service that defined which bot will process message. And do some logic of processing message.
  */
 @Slf4j
 @Service
 public class SimpleUpdateExecutor extends Executor {
     private final static String MARSHAK = "Marshak";
+    @Autowired
+    private List<BotsSender> botCollection;
     private final UserService userService;
 
     public SimpleUpdateExecutor(UserService userService) {
         this.userService = userService;
     }
 
-    public void execute(ResponseContainer update, BotsSender bot) throws InterruptedException {
-        log.info("Обработка update началась. Время: " + update.getTimingOfReply() + ". Cообщение для userId: " +  update.getUserId());
-        String botName = bot.getSecretName();
+    public void execute(ResponseContainer update) {
+        log.info("Обработка update началась. Время: " + update.getTimingOfReply() + ". Cообщение для userId: " + update.getUserId());
+        String botName = update.getBotName();
+        var botsSender = botCollection.stream().filter(bot -> bot.getSecretName().equals(botName)).findFirst().get();
 
         if (botName.equals(MARSHAK)) {
-            sendResponseToUserInPrivate(update, (TelegramWebhookCommandBot) bot);
+            sendResponseToUserInPrivate(update, (TelegramWebhookCommandBot) botsSender);
         } else {
-            sendResponseToUser(update, bot);
+            sendResponseToUser(update, botsSender);
         }
 
         if (update.isLastMessage() && !update.isWrongMessage()) {
@@ -87,7 +93,4 @@ public class SimpleUpdateExecutor extends Executor {
             botsSender.sendPinnedMessage(pinnedMessageDTO);
         }
     }
-
-
-
 }
