@@ -47,6 +47,23 @@ public class SimpleUpdateExecutor extends Executor {
         sendSimpleMessages(responseContainer, botsSender);
     }
 
+    private void sendResponseToUserInPrivate(ResponseContainer responseContainer, TelegramWebhookCommandBot
+            telegramWebhookBot) {
+        var botsSender = (BotsSender) telegramWebhookBot;
+        if (responseContainer.hasText()) {
+            if (telegramWebhookBot.isCommand(responseContainer.getSendMessage().getText())) {
+                var command = telegramWebhookBot.getRegisteredCommand(responseContainer.getSendMessage().getText());
+                String[] arguments = new String[]{responseContainer.getMessage().getText()};
+                var message = responseContainer.getMessage();
+                command.processMessage(telegramWebhookBot, message, arguments);
+            } else {
+                botsSender.sendMessage(responseContainer.getSendMessage());
+            }
+            return;
+        }
+        sendSimpleMessages(responseContainer, botsSender);
+    }
+
     private void sendSimpleMessages(ResponseContainer responseContainer, BotsSender botsSender) {
         if (responseContainer.hasGeolocation()) {
             botsSender.sendLocation(responseContainer.getSendLocation());
@@ -71,21 +88,6 @@ public class SimpleUpdateExecutor extends Executor {
         }
     }
 
-    private void sendResponseToUserInPrivate(ResponseContainer responseContainer, TelegramWebhookCommandBot
-            telegramWebhookBot) {
-        var botsSender = (BotsSender) telegramWebhookBot;
-        if (responseContainer.hasText()) {
-            if (telegramWebhookBot.isCommand(responseContainer.getSendMessage().getText())) {
-                var command = telegramWebhookBot.getRegisteredCommand(responseContainer.getSendMessage().getText());
-                String[] arguments = new String[]{responseContainer.getMessage().getText()};
-                var message = responseContainer.getMessage();
-                command.processMessage(telegramWebhookBot, message, arguments);
-            } else {
-                botsSender.sendMessage(responseContainer.getSendMessage());
-            }
-            return;
-        }
-        sendSimpleMessages(responseContainer, botsSender);
-    }
+
 
 }
