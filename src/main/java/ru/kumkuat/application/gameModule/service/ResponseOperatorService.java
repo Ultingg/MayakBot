@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.kumkuat.application.gameModule.collections.ResponseContainer;
 import ru.kumkuat.application.gameModule.cuncurrency.UpdateProcessor;
-import ru.kumkuat.application.gameModule.marshakCommands.CommandService;
 
 import java.util.List;
 
@@ -13,12 +12,10 @@ import java.util.List;
 @Service
 public class ResponseOperatorService {
 
-    private final CommandService commandService;
     private final ResponseService responseService;
     private final UpdateProcessor updateProcessor;
 
-    public ResponseOperatorService(CommandService commandService, ResponseService responseService, UpdateProcessor updateProcessor) {
-        this.commandService = commandService;
+    public ResponseOperatorService( ResponseService responseService, UpdateProcessor updateProcessor) {
         this.responseService = responseService;
         this.updateProcessor = updateProcessor;
     }
@@ -31,6 +28,8 @@ public class ResponseOperatorService {
     private void responseResolver(List<ResponseContainer> responseContainers) {
         if (!responseContainers.isEmpty()) {
             updateProcessor.process(responseContainers);
+        } else {
+            log.info("responseContainers is empty!");
         }
     }
 }

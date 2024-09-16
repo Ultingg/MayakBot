@@ -64,6 +64,8 @@ public class ResponseService {
             }
             log.info("ResponseContainers size: {}", responseContainers.size());
         }
+
+//TODO: сделать обнуление user когда он дошле до финальной сцены. Чтобы в беседке он мог писать что угодно и при желании начать заново игру у Маршака.
         return markLastReply(responseContainers);
     }
 
@@ -192,17 +194,17 @@ public class ResponseService {
             setTextToReply(reply, chatId, userId, responseContainer);
         }
         if (reply.hasSticker()) {
-            setStiсkerToReply(reply, chatId, responseContainer);
+            setStickerToReply(reply, chatId, responseContainer);
         }
         if (reply.hasPinnedMessage()) {
             setPinnedMessage(reply, chatId, responseContainer, userId);
         }
-        log.debug("Response container created.");
+        log.info("Response container created.");
         return responseContainer;
     }
 
     private void setPinnedMessage(Reply reply, String chatId, ResponseContainer responseContainer, Long userId) {
-        log.debug("Reply has sticker.");
+        log.info("Reply has pinned.");
         PinnedMessage pinnedMessage = reply.getPinnedMessage();
         PinnedMessageDTO pinnedMessageDTO = new PinnedMessageDTO();
         if (pinnedMessage.hasPicture()) {
@@ -210,14 +212,14 @@ public class ResponseService {
             SendPhoto sendPhoto = getSendPhoto(pictureId, chatId);
             pinnedMessageDTO.setSendPhoto(sendPhoto);
         } else {
-            SendMessage sendMessage = getSendMessage(reply, chatId, userId);
+            SendMessage sendMessage = getSendMessage(chatId, pinnedMessage.getText());
             pinnedMessageDTO.setSendMessage(sendMessage);
         }
         responseContainer.setPinnedMessageDTO(pinnedMessageDTO);
     }
 
-    private void setStiсkerToReply(Reply reply, String chatId, ResponseContainer responseContainer) {
-        log.debug("Reply has sticker.");
+    private void setStickerToReply(Reply reply, String chatId, ResponseContainer responseContainer) {
+        log.info("Reply has sticker.");
         Long stickerId = reply.getStickerId();
         String pathToSticker = stickerService.getPathToSticker(stickerId);
         File fileFromDb = new File(pathToSticker);
@@ -230,7 +232,7 @@ public class ResponseService {
     }
 
     private void setTextToReply(Reply reply, String chatId, Long userId, ResponseContainer responseContainer) {
-        log.debug("Reply has text.");
+        log.info("Reply has text.");
         SendMessage sendMessage = getSendMessage(reply, chatId, userId);
         responseContainer.setSendMessage(sendMessage);
     }
@@ -239,6 +241,10 @@ public class ResponseService {
         String textToSend = reply.getTextMessage();
         textToSend = EmojiParser.parseToUnicode(textToSend);
         textToSend = nickNameInserting(textToSend, Long.valueOf(userId));
+        return getSendMessage(chatId, textToSend);
+    }
+
+    private SendMessage getSendMessage(String chatId, String textToSend) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setText(textToSend);
         sendMessage.setChatId(chatId);
@@ -246,7 +252,7 @@ public class ResponseService {
     }
 
     private void setGeolocationToReply(Reply reply, String chatId, ResponseContainer responseContainer) {
-        log.debug("Reply has geolocation.");
+        log.info("Reply has geolocation.");
         Long geolocationId = reply.getGeolocationId();
         Geolocation geolocation = geolocationDatabaseService.getGeolocationById(geolocationId);
         Double latitudeToSend = geolocation.getLatitude();
@@ -261,7 +267,7 @@ public class ResponseService {
     }
 
     private void setPictureToReply(Reply reply, String chatId, ResponseContainer responseContainer) {
-        log.debug("Reply has picture.");
+        log.info("Reply has picture.");
         Long pictureId = reply.getPictureId();
         SendPhoto sendPhoto = getSendPhoto(pictureId, chatId);
         responseContainer.setSendPhoto(sendPhoto);
@@ -299,13 +305,13 @@ public class ResponseService {
     }
 
     private Long getSceneId(Long userTelegeramId) throws NullPointerException {
-        Long userId = Long.valueOf(userTelegeramId);
+        Long userId = userTelegeramId;
         User user = null;
         try {
             user = userService.getUserByTelegramId(userId);
         } catch (NullPointerException e) {
             e.getMessage();
-            log.debug("User is null. Is absent in DB");
+            log.info("User is null. Is absent in DB");
         }
         if (user == null) {
             throw new NullPointerException("User is null.");

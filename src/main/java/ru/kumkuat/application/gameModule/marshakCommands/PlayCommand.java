@@ -56,6 +56,7 @@ public class PlayCommand extends BotCommand {
         replyMessage.enableHtml(true);
 
         try {
+            //TODO: при старте если у user пройдена последняя сцена, то нудно требовать оплату.
             if (userService.IsUserHasPayment(userId)) {
                 SendFreeChat(absSender, userId);
             } else {
