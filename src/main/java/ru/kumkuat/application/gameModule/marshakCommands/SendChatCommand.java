@@ -50,21 +50,16 @@ public class SendChatCommand extends BotCommand {
             try {
                 userId = Long.parseLong(arguments[0]);
             } catch (NumberFormatException e) {
-                log.error("!!!!!!!!!Argument of command wasn't a number.!!!!!!!!! ", e);
+                log.info("Link to chat was sent to user: " + userId);
             }
         }
 
-        log.debug("Marshak ");
         SendMessage replyMessage = new SendMessage();
         replyMessage.setChatId(chat.getId().toString());
         replyMessage.enableHtml(true);
 
         try {
-            try {
-                sendFreeChat(absSender, userId);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            sendFreeChat(absSender, userId);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -99,11 +94,10 @@ public class SendChatCommand extends BotCommand {
     }
 
 
-
     public void sendLinkToChat(SendMessage replyMessage, AbsSender absSender, TelegramChat freeChat, Long userId) throws TelegramApiException {
         ExportChatInviteLink exportChatInviteLink = new ExportChatInviteLink(freeChat.getChatId().toString());
         var inviteLink = absSender.execute(exportChatInviteLink);
-        log.info("Invite link to chat id: {} was sended to user: {}", freeChat.getChatId(), userId);
+        log.info("LINK SENT: Invite link to chat id: {} was sended to user: {}", freeChat.getChatId(), userId);
 
         ru.kumkuat.application.gameModule.models.User user = userService.getUserByTelegramId(userId);
         if (user != null && user.isTriggered()) {
@@ -117,13 +111,13 @@ public class SendChatCommand extends BotCommand {
         absSender.execute(replyMessage);
 
         try {
-            sentChatLinkToAdminChat(replyMessage,absSender,user);
-        } catch (Exception e){
+            sentChatLinkToAdminChat(replyMessage, absSender, user);
+        } catch (Exception e) {
             log.error("Exception happened while sending message with link to adminChat.");
         }
     }
 
-    private void sentChatLinkToAdminChat(SendMessage replyMessage,AbsSender absSender, ru.kumkuat.application.gameModule.models.User user) throws TelegramApiException {
+    private void sentChatLinkToAdminChat(SendMessage replyMessage, AbsSender absSender, ru.kumkuat.application.gameModule.models.User user) throws TelegramApiException {
         String inviteLink = replyMessage.getText();
         String userName = user.getName();
         Long telegramId = user.getTelegramUserId();

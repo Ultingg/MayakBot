@@ -132,7 +132,6 @@ public class XLSXScenarioReaderService {
             pinnedMessage.setPictureValue(pictureId);
         } else {
             pinnedMessage.setTextValue(value);
-            tempReply.setTextMessage(value);
         }
         tempReply.setPinnedMessage(pinnedMessage);
 

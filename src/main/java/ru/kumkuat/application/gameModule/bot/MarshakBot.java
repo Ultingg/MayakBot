@@ -229,28 +229,6 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
         }
     }
 
-    public Integer sendPrePinnedMessage(SendMessage sendMessage) {
-        try {
-            Message execute = execute(sendMessage);
-            Integer messageId = execute.getMessageId();
-            log.debug("{} send SendTextMessage!", secretName);
-            return messageId;
-        } catch (TelegramApiException e) {
-            e.getStackTrace();
-            log.debug("{} failed sending SendTextMessage!", secretName);
-        }
-        return null;
-    }
-
-    public void pinMesassge(PinChatMessage pinChatMessage) {
-        try {
-            execute(pinChatMessage);
-        } catch (TelegramApiException e) {
-            e.getStackTrace();
-            log.debug("{} failed sending SendTextMessage!", secretName);
-        }
-    }
-
     @Override
     public void sendSticker(SendSticker sendSticker) {
         log.debug("{} get SendTextMessage!", secretName);
@@ -280,11 +258,11 @@ public class MarshakBot extends TelegramWebhookCommandBot implements BotsSender,
             Message message;
             if (pinnedMessageDTO.hasMessage()) {
                 SendMessage sendMessage = pinnedMessageDTO.getSendMessage();
-                chatId = Long.valueOf(sendMessage.getChatId());
+                chatId = Long.parseLong(sendMessage.getChatId());
                 message = execute(sendMessage);
             } else {
                 SendPhoto sendPhoto = pinnedMessageDTO.getSendPhoto();
-                chatId = Long.valueOf(sendPhoto.getChatId());
+                chatId = Long.parseLong(sendPhoto.getChatId());
                 message = execute(sendPhoto);
             }
             int messageId = message.getMessageId();

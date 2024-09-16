@@ -109,7 +109,12 @@ public class UserService {
         return userRepository.getByTelegramUserId(telegramId) != null;
     }
 
-    public void incrementSceneId(Long userId) {
+    public void moveUserToNextScene(Long userId) {
+        incrementSceneId(userId);
+        setUserTrigger(userId, false);
+    }
+
+    private void incrementSceneId(Long userId) {
             User userToUpdate = getUserByTelegramId(userId);
             Long sceneId = userToUpdate.getSceneId();
 
@@ -184,5 +189,16 @@ public class UserService {
             log.debug("GroupAnonymousBot knocking the door, but we will not open");
         }
         return chatId;
+    }
+
+    public void registerUser(org.telegram.telegrambots.meta.api.objects.User user) {
+        if (!IsUserExist(user.getId())) {
+            try {
+                log.info("User id: {} added to DB", user.getId());
+                setUserIntoDB(user);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

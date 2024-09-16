@@ -23,6 +23,7 @@ public class ResponseContainer {
     private Message message;
     private boolean wrongMessage;
     private PinnedMessageDTO pinnedMessageDTO;
+    private boolean lastMessage;
 
     public boolean hasPinnedMessage(){
         return pinnedMessageDTO != null;
