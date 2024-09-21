@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Chat;
+import ru.kumkuat.application.gameModule.exceptions.ChatNotFoundException;
 import ru.kumkuat.application.gameModule.exceptions.TelegramChatServiceException;
 import ru.kumkuat.application.gameModule.models.TelegramChat;
 import ru.kumkuat.application.gameModule.repository.TelegramChatRepository;
@@ -56,9 +57,9 @@ public class TelegramChatService {
         return new ArrayList<>(busyChatsList);
     }
 
-    public TelegramChat getChatById(Long id) throws Exception {
+    public TelegramChat getChatById(Long id) throws ChatNotFoundException {
         var telegramChat = getAll().stream().filter(chat -> chat.getChatId().equals(id)).findFirst();
-        return telegramChat.orElseThrow(Exception::new);
+        return telegramChat.orElseThrow(() -> new ChatNotFoundException("Chat not found id: " + id));
     }
 
     public boolean isFreeChatHas() {
@@ -92,8 +93,8 @@ public class TelegramChatService {
             telegramChat.setChatId(chat.getId());
             return telegramChatRepository.save(telegramChat).getChatId();
         } else {
-                throw new TelegramChatServiceException("Telegram chat already exist!");
-            }
+            throw new TelegramChatServiceException("Telegram chat already exist!");
+        }
     }
 
     private void validateChat(Chat chat) {
@@ -133,5 +134,9 @@ public class TelegramChatService {
 
     public TelegramChat getChatByTelegramChatId(Long telegramChatId) {
         return telegramChatRepository.getTelegramChatByChatId(telegramChatId);
+    }
+
+    public List<TelegramChat> getAllByBusy() {
+        return telegramChatRepository.getAllChatsByBusy(true);
     }
 }

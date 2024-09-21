@@ -23,4 +23,19 @@ public class TimePadOrder {
     private Integer amountTickets;
     private Boolean isNotified;
     private String time;
+
+    @Override
+    public String toString() {
+        return "TimePadOrder{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", orderNumber=" + orderNumber +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", orderStatus='" + orderStatus + '\'' +
+                ", amountTickets=" + amountTickets +
+                ", isNotified=" + isNotified +
+                ", time='" + time + '\'' +
+                '}';
+    }
 }

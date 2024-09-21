@@ -74,7 +74,7 @@ public class SimpleEmailService {
     public int processMailSendingWithTime() {
         logger.info("Email with time sending start");
         List<TimePadOrder> orders = timePadOrderService.getAllNotNotifiedOrders();
-        int emailToSend = orders.size();
+        int emailToSend = orders.stream().reduce(0, (tickets, order) -> tickets + order.getAmountTickets(), Integer::sum);
         logger.info("Emails to send: " + emailToSend);
         for (var timePadOrder : orders) {
             int amountOfLetters = timePadOrder.getAmountTickets();
