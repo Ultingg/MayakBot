@@ -1,5 +1,6 @@
 package ru.kumkuat.application.gameModule.service.XLSXServices;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.context.annotation.PropertySource;
@@ -10,7 +11,7 @@ import ru.kumkuat.application.gameModule.service.GeneralXLSXReader;
 
 import java.io.File;
 import java.io.FileInputStream;
-
+@Slf4j
 @Component(value = "timePadOrder")
 @PropertySource(value = "file:../resources/externalsecret.yml")
 public class XLSXTimePadListReaderService extends GeneralXLSXReader {
@@ -61,8 +62,15 @@ public class XLSXTimePadListReaderService extends GeneralXLSXReader {
                     newTimpadUser.setIsNotified(false);
 
                     if (!timePadUserService.isOrderExistsByOrderNumber(newTimpadUser.getOrderNumber())) {
-                        timePadUserService.save(newTimpadUser);
+                        log.info("Saving timpadorder: " + newTimpadUser.toString());
+                        try {
+                            timePadUserService.save(newTimpadUser);
+                        } catch (Exception e){
+                            log.error("Saving failed timpadorder: " + newTimpadUser.toString());
+                        }
                         counter++;
+                    } else {
+                        log.info("Already exist in DB timpadorder: " + newTimpadUser.getOrderNumber());
                     }
                 }
             }
